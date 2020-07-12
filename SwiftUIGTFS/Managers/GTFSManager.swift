@@ -11,10 +11,14 @@ import SwiftUI
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
-    @Published var shapes: [Int: [GTFSShapePoint]] = [:]
+    @Published var shapes: [String: [GTFSShapePoint]] = [:]
     
     
     init() {
+        loadMbtaData()
+    }
+    
+    private func loadMbtaData() {
         guard let routesPath = Bundle.main.path(forResource: "mbtaRoutes", ofType: "txt") else {
             return
         }
@@ -43,7 +47,7 @@ class GTFSManager: ObservableObject {
             
             for i in 1..<limit { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count > 7 else { break }
+                guard splitLine.count > 11 else { break }
                 
                 let routeId = splitLine[0]
                 let agencyId = splitLine[1]
@@ -111,8 +115,9 @@ class GTFSManager: ObservableObject {
             let limit = fileLines.count //50000
             for i in 1..<limit { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
+                guard splitLine.count > 4 else { break }
                 
-                guard let id = Int(splitLine[0]) else { break }
+                let id = splitLine[0]
                 guard let ptLat = Double(splitLine[1]) else { break }
                 guard let ptLon = Double(splitLine[2]) else { break }
                 guard let ptSequence = Int(splitLine[3]) else { break }
@@ -120,7 +125,7 @@ class GTFSManager: ObservableObject {
                 shapeEntries.append(GTFSShapeEntry(id: id, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
             }
             
-            var shapes = [Int: [GTFSShapePoint]]()
+            var shapes = [String: [GTFSShapePoint]]()
             
             for entry in shapeEntries {
                 if let _ = shapes[entry.id] {

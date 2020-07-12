@@ -14,12 +14,19 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            GTFSShapesShape(shapes: gtfsManager.shapes)
+            /*GTFSShapesShape(shapes: gtfsManager.shapes)
                 .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
                 .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
                 .transform(CGAffineTransform.init(translationX: 200, y: 200))
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-                .background(Color(.secondarySystemBackground))
+                .background(Color(.secondarySystemBackground))*/
+            
+            GTFSShape(shapePoints: gtfsManager.shapes["010070"] ?? [])
+            .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
+            .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
+            .transform(CGAffineTransform.init(translationX: 200, y: 200))
+            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+            .background(Color(.secondarySystemBackground))
             
             Text("Route count: \(gtfsManager.routes.count)")
             Text("Trip count: \(gtfsManager.trips.count)")
