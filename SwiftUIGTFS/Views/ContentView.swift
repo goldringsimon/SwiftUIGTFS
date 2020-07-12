@@ -26,6 +26,7 @@ struct ContentView: View {
                 .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
                 .transform(CGAffineTransform.init(translationX: 200, y: 200))
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                .background(Color(.secondarySystemBackground))
             
             Text("Trip count: \(tripManager.trips.count)")
             Text("Shape count: \(shapeManager.shapes.count)")

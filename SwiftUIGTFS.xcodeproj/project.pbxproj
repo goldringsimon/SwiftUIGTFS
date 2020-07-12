@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F44F115724BBB2A0008E85C6 /* GTFSRouteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRouteManager.swift */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F44F115624BBB2A0008E85C6 /* GTFSRouteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRouteManager.swift; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 			children = (
 				F45E778724BB5EE8007A2F2C /* GTFSShapeManager.swift */,
 				F45E778F24BBA97D007A2F2C /* GTFSTripManager.swift */,
+				F44F115624BBB2A0008E85C6 /* GTFSRouteManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapeManager.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
+				F44F115724BBB2A0008E85C6 /* GTFSRouteManager.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTripManager.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
 			);
