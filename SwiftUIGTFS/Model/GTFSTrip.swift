@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct GTFSTrip {
+struct GTFSTrip: Identifiable {
+    var id: String { return routeId }
     let routeId: String
     let serviceId: String
     let tripId: String

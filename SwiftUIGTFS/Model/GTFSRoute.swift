@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct GTFSRoute {
+struct GTFSRoute: Identifiable {
+    var id: String { return routeId }
     let routeId: String
     let agencyId: String
     let routeShortName: String
