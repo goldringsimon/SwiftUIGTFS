@@ -68,7 +68,6 @@ class GTFSManager: ObservableObject {
             
             DispatchQueue.main.async { [weak self] in
                 self?.routes = tempRoutes
-                print(self?.routes[5] ?? "")
             }
         }
     }

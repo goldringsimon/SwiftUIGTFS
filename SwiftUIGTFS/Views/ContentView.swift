@@ -12,15 +12,34 @@ struct ContentView: View {
     @ObservedObject var gtfsManager: GTFSManager
     @State private var scale: Double = 1500
     @State private var selectedRoute = "Orange"
+    @State private var dragTranslation: CGAffineTransform = CGAffineTransform.identity
     
     var body: some View {
         VStack {
-            GTFSShapesShape(shapes: gtfsManager.shapes)
-                .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
-                .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
-                .transform(CGAffineTransform.init(translationX: 200, y: 200))
-                .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-                .background(Color(.secondarySystemBackground))
+            ZStack{
+                
+                GTFSShapesShape(shapes: gtfsManager.shapes)
+                    .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
+                    .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
+                    .transform(CGAffineTransform.init(translationX: 200, y: 200))
+//                    .transform(dragTranslation)
+                    .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                
+                GTFSShape(shapePoints: gtfsManager.shapes["010070"] ?? [])
+                    .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
+                    .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
+                    .transform(CGAffineTransform.init(translationX: 200, y: 200))
+//                    .transform(dragTranslation)
+                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                }
+            /*.gesture(DragGesture()
+            .onChanged({ value in
+                self.dragTranslation = self.dragTranslation.translatedBy(x: value.translation.width, y: value.translation.height)
+            })
+            )*/
+            .drawingGroup()
+            .background(Color(.secondarySystemBackground))
+            .clipped()
             
             /*GTFSShape(shapePoints: gtfsManager.shapes["010070"] ?? [])
             .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
@@ -34,11 +53,11 @@ struct ContentView: View {
             
             
             Text("Route count: \(gtfsManager.routes.count)")
-            Picker("Route", selection: $selectedRoute) {
+            /*Picker("Route", selection: $selectedRoute) {
                 ForEach(gtfsManager.routes, id:\.routeId) { route in
                     Text(route.routeLongName).tag(route.routeId)
                 }
-            }
+            }*/
             Text("Trip count: \(gtfsManager.trips.count)")
             Text("Shape count: \(gtfsManager.shapes.count)")
             Text("Scale: \(scale)")
