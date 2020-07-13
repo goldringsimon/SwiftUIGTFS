@@ -11,7 +11,7 @@ import SwiftUI
 extension Shape {
     func transformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
-        var transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
+        let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
         .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
         .translatedBy(x: -viewport.midX, y: -viewport.midY)
         
@@ -41,25 +41,9 @@ struct ContentView: View {
                 }
             }.edgesIgnoringSafeArea(.all)
                 
-                
-                /*.gesture(DragGesture()
-            .onChanged({ value in
-                self.dragTranslation = self.dragTranslation.translatedBy(x: value.translation.width, y: value.translation.height)
-            })
-            )*/
             .drawingGroup()
             .background(Color(.secondarySystemBackground))
             .clipped()
-            
-            /*GTFSShape(shapePoints: gtfsManager.shapes["010070"] ?? [])
-            .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
-            .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
-            .transform(CGAffineTransform.init(translationX: 200, y: 200))
-            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-            .background(Color(.secondarySystemBackground))
-                .frame(height: 500)*/
-            
-            //GTFSRouteShape(gtfsManager: gtfsManager, selectedRoute: $selectedRoute)
             
             
             Text("Route count: \(gtfsManager.routes.count)")
