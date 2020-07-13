@@ -8,9 +8,22 @@
 
 import SwiftUI
 
+extension Shape {
+    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> TransformedShape<Self> {
+        // This is the reverse order to previous implementation
+        var transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
+        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        .translatedBy(x: -viewport.midX, y: -viewport.midY)
+        
+        return self.transform(transform)
+    }
+}
+
 struct ContentView: View {
     @ObservedObject var gtfsManager: GTFSManager
-    @State private var scale: Double = 1500
+    @State private var scale: Double = 1
+    private let minScale = 0.1
+    private let maxScale = 10.0
     @State private var selectedRoute = "Orange"
     @State private var dragTranslation: CGAffineTransform = CGAffineTransform.identity
     
@@ -19,20 +32,14 @@ struct ContentView: View {
             ZStack {
                 GeometryReader { geometry in
                     GTFSShapesShape(shapes: self.gtfsManager.shapes)
-                        .transform(CGAffineTransform.init(translationX: -self.gtfsManager.viewport.midX, y: -self.gtfsManager.viewport.midY))
-                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
-                        .transform(CGAffineTransform.init(translationX: geometry.size.width / 2, y: geometry.size.height / 2))
-//                    .transform(dragTranslation)
+                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
                         .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapes["010070"] ?? [])
-                        .transform(CGAffineTransform.init(translationX: -self.gtfsManager.viewport.midX, y: -self.gtfsManager.viewport.midY))
-                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
-                        .transform(CGAffineTransform.init(translationX: geometry.size.width / 2, y: geometry.size.height / 2))
-//                    .transform(dragTranslation)
+                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
                         .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 }
-            }
+            }.edgesIgnoringSafeArea(.all)
                 
                 
                 /*.gesture(DragGesture()
@@ -56,16 +63,18 @@ struct ContentView: View {
             
             
             Text("Route count: \(gtfsManager.routes.count)")
-            /*Picker("Route", selection: $selectedRoute) {
-                ForEach(gtfsManager.routes, id:\.routeId) { route in
+            Picker("Route", selection: $selectedRoute) {
+                /*ForEach(gtfsManager.routes, id:\.routeId) { route in
                     Text(route.routeLongName).tag(route.routeId)
-                }
-            }*/
+                }*/
+                Text("Red").tag("Red")
+                Text("Orange").tag("Orange")
+            }
             Text("Trip count: \(gtfsManager.trips.count)")
             Text("Shape count: \(gtfsManager.shapes.count)")
             Text("Scale: \(scale)")
             Text("Initial translation: x: \(gtfsManager.viewport.midX) y: \(gtfsManager.viewport.midY) ")
-            Slider(value: $scale, in: 100...5000)
+            Slider(value: $scale, in: minScale...maxScale)
         }
     }
 }
