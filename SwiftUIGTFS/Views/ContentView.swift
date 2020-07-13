@@ -9,10 +9,11 @@
 import SwiftUI
 
 extension Shape {
-    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> TransformedShape<Self> {
+    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
         let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
         .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        .scaledBy(x: scale, y: scale)
         .translatedBy(x: -viewport.midX, y: -viewport.midY)
         
         return self.transform(transform)
@@ -21,9 +22,9 @@ extension Shape {
 
 struct ContentView: View {
     @ObservedObject var gtfsManager: GTFSManager
-    @State private var scale: Double = 1
-    private let minScale = 0.1
-    private let maxScale = 10.0
+    @State private var scale: CGFloat = 1
+    private let minScale: CGFloat = 0.1
+    private let maxScale: CGFloat = 10.0
     @State private var selectedRoute = "Orange"
     @State private var dragTranslation: CGAffineTransform = CGAffineTransform.identity
     
@@ -41,16 +42,16 @@ struct ContentView: View {
             ZStack {
                 GeometryReader { geometry in
                     GTFSShapesShape(shapes: self.gtfsManager.shapes)
-//                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
-                        .transform(self.getViewportToScreenTransformation(from: self.gtfsManager.viewport, to: geometry.size))
+                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size, scale: self.scale)
+//                        .transform(self.getViewportToScreenTransformation(from: self.gtfsManager.viewport, to: geometry.size))
+//                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
                         .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapes["010070"] ?? [])
-                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
+                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size, scale: self.scale)
                         .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 }
             }
-                
             .drawingGroup()
             .clipped()
             .edgesIgnoringSafeArea(.all)
