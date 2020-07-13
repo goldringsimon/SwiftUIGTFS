@@ -27,38 +27,59 @@ struct ContentView: View {
     @State private var selectedRoute = "Orange"
     @State private var dragTranslation: CGAffineTransform = CGAffineTransform.identity
     
+    func getViewportToScreenTransformation(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
+        // This is the reverse order to previous implementation
+        let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
+        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        .translatedBy(x: -viewport.midX, y: -viewport.midY)
+        
+        return transform
+    }
+    
     var body: some View {
-        VStack {
+        ZStack {
             ZStack {
                 GeometryReader { geometry in
                     GTFSShapesShape(shapes: self.gtfsManager.shapes)
-                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
+//                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
+                        .transform(self.getViewportToScreenTransformation(from: self.gtfsManager.viewport, to: geometry.size))
                         .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapes["010070"] ?? [])
                         .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)
                         .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 }
-            }.edgesIgnoringSafeArea(.all)
+            }
                 
             .drawingGroup()
-            .background(Color(.secondarySystemBackground))
             .clipped()
+            .edgesIgnoringSafeArea(.all)
             
-            
-            Text("Route count: \(gtfsManager.routes.count)")
-            Picker("Route", selection: $selectedRoute) {
-                /*ForEach(gtfsManager.routes, id:\.routeId) { route in
-                    Text(route.routeLongName).tag(route.routeId)
-                }*/
-                Text("Red").tag("Red")
-                Text("Orange").tag("Orange")
+            VStack{
+                Spacer()
+                HStack{
+                    Spacer()
+                    VStack{
+                        Picker("Route", selection: $selectedRoute) {
+                            /*ForEach(gtfsManager.routes, id:\.routeId) { route in
+                             Text(route.routeLongName).tag(route.routeId)
+                             }*/
+                            Text("Red").tag("Red")
+                            Text("Orange").tag("Orange")
+                        }.pickerStyle(SegmentedPickerStyle())
+                        Text("Route count: \(gtfsManager.routes.count)")
+                        Text("Trip count: \(gtfsManager.trips.count)")
+                        Text("Shape count: \(gtfsManager.shapes.count)")
+                        Text("Scale: \(scale)")
+                        Slider(value: $scale, in: minScale...maxScale)
+                    }
+                    .padding()
+                    .frame(width: 400)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(8)
+                    .padding()
+                }
             }
-            Text("Trip count: \(gtfsManager.trips.count)")
-            Text("Shape count: \(gtfsManager.shapes.count)")
-            Text("Scale: \(scale)")
-            Text("Initial translation: x: \(gtfsManager.viewport.midX) y: \(gtfsManager.viewport.midY) ")
-            Slider(value: $scale, in: minScale...maxScale)
         }
     }
 }
