@@ -16,23 +16,26 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            ZStack{
-                
-                GTFSShapesShape(shapes: gtfsManager.shapes)
-                    .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
-                    .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
-                    .transform(CGAffineTransform.init(translationX: 200, y: 200))
+            ZStack {
+                GeometryReader { geometry in
+                    GTFSShapesShape(shapes: self.gtfsManager.shapes)
+                        .transform(CGAffineTransform.init(translationX: -self.gtfsManager.viewport.midX, y: -self.gtfsManager.viewport.midY))
+                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
+                        .transform(CGAffineTransform.init(translationX: geometry.size.width / 2, y: geometry.size.height / 2))
 //                    .transform(dragTranslation)
-                    .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-                
-                GTFSShape(shapePoints: gtfsManager.shapes["010070"] ?? [])
-                    .transform(CGAffineTransform.init(translationX: -42.329848, y: 71.083876))
-                    .transform(CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale)))
-                    .transform(CGAffineTransform.init(translationX: 200, y: 200))
+                        .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                    
+                    GTFSShape(shapePoints: self.gtfsManager.shapes["010070"] ?? [])
+                        .transform(CGAffineTransform.init(translationX: -self.gtfsManager.viewport.midX, y: -self.gtfsManager.viewport.midY))
+                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
+                        .transform(CGAffineTransform.init(translationX: geometry.size.width / 2, y: geometry.size.height / 2))
 //                    .transform(dragTranslation)
-                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                        .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 }
-            /*.gesture(DragGesture()
+            }
+                
+                
+                /*.gesture(DragGesture()
             .onChanged({ value in
                 self.dragTranslation = self.dragTranslation.translatedBy(x: value.translation.width, y: value.translation.height)
             })
@@ -61,11 +64,10 @@ struct ContentView: View {
             Text("Trip count: \(gtfsManager.trips.count)")
             Text("Shape count: \(gtfsManager.shapes.count)")
             Text("Scale: \(scale)")
+            Text("Initial translation: x: \(gtfsManager.viewport.midX) y: \(gtfsManager.viewport.midY) ")
             Slider(value: $scale, in: 100...5000)
         }
     }
-    
-    
 }
 
 struct GTFSRouteShape: Shape {
@@ -89,9 +91,9 @@ struct GTFSRouteShape: Shape {
     func nextPath(from shapePoints: [GTFSShapePoint]) -> Path {
         var path = Path()
         guard let first = shapePoints.first else { return path }
-        path.move(to: CGPoint(x: first.ptLat, y: first.ptLon))
+        path.move(to: CGPoint(x: first.ptLon, y: first.ptLat))
         for point in shapePoints {
-            path.addLine(to: CGPoint(x: point.ptLat, y: point.ptLon))
+            path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
         }
         
         return path
@@ -104,9 +106,9 @@ struct GTFSShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         guard let first = shapePoints.first else { return path }
-        path.move(to: CGPoint(x: first.ptLat, y: first.ptLon))
+        path.move(to: CGPoint(x: first.ptLon, y: first.ptLat))
         for point in shapePoints {
-            path.addLine(to: CGPoint(x: point.ptLat, y: point.ptLon))
+            path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
         }
         
         return path
@@ -121,9 +123,9 @@ struct GTFSShapesShape: Shape {
         
         for (id, shapePoints) in shapes {
             guard let first = shapePoints.first else { break }
-            path.move(to: CGPoint(x: first.ptLat, y: first.ptLon))
+            path.move(to: CGPoint(x: first.ptLon, y: first.ptLat))
             for point in shapePoints {
-                path.addLine(to: CGPoint(x: point.ptLat, y: point.ptLon))
+                path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
             }
         }
         

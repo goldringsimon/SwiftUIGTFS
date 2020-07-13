@@ -13,6 +13,8 @@ class GTFSManager: ObservableObject {
     @Published var trips: [GTFSTrip] = []
     @Published var shapes: [String: [GTFSShapePoint]] = [:]
     
+    @Published var viewport: CGRect = CGRect.zero
+    
     
     init() {
         loadMbtaData()
@@ -110,8 +112,15 @@ class GTFSManager: ObservableObject {
                 print("couldn't read fileString")
                 return
             }
+            
             let fileLines = fileString.components(separatedBy: "\n")
             let limit = fileLines.count //50000
+            
+            var minLat: Double?
+            var maxLat: Double?
+            var minLon: Double?
+            var maxLon: Double?
+            
             for i in 1..<limit { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count > 4 else { break }
@@ -122,6 +131,11 @@ class GTFSManager: ObservableObject {
                 guard let ptSequence = Int(splitLine[3]) else { break }
                 let distTraveled = Float(splitLine[4])
                 shapeEntries.append(GTFSShapeEntry(id: id, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
+                
+                if minLat == nil || ptLat < minLat! { minLat = ptLat }
+                if maxLat == nil || ptLat > maxLat! { maxLat = ptLat }
+                if minLon == nil || ptLon < minLon! { minLon = ptLon }
+                if maxLon == nil || ptLon > maxLon! { maxLon = ptLon }
             }
             
             var shapes = [String: [GTFSShapePoint]]()
@@ -135,6 +149,12 @@ class GTFSManager: ObservableObject {
             }
             
             DispatchQueue.main.async { [weak self] in
+                guard let minLat = minLat,
+                    let maxLat = maxLat,
+                    let minLon = minLon,
+                    let maxLon = maxLon else { return }
+                
+                self?.viewport = CGRect(x: minLon, y: minLat, width: maxLon - minLon, height: maxLat - minLat)
                 self?.shapes = shapes
             }
         }
