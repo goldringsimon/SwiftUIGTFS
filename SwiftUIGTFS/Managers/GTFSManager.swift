@@ -12,6 +12,7 @@ class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
     @Published var shapes: [String: [GTFSShapePoint]] = [:]
+    @Published var stops: [GTFSStop] = []
     
     @Published var viewport: CGRect = CGRect.zero
     
@@ -21,20 +22,16 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadMbtaData() {
-        guard let routesPath = Bundle.main.path(forResource: "mbtaRoutes", ofType: "txt") else {
+        guard let routesPath = Bundle.main.path(forResource: "mbtaRoutes", ofType: "txt"),
+            let tripsPath = Bundle.main.path(forResource: "mbtaTrips", ofType: "txt"),
+            let shapesPath = Bundle.main.path(forResource: "mbtaShapes", ofType: "txt"),
+            let stopsPath = Bundle.main.path(forResource: "mbtaStops", ofType: "txt") else {
             return
         }
         loadRoutes(from: routesPath)
-        
-        guard let tripsPath = Bundle.main.path(forResource: "mbtaTrips", ofType: "txt") else {
-            return
-        }
         loadTrips(from: tripsPath)
-        
-        guard let shapesPath = Bundle.main.path(forResource: "mbtaShapes", ofType: "txt") else {
-            return
-        }
         loadShapes(from: shapesPath)
+        loadStops(from: stopsPath)
     }
     
     func loadRoutes(from filename:String) {
@@ -156,6 +153,35 @@ class GTFSManager: ObservableObject {
                 
                 self?.viewport = CGRect(x: minLon, y: minLat, width: maxLon - minLon, height: maxLat - minLat)
                 self?.shapes = shapes
+            }
+        }
+    }
+    
+    func loadStops(from filename:String) {
+        DispatchQueue.global().async {
+            guard let fileString = try? String(contentsOfFile: filename) else {
+                print("couldn't read fileString")
+                return
+            }
+            let fileLines = fileString.components(separatedBy: "\n")
+            let limit = fileLines.count
+            var stops = [GTFSStop]()
+            
+            for i in 1..<limit { // Don't want first (header) line
+                let splitLine = fileLines[i].components(separatedBy: ",")
+                guard splitLine.count > 7 else { break }
+                
+                let stopId = splitLine[0]
+                let stopCode = splitLine[1]
+                let stopName = splitLine[2]
+                let stopLat = Double(splitLine[6]) ?? 0.0
+                let stopLon = Double(splitLine[7]) ?? 0.0
+                
+                stops.append(GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon))
+            }
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.stops = stops
             }
         }
     }
