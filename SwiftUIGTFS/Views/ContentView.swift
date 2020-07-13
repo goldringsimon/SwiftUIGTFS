@@ -26,31 +26,15 @@ struct ContentView: View {
     private let minScale: CGFloat = 0.1
     private let maxScale: CGFloat = 10.0
     @State private var selectedRoute = "Orange"
-    @State private var dragTranslation: CGAffineTransform = CGAffineTransform.identity
-    
-    func getViewportToScreenTransformation(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
-        // This is the reverse order to previous implementation
-        let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
-        .translatedBy(x: -viewport.midX, y: -viewport.midY)
-        
-        return transform
-    }
     
     var body: some View {
         ZStack {
             ZStack {
-                GeometryReader { geometry in
-                    GTFSShapesShape(shapes: self.gtfsManager.shapes)
-                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size, scale: self.scale)
-//                        .transform(self.getViewportToScreenTransformation(from: self.gtfsManager.viewport, to: geometry.size))
-//                        .transform(CGAffineTransform(scaleX: CGFloat(self.scale), y: CGFloat(self.scale)))
-                        .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                    GTFSShapes(viewport: self.gtfsManager.viewport, shapes: self.gtfsManager.shapes)
+                    .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
-                    GTFSShape(shapePoints: self.gtfsManager.shapes["010070"] ?? [])
-                        .transformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size, scale: self.scale)
-                        .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                }
+                    GTFSShape(viewport: self.gtfsManager.viewport, shapePoints: self.gtfsManager.shapes["010070"] ?? [])
+                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
             }
             .drawingGroup()
             .clipped()
@@ -85,38 +69,9 @@ struct ContentView: View {
     }
 }
 
-struct GTFSRouteShape: Shape {
-    var gtfsManager: GTFSManager
-    @Binding var selectedRoute: String
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        for trip in gtfsManager.trips {
-            if trip.routeId == self.selectedRoute {
-                if let shape = gtfsManager.shapes[trip.shapeId] {
-                    path.addPath(nextPath(from: shape))
-                }
-            }
-        }
-        
-        return path
-    }
-    
-    func nextPath(from shapePoints: [GTFSShapePoint]) -> Path {
-        var path = Path()
-        guard let first = shapePoints.first else { return path }
-        path.move(to: CGPoint(x: first.ptLon, y: first.ptLat))
-        for point in shapePoints {
-            path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
-        }
-        
-        return path
-    }
-}
-
 struct GTFSShape: Shape {
-    var shapePoints : [GTFSShapePoint]
+    var viewport: CGRect
+    var shapePoints: [GTFSShapePoint]
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -126,12 +81,14 @@ struct GTFSShape: Shape {
             path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
         }
         
-        return path
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
+        return transformed.path(in: rect)
     }
 }
 
-struct GTFSShapesShape: Shape {
-    var shapes : [String: [GTFSShapePoint]]
+struct GTFSShapes: Shape {
+    var viewport: CGRect
+    var shapes: [String: [GTFSShapePoint]]
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -144,14 +101,7 @@ struct GTFSShapesShape: Shape {
             }
         }
         
-        return path
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
+        return transformed.path(in: rect)
     }
 }
-
-/*
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-*/
