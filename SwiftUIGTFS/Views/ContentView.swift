@@ -27,14 +27,31 @@ struct ContentView: View {
     private let maxScale: CGFloat = 10.0
     @State private var selectedRoute = "Orange"
     
+    func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
+        return CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
+        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        .scaledBy(x: scale, y: scale)
+        .translatedBy(x: -viewport.midX, y: -viewport.midY)
+    }
+    
     var body: some View {
         ZStack {
             ZStack {
-                    GTFSShapes(viewport: self.gtfsManager.viewport, shapes: self.gtfsManager.shapes)
+                GeometryReader { geometry in
+                    GTFSShapes(shapes: self.gtfsManager.shapes, viewport: self.gtfsManager.viewport, scale: self.scale)
                     .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
-                    GTFSShape(viewport: self.gtfsManager.viewport, shapePoints: self.gtfsManager.shapes["010070"] ?? [])
+                    GTFSShape(shapePoints: self.gtfsManager.shapes["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                
+                    /*ForEach(self.gtfsManager.stops) { stop in
+//                        Text(stop.stopName)
+                        Circle()
+                        .foregroundColor(.green)
+                        .frame(width: 5, height: 5)
+                            .position(CGPoint(x: stop.stopLon, y: stop.stopLat).applying(self.getTransformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)))
+                    }*/
+                }
             }
             .drawingGroup()
             .clipped()
@@ -55,11 +72,12 @@ struct ContentView: View {
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
                         Text("Shape count: \(gtfsManager.shapes.count)")
+                        Text("Stop count: \(gtfsManager.stops.count)")
                         Text("Scale: \(scale)")
                         Slider(value: $scale, in: minScale...maxScale)
                     }
                     .padding()
-                    .frame(width: 400)
+                    .frame(width: 300)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(8)
                     .padding()
@@ -69,9 +87,32 @@ struct ContentView: View {
     }
 }
 
-struct GTFSShape: Shape {
+struct GTFSStopShape: Shape {
+    var stops: [GTFSStop]
     var viewport: CGRect
+    var scale: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        /*for stop in stops {
+            path.move(to: CGPoint(x: stop.stopLon, y: stop.stopLat))
+            path.addEllipse(in: rect)
+        }*/
+        guard let first = stops.first else { return path }
+        path.move(to: CGPoint(x: first.stopLon, y: first.stopLat))
+        for stop in stops {
+            path.addLine(to: CGPoint(x: stop.stopLon, y: stop.stopLon))
+        }
+        
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
+        return transformed.path(in: rect)
+    }
+}
+
+struct GTFSShape: Shape {
     var shapePoints: [GTFSShapePoint]
+    var viewport: CGRect
+    var scale: CGFloat
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -81,14 +122,15 @@ struct GTFSShape: Shape {
             path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
         }
         
-        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
         return transformed.path(in: rect)
     }
 }
 
 struct GTFSShapes: Shape {
-    var viewport: CGRect
     var shapes: [String: [GTFSShapePoint]]
+    var viewport: CGRect
+    var scale: CGFloat
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -101,7 +143,7 @@ struct GTFSShapes: Shape {
             }
         }
         
-        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
         return transformed.path(in: rect)
     }
 }
