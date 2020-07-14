@@ -42,11 +42,6 @@ class GTFSManager: ObservableObject {
                 return
         }
         
-        guard let shapesPath = Bundle.main.path(forResource: "mbtaShapes", ofType: "txt"),
-            let stopsPath = Bundle.main.path(forResource: "mbtaStops", ofType: "txt") else {
-            return
-        }
-        
         loadRoutes(from: routesUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -67,8 +62,28 @@ class GTFSManager: ObservableObject {
             }
         }
         
-        loadShapes(from: shapesPath)
-        loadStops(from: stopsPath)
+        loadShapes(from: shapesUrl) { [weak self] result in
+                   guard let self = self else { return }
+                   switch result {
+                   case .success(let (shapes, viewport)):
+                       DispatchQueue.main.async {
+                        self.shapes = shapes
+                        self.viewport = viewport
+                    }
+                   case .failure(let error):
+                       print(error.localizedDescription)
+                   }
+               }
+        
+        loadStops(from: stopsUrl) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let stops):
+                DispatchQueue.main.async { self.stops = stops }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func loadRoutes(from fileUrl: URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
@@ -134,11 +149,11 @@ class GTFSManager: ObservableObject {
         }
     }
     
-    func loadShapes(from filename:String) {
+    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([String: [GTFSShapePoint]], CGRect), GTFSError>) -> Void) {
         DispatchQueue.global().async {
             var shapeEntries: [GTFSShapeEntry] = []
             
-            guard let fileString = try? String(contentsOfFile: filename) else {
+            guard let fileString = try? String(contentsOf: fileUrl) else {
                 print("couldn't read fileString")
                 return
             }
@@ -178,7 +193,7 @@ class GTFSManager: ObservableObject {
                 }
             }
             
-            DispatchQueue.main.async { [weak self] in
+            /*DispatchQueue.main.async { [weak self] in
                 guard let minLat = minLat,
                     let maxLat = maxLat,
                     let minLon = minLon,
@@ -186,13 +201,21 @@ class GTFSManager: ObservableObject {
                 
                 self?.viewport = CGRect(x: minLon, y: minLat, width: maxLon - minLon, height: maxLat - minLat)
                 self?.shapes = shapes
-            }
+            }*/
+            
+            guard minLat != nil,
+            maxLat != nil,
+            minLon != nil,
+            maxLon != nil else { return }
+            
+            let viewport = CGRect(x: minLon!, y: minLat!, width: maxLon! - minLon!, height: maxLat! - minLat!)
+            completed(.success((shapes, viewport)))
         }
     }
     
-    func loadStops(from filename:String) {
+    func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {
         DispatchQueue.global().async {
-            guard let fileString = try? String(contentsOfFile: filename) else {
+            guard let fileString = try? String(contentsOf: fileUrl) else {
                 print("couldn't read fileString")
                 return
             }
@@ -213,9 +236,7 @@ class GTFSManager: ObservableObject {
                 stops.append(GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon))
             }
             
-            DispatchQueue.main.async { [weak self] in
-                self?.stops = stops
-            }
+            completed(.success(stops))
         }
     }
 }
