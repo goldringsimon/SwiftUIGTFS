@@ -69,7 +69,7 @@ struct ContentView: View {
                                 Button(action: {
                                     self.selectedRoute = route.routeId
                                 }, label: {
-                                    Text(route.routeLongName).tag(route.routeId)
+                                    Text(route.routeLongName ?? "").tag(route.routeId)
                                 })
                             }
                         }

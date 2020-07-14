@@ -11,16 +11,16 @@ import Foundation
 struct GTFSRoute: Identifiable {
     var id: String { return routeId }
     let routeId: String
-    let agencyId: String
-    let routeShortName: String
-    let routeLongName: String
-    let routeDesc: String
+    let agencyId: String?
+    let routeShortName: String?
+    let routeLongName: String?
+    let routeDesc: String?
     let routeType: String
-    let routeUrl: String
-    let routeColor: String
-    let routeTextColor: String
-    let routeSortOrder: String
-    let routeFareClass: String
-    let lineId: String
-    let listedRoute: String
+    let routeUrl: String?
+    let routeColor: String?
+    let routeTextColor: String?
+    let routeSortOrder: String?
+    let routeFareClass: String?
+    let lineId: String?
+    let listedRoute: String?
 }

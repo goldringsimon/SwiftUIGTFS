@@ -9,7 +9,7 @@
 import SwiftUI
 
 enum GTFSError: Error {
-    case invalidData
+    case invalidRouteData(issue: String)
 }
 
 class GTFSManager: ObservableObject {
@@ -19,7 +19,6 @@ class GTFSManager: ObservableObject {
     @Published var stops: [GTFSStop] = []
     
     @Published var viewport: CGRect = CGRect.zero
-    
     
     init() {
         loadMbtaData()
@@ -63,17 +62,17 @@ class GTFSManager: ObservableObject {
         }
         
         loadShapes(from: shapesUrl) { [weak self] result in
-                   guard let self = self else { return }
-                   switch result {
-                   case .success(let (shapes, viewport)):
-                       DispatchQueue.main.async {
-                        self.shapes = shapes
-                        self.viewport = viewport
-                    }
-                   case .failure(let error):
-                       print(error.localizedDescription)
-                   }
-               }
+            guard let self = self else { return }
+            switch result {
+            case .success(let (shapes, viewport)):
+                DispatchQueue.main.async {
+                    self.shapes = shapes
+                    self.viewport = viewport
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
         
         loadStops(from: stopsUrl) { [weak self] result in
             guard let self = self else { return }
@@ -92,27 +91,91 @@ class GTFSManager: ObservableObject {
                 print("couldn't read fileString")
                 return
             }
+            
             let fileLines = fileString.components(separatedBy: "\n")
-            let limit = fileLines.count
+            let colTitles = fileLines[0].components(separatedBy: ",")
+            
+            var routeIdCol: Int?
+            var agencyIdCol: Int?
+            var routeShortNameCol: Int?
+            var routeLongNameCol: Int?
+            var routeDescCol: Int?
+            var routeTypeCol: Int?
+            var routeUrlCol: Int?
+            var routeColorCol: Int?
+            var routeTextColorCol: Int?
+            var routeSortOrderCol: Int?
+            var routeFareClassCol: Int?
+            var lineIdCol: Int?
+            var listedRouteCol: Int?
+            
+            for i in 0..<colTitles.count {
+                switch colTitles[i] {
+                case "route_id":
+                    routeIdCol = i
+                case "agency_id":
+                    agencyIdCol = i
+                case "route_short_name":
+                    routeShortNameCol = i
+                case "route_long_name":
+                    routeLongNameCol = i
+                case "route_desc":
+                    routeDescCol = i
+                case "route_type":
+                    routeTypeCol = i
+                case "route_url":
+                    routeUrlCol = i
+                case "route_color":
+                    routeColorCol = i
+                case "route_text_color":
+                    routeTextColorCol = i
+                case "route_sort_order":
+                    routeSortOrderCol = i
+                case "route_fare_class":
+                    routeFareClassCol = i
+                case "line_id":
+                    lineIdCol = i
+                case "listed_route":
+                    listedRouteCol = i
+                default:
+                    break
+                }
+            }
+            
+            guard let routeIdColumn = routeIdCol else {
+                completed(.failure(.invalidRouteData(issue: "Missing route_id column in routes.txt")))
+                return
+            }
+            
+            guard let routeTypeColumn = routeTypeCol else {
+                completed(.failure(.invalidRouteData(issue: "Missing route_type column in routes.txt")))
+                return
+            }
+            
+            if routeShortNameCol == nil && routeLongNameCol == nil {
+                completed(.failure(.invalidRouteData(issue: "routes.txt must contain at least one of route_short_name and route_long_name")))
+                return
+            }
+            
             var routes = [GTFSRoute]()
             
-            for i in 1..<limit { // Don't want first (header) line
+            for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count > 11 else { break }
                 
-                let routeId = splitLine[0]
-                let agencyId = splitLine[1]
-                let routeShortName = splitLine[2]
-                let routeLongName = splitLine[3]
-                let routeDesc = splitLine[4]
-                let routeType = splitLine[5]
-                let routeUrl = splitLine[6]
-                let routeColor = splitLine[7]
-                let routeTextColor = splitLine[8]
-                let routeSortOrder = splitLine[9]
-                let routeFareClass = splitLine[10]
-                let lineId = splitLine[11]
-                let listedRoute = splitLine[12]
+                let routeId = splitLine[routeIdColumn] // GTFS required field, non-optional
+                let agencyId = agencyIdCol == nil ? nil : splitLine[agencyIdCol!]
+                let routeShortName = routeShortNameCol == nil ? nil : splitLine[routeShortNameCol!]
+                let routeLongName = routeLongNameCol == nil ? nil : splitLine[routeLongNameCol!]
+                let routeDesc = routeDescCol == nil ? nil : splitLine[routeDescCol!]
+                let routeType = splitLine[routeTypeColumn] // GTFS required field, non-optional
+                let routeUrl = routeUrlCol == nil ? nil : splitLine[routeUrlCol!]
+                let routeColor = routeColorCol == nil ? nil : splitLine[routeColorCol!]
+                let routeTextColor = routeTextColorCol == nil ? nil : splitLine[routeTextColorCol!]
+                let routeSortOrder = routeSortOrderCol == nil ? nil : splitLine[routeSortOrderCol!]
+                let routeFareClass = routeFareClassCol == nil ? nil : splitLine[routeFareClassCol!]
+                let lineId = lineIdCol == nil ? nil : splitLine[lineIdCol!]
+                let listedRoute = listedRouteCol == nil ? nil : splitLine[listedRouteCol!]
                 
                 routes.append(GTFSRoute(routeId: routeId, agencyId: agencyId, routeShortName: routeShortName, routeLongName: routeLongName, routeDesc: routeDesc, routeType: routeType, routeUrl: routeUrl, routeColor: routeColor, routeTextColor: routeTextColor, routeSortOrder: routeSortOrder, routeFareClass: routeFareClass, lineId: lineId, listedRoute: listedRoute))
             }
@@ -192,16 +255,6 @@ class GTFSManager: ObservableObject {
                     shapes[entry.id] = [GTFSShapePoint(from: entry)]
                 }
             }
-            
-            /*DispatchQueue.main.async { [weak self] in
-                guard let minLat = minLat,
-                    let maxLat = maxLat,
-                    let minLon = minLon,
-                    let maxLon = maxLon else { return }
-                
-                self?.viewport = CGRect(x: minLon, y: minLat, width: maxLon - minLon, height: maxLat - minLat)
-                self?.shapes = shapes
-            }*/
             
             guard minLat != nil,
             maxLat != nil,
