@@ -12,10 +12,9 @@ extension Shape {
     func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
         let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width)) // The negative sign for the y-coordinate is slight voodoo to fix SwiftUI's coordinate system starting in the lower left corner, not the top right
         .scaledBy(x: scale, y: scale)
         .translatedBy(x: -viewport.midX, y: -viewport.midY)
-        
         return self.transform(transform)
     }
 }
@@ -28,10 +27,11 @@ struct ContentView: View {
     @State private var selectedRoute = "Orange"
     
     func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
-        return CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-        .scaledBy(x: CGFloat(screen.width / viewport.width), y: CGFloat(screen.width / viewport.width))
+        let returnValue = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
+        .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width))
         .scaledBy(x: scale, y: scale)
         .translatedBy(x: -viewport.midX, y: -viewport.midY)
+        return returnValue
     }
     
     var body: some View {
@@ -45,7 +45,7 @@ struct ContentView: View {
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                     
                     GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                    .stroke(Color.green, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    .stroke(Color.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
                 
                     /*ForEach(self.gtfsManager.stops) { stop in
 //                        Text(stop.stopName)
@@ -56,7 +56,7 @@ struct ContentView: View {
                     }*/
                 }
             }
-            .drawingGroup()
+//            .drawingGroup()
             .clipped()
             .edgesIgnoringSafeArea(.all)
             
