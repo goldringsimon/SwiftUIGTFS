@@ -21,6 +21,14 @@ class GTFSManager: ObservableObject {
         loadMbtaData()
     }
     
+    func getShapeId(for routeId: String) -> [GTFSShapePoint] {
+        //let possibleRoutes = routes.filter({ $0.routeId == routeId })
+        //guard let route = possibleRoutes.first else { return [] }
+        let routeTrips = trips.filter({ $0.routeId == routeId })
+        guard let firstTrip = routeTrips.first else { return [] }
+        return shapes[firstTrip.shapeId] ?? []
+    }
+    
     private func loadMbtaData() {
         guard let routesPath = Bundle.main.path(forResource: "mbtaRoutes", ofType: "txt"),
             let tripsPath = Bundle.main.path(forResource: "mbtaTrips", ofType: "txt"),

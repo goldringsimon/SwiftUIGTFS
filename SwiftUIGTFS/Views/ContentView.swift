@@ -43,6 +43,9 @@ struct ContentView: View {
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapes["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    
+                    GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                    .stroke(Color.green, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 
                     /*ForEach(self.gtfsManager.stops) { stop in
 //                        Text(stop.stopName)
@@ -63,7 +66,11 @@ struct ContentView: View {
                     VStack{
                         List{
                             ForEach(gtfsManager.routes) { route in
-                                Text(route.routeLongName).tag(route.routeId)
+                                Button(action: {
+                                    self.selectedRoute = route.routeId
+                                }, label: {
+                                    Text(route.routeLongName).tag(route.routeId)
+                                })
                             }
                         }
                     }
@@ -82,6 +89,7 @@ struct ContentView: View {
                             Text("Red").tag("Red")
                             Text("Orange").tag("Orange")
                         }.pickerStyle(SegmentedPickerStyle())*/
+                        Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
                         Text("Shape count: \(gtfsManager.shapes.count)")
