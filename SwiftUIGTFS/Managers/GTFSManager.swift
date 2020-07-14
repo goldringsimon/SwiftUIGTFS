@@ -230,12 +230,12 @@ class GTFSManager: ObservableObject {
                 return
             }
             
-            guard let serviceIdColumn = routeIdCol else {
+            guard let serviceIdColumn = serviceIdCol else {
                 completed(.failure(.invalidTripData(issue: "Missing service_id column in trips.txt")))
                 return
             }
             
-            guard let tripIdColumn = routeIdCol else {
+            guard let tripIdColumn = tripIdCol else {
                 completed(.failure(.invalidTripData(issue: "Missing trip_id column in trips.txt")))
                 return
             }
