@@ -58,17 +58,30 @@ struct ContentView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack{
+                HStack {
+                    Spacer()
+                    VStack{
+                        List{
+                            ForEach(gtfsManager.routes) { route in
+                                Text(route.routeLongName).tag(route.routeId)
+                            }
+                        }
+                    }
+                    .padding()
+                    .frame(width: 300, height: 400)
+                    .modifier(UICard())
+                }
                 Spacer()
                 HStack{
                     Spacer()
                     VStack{
-                        Picker("Route", selection: $selectedRoute) {
+                        /*Picker("Route", selection: $selectedRoute) {
                             /*ForEach(gtfsManager.routes, id:\.routeId) { route in
                              Text(route.routeLongName).tag(route.routeId)
                              }*/
                             Text("Red").tag("Red")
                             Text("Orange").tag("Orange")
-                        }.pickerStyle(SegmentedPickerStyle())
+                        }.pickerStyle(SegmentedPickerStyle())*/
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
                         Text("Shape count: \(gtfsManager.shapes.count)")
@@ -78,12 +91,20 @@ struct ContentView: View {
                     }
                     .padding()
                     .frame(width: 300)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(8)
-                    .padding()
+                    .modifier(UICard())
                 }
             }
         }
+    }
+}
+
+struct UICard: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+        .background(Color(UIColor.secondarySystemBackground.withAlphaComponent(0.75)))
+        .cornerRadius(8)
+        .padding()
+        
     }
 }
 
