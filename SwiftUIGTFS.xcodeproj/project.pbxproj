@@ -55,6 +55,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F4062FDB24BE0D9B0076C78D /* MBTA */ = {
+			isa = PBXGroup;
+			children = (
+				F45E778924BB6001007A2F2C /* mbtaShapes.txt */,
+				F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */,
+				F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */,
+				F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */,
+			);
+			path = MBTA;
+			sourceTree = "<group>";
+		};
+		F4062FDC24BE0DD20076C78D /* Chicago */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Chicago;
+			sourceTree = "<group>";
+		};
 		F44F115B24BBB816008E85C6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,10 +136,8 @@
 		F45E779224BBA98B007A2F2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F45E778924BB6001007A2F2C /* mbtaShapes.txt */,
-				F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */,
-				F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */,
-				F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */,
+				F4062FDC24BE0DD20076C78D /* Chicago */,
+				F4062FDB24BE0D9B0076C78D /* MBTA */,
 			);
 			path = Data;
 			sourceTree = "<group>";

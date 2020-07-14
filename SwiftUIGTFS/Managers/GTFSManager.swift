@@ -8,6 +8,10 @@
 
 import SwiftUI
 
+enum GTFSError: Error {
+    case invalidData
+}
+
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
@@ -30,27 +34,43 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadMbtaData() {
-        guard let routesPath = Bundle.main.path(forResource: "mbtaRoutes", ofType: "txt"),
-            let tripsPath = Bundle.main.path(forResource: "mbtaTrips", ofType: "txt"),
+        guard let routesUrl = Bundle.main.url(forResource: "mbtaRoutes", withExtension: "txt"),
+            let tripsUrl = Bundle.main.url(forResource: "mbtaTrips", withExtension: "txt"),
+            let shapesUrl = Bundle.main.url(forResource: "mbtaShapes", withExtension: "txt"),
+            let stopsUrl = Bundle.main.url(forResource: "mbtaStops", withExtension: "txt") else {
+                print("couldn't create an Url for MBTA data")
+                return
+        }
+        guard let tripsPath = Bundle.main.path(forResource: "mbtaTrips", ofType: "txt"),
             let shapesPath = Bundle.main.path(forResource: "mbtaShapes", ofType: "txt"),
             let stopsPath = Bundle.main.path(forResource: "mbtaStops", ofType: "txt") else {
             return
         }
-        loadRoutes(from: routesPath)
+        
+        loadRoutes(from: routesUrl) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let routes):
+                DispatchQueue.main.async { self.routes = routes }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
         loadTrips(from: tripsPath)
         loadShapes(from: shapesPath)
         loadStops(from: stopsPath)
     }
     
-    func loadRoutes(from filename:String) {
+    func loadRoutes(from fileUrl:URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
         DispatchQueue.global().async {
-            guard let fileString = try? String(contentsOfFile: filename) else {
+            guard let fileString = try? String(contentsOf: fileUrl) else {
                 print("couldn't read fileString")
                 return
             }
             let fileLines = fileString.components(separatedBy: "\n")
             let limit = fileLines.count
-            var tempRoutes = [GTFSRoute]()
+            var routes = [GTFSRoute]()
             
             for i in 1..<limit { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
@@ -70,12 +90,10 @@ class GTFSManager: ObservableObject {
                 let lineId = splitLine[11]
                 let listedRoute = splitLine[12]
                 
-                tempRoutes.append(GTFSRoute(routeId: routeId, agencyId: agencyId, routeShortName: routeShortName, routeLongName: routeLongName, routeDesc: routeDesc, routeType: routeType, routeUrl: routeUrl, routeColor: routeColor, routeTextColor: routeTextColor, routeSortOrder: routeSortOrder, routeFareClass: routeFareClass, lineId: lineId, listedRoute: listedRoute))
+                routes.append(GTFSRoute(routeId: routeId, agencyId: agencyId, routeShortName: routeShortName, routeLongName: routeLongName, routeDesc: routeDesc, routeType: routeType, routeUrl: routeUrl, routeColor: routeColor, routeTextColor: routeTextColor, routeSortOrder: routeSortOrder, routeFareClass: routeFareClass, lineId: lineId, listedRoute: listedRoute))
             }
             
-            DispatchQueue.main.async { [weak self] in
-                self?.routes = tempRoutes
-            }
+            completed(.success(routes))
         }
     }
     
