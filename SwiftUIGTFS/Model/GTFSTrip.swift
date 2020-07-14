@@ -13,7 +13,8 @@ struct GTFSTrip: Identifiable {
     let routeId: String
     let serviceId: String
     let tripId: String
-    let tripHeadsign: String
-    let directionId: Int // 6
-    let shapeId: String // 8
+    let tripHeadsign: String?
+    let tripShortName: String?
+    let directionId: Int?
+    let shapeId: String?
 }

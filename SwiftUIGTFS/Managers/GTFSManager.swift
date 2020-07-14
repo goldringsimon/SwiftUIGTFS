@@ -10,6 +10,7 @@ import SwiftUI
 
 enum GTFSError: Error {
     case invalidRouteData(issue: String)
+    case invalidTripData(issue: String)
 }
 
 class GTFSManager: ObservableObject {
@@ -29,7 +30,8 @@ class GTFSManager: ObservableObject {
         //guard let route = possibleRoutes.first else { return [] }
         let routeTrips = trips.filter({ $0.routeId == routeId })
         guard let firstTrip = routeTrips.first else { return [] }
-        return shapes[firstTrip.shapeId] ?? []
+        guard let shapeId = firstTrip.shapeId else { return [] }
+        return shapes[shapeId] ?? []
     }
     
     private func loadMbtaData() {
@@ -161,7 +163,7 @@ class GTFSManager: ObservableObject {
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count > 11 else { break }
+                guard splitLine.count == colTitles.count else { break }
                 
                 let routeId = splitLine[routeIdColumn] // GTFS required field, non-optional
                 let agencyId = agencyIdCol == nil ? nil : splitLine[agencyIdCol!]
@@ -190,22 +192,70 @@ class GTFSManager: ObservableObject {
                 print("couldn't read fileString")
                 return
             }
+            
             let fileLines = fileString.components(separatedBy: "\n")
+            let colTitles = fileLines[0].components(separatedBy: ",")
+            
+            var routeIdCol: Int?
+            var serviceIdCol: Int?
+            var tripIdCol: Int?
+            var tripHeadsignCol: Int?
+            var tripShortNameCol: Int?
+            var directionIdCol: Int?
+            var shapeIdCol: Int?
+            
+            for i in 0..<colTitles.count {
+                switch colTitles[i] {
+                case "route_id":
+                    routeIdCol = i
+                case "service_id":
+                    serviceIdCol = i
+                case "trip_id":
+                    tripIdCol = i
+                case "trip_headsign":
+                    tripHeadsignCol = i
+                case "trip_short_name":
+                    tripShortNameCol = i
+                case "direction_id":
+                    directionIdCol = i
+                case "shape_id":
+                    shapeIdCol = i
+                default:
+                    break
+                }
+            }
+            
+            guard let routeIdColumn = routeIdCol else {
+                completed(.failure(.invalidTripData(issue: "Missing route_id column in trips.txt")))
+                return
+            }
+            
+            guard let serviceIdColumn = routeIdCol else {
+                completed(.failure(.invalidTripData(issue: "Missing service_id column in trips.txt")))
+                return
+            }
+            
+            guard let tripIdColumn = routeIdCol else {
+                completed(.failure(.invalidTripData(issue: "Missing trip_id column in trips.txt")))
+                return
+            }
+                
             let limit = fileLines.count
             var trips = [GTFSTrip]()
             
             for i in 1..<limit { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count > 7 else { break }
+                guard splitLine.count == colTitles.count else { break }
                 
-                let routeId = splitLine[0]
-                let serviceId = splitLine[1]
-                let tripId = splitLine[2]
-                let tripHeadsign = splitLine[3]
-                let directionId = Int(splitLine[5]) ?? 0
-                let shapeId = splitLine[7]
+                let routeId = splitLine[routeIdColumn]
+                let serviceId = splitLine[serviceIdColumn]
+                let tripId = splitLine[tripIdColumn]
+                let tripHeadsign = tripHeadsignCol == nil ? nil : splitLine[tripHeadsignCol!]
+                let tripShortName = tripShortNameCol == nil ? nil: splitLine[tripShortNameCol!]
+                let directionId = directionIdCol == nil ? nil : Int(splitLine[directionIdCol!])
+                let shapeId = shapeIdCol == nil ? nil : splitLine[shapeIdCol!]
                 
-                trips.append(GTFSTrip(routeId: routeId, serviceId: serviceId, tripId: tripId, tripHeadsign: tripHeadsign, directionId: directionId, shapeId: shapeId))
+                trips.append(GTFSTrip(routeId: routeId, serviceId: serviceId, tripId: tripId, tripHeadsign: tripHeadsign, tripShortName: tripShortName, directionId: directionId, shapeId: shapeId))
             }
             
             completed(.success(trips))
