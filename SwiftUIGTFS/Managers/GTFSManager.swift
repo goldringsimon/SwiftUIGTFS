@@ -28,6 +28,8 @@ class GTFSManager: ObservableObject {
     
     var cancellables = Set<AnyCancellable>()
     
+    @Published var isFinishedLoading = false
+    
     init() {
         loadMbtaData()
 //        loadTripDictionary()
@@ -80,22 +82,44 @@ class GTFSManager: ObservableObject {
             case .failure(let error):
                 print(error.localizedDescription)
             }
-        }*/
+         }*/
         
-        loadRoutesPublisher(from: routesUrl)
+        let slow = slowPublisher()
+            .receive(on: DispatchQueue.main)
+            .catch({ error in
+                return Just(5)
+            })
+        
+        let routesPub = loadRoutesPublisher(from: routesUrl)
+//            .receive(on: RunLoop.main)
+            .assertNoFailure()
+            .eraseToAnyPublisher()
+        
+        let zipped = Publishers.Zip(slow, routesPub)
             .receive(on: RunLoop.main)
-            .sink(receiveCompletion: { completion in
+            .eraseToAnyPublisher()
+        
+        zipped
+            .sink { (_, routes) in
+                self.isFinishedLoading = true
+                self.routes = routes
+        }
+        .store(in: &cancellables)
+        
+        loadShapesPublisher(from: shapesUrl)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
-                    break
+                    print(error.localizedDescription)
                 }
-            }, receiveValue: { routes in
-                self.routes = routes
-            })
-            .store(in: &cancellables)
+            }) { (shapes, viewport) in
+                self.shapeDictionary = shapes
+                self.viewport = viewport
+        }
+        .store(in: &cancellables)
         
         loadTrips(from: tripsUrl) { [weak self] result in
             guard let self = self else { return }
@@ -110,7 +134,7 @@ class GTFSManager: ObservableObject {
             }
         }
         
-        loadShapes(from: shapesUrl) { [weak self] result in
+        /*loadShapes(from: shapesUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let (shapes, viewport)):
@@ -121,7 +145,7 @@ class GTFSManager: ObservableObject {
             case .failure(let error):
                 print(error.localizedDescription)
             }
-        }
+        }*/
         
         loadStops(from: stopsUrl) { [weak self] result in
             guard let self = self else { return }
@@ -134,10 +158,19 @@ class GTFSManager: ObservableObject {
         }
     }
     
-    func loadRoutesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
+    func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError> {
         return Future<[GTFSRoute], GTFSError> { promise in
             return self.loadRoutes(from: fileUrl) { (result) in
                 promise(result)
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func slowPublisher() -> Future<Int, Never> {
+        return Future<Int, Never> { promise in
+            DispatchQueue.global().async {
+                sleep(10)
+                promise(.success(5))
             }
         }
     }
@@ -241,6 +274,14 @@ class GTFSManager: ObservableObject {
         }
     }
     
+    func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError> {
+        return Future<[GTFSTrip], GTFSError> { promise in
+            return self.loadTrips(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }.eraseToAnyPublisher()
+    }
+    
     func loadTrips(from fileUrl: URL, completed: @escaping (Result<[GTFSTrip], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
@@ -314,6 +355,14 @@ class GTFSManager: ObservableObject {
             
             completed(.success(trips))
         }
+    }
+    
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError> {
+        return Future<([String: [GTFSShapePoint]], CGRect), GTFSError> { promise in
+            return self.loadShapes(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }.eraseToAnyPublisher()
     }
     
     func loadShapes(from fileUrl: URL, completed: @escaping (Result<([String: [GTFSShapePoint]], CGRect), GTFSError>) -> Void) {
@@ -411,6 +460,14 @@ class GTFSManager: ObservableObject {
             let viewport = CGRect(x: minLon!, y: minLat!, width: maxLon! - minLon!, height: maxLat! - minLat!)
             completed(.success((shapeDictionary, viewport)))
         }
+    }
+    
+    func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError> {
+        return Future<[GTFSStop], GTFSError> { promise in
+            return self.loadStops(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }.eraseToAnyPublisher()
     }
     
     func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {

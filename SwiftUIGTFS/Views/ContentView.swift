@@ -94,6 +94,7 @@ struct ContentView: View {
                             Text("Red").tag("Red")
                             Text("Orange").tag("Orange")
                         }.pickerStyle(SegmentedPickerStyle())*/
+                        Text("Finished Loading: \(String(gtfsManager.isFinishedLoading))")
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
