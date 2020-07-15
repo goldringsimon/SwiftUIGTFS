@@ -20,6 +20,10 @@
 		F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */; };
 		F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */; };
 		F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */; };
+		F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60B24BF11210099A46A /* ctaTrips.txt */; };
+		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
+		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
+		F49DE61224BF11210099A46A /* ctaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60E24BF11210099A46A /* ctaStops.txt */; };
 		F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */; };
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
@@ -40,6 +44,10 @@
 		F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaRoutes.txt; sourceTree = "<group>"; };
 		F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaTrips.txt; sourceTree = "<group>"; };
 		F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSTrip.swift; sourceTree = "<group>"; };
+		F49DE60B24BF11210099A46A /* ctaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaTrips.txt; sourceTree = "<group>"; };
+		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
+		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
+		F49DE60E24BF11210099A46A /* ctaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaStops.txt; sourceTree = "<group>"; };
 		F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSStop.swift; sourceTree = "<group>"; };
 		F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaStops.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,11 +74,15 @@
 			path = MBTA;
 			sourceTree = "<group>";
 		};
-		F4062FDC24BE0DD20076C78D /* Chicago */ = {
+		F4062FDC24BE0DD20076C78D /* CTA */ = {
 			isa = PBXGroup;
 			children = (
+				F49DE60D24BF11210099A46A /* ctaRoutes.txt */,
+				F49DE60C24BF11210099A46A /* ctaShapes.txt */,
+				F49DE60E24BF11210099A46A /* ctaStops.txt */,
+				F49DE60B24BF11210099A46A /* ctaTrips.txt */,
 			);
-			path = Chicago;
+			path = CTA;
 			sourceTree = "<group>";
 		};
 		F44F115B24BBB816008E85C6 /* Model */ = {
@@ -136,7 +148,7 @@
 		F45E779224BBA98B007A2F2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F4062FDC24BE0DD20076C78D /* Chicago */,
+				F4062FDC24BE0DD20076C78D /* CTA */,
 				F4062FDB24BE0D9B0076C78D /* MBTA */,
 			);
 			path = Data;
@@ -208,12 +220,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */,
 				F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */,
+				F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */,
 				F45E778A24BB6001007A2F2C /* mbtaShapes.txt in Resources */,
+				F49DE61224BF11210099A46A /* ctaStops.txt in Resources */,
 				F45E778024BB2696007A2F2C /* LaunchScreen.storyboard in Resources */,
 				F45E777D24BB2696007A2F2C /* Preview Assets.xcassets in Resources */,
 				F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */,
 				F45E777A24BB2696007A2F2C /* Assets.xcassets in Resources */,
+				F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */,
 				F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
