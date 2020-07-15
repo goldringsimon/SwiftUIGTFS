@@ -11,12 +11,14 @@ import SwiftUI
 enum GTFSError: Error {
     case invalidRouteData(issue: String)
     case invalidTripData(issue: String)
+    case invalidShapeData(issue: String)
+    case invalidStopData(issue: String)
 }
 
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
-    @Published var shapes: [String: [GTFSShapePoint]] = [:]
+    @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:]
     @Published var stops: [GTFSStop] = []
     
     @Published var viewport: CGRect = CGRect.zero
@@ -31,7 +33,7 @@ class GTFSManager: ObservableObject {
         let routeTrips = trips.filter({ $0.routeId == routeId })
         guard let firstTrip = routeTrips.first else { return [] }
         guard let shapeId = firstTrip.shapeId else { return [] }
-        return shapes[shapeId] ?? []
+        return shapeDictionary[shapeId] ?? []
     }
     
     private func loadMbtaData() {
@@ -68,7 +70,7 @@ class GTFSManager: ObservableObject {
             switch result {
             case .success(let (shapes, viewport)):
                 DispatchQueue.main.async {
-                    self.shapes = shapes
+                    self.shapeDictionary = shapes
                     self.viewport = viewport
                 }
             case .failure(let error):
@@ -239,11 +241,10 @@ class GTFSManager: ObservableObject {
                 completed(.failure(.invalidTripData(issue: "Missing trip_id column in trips.txt")))
                 return
             }
-                
-            let limit = fileLines.count
+            
             var trips = [GTFSTrip]()
             
-            for i in 1..<limit { // Don't want first (header) line
+            for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count == colTitles.count else { break }
                 
@@ -264,7 +265,7 @@ class GTFSManager: ObservableObject {
     
     func loadShapes(from fileUrl: URL, completed: @escaping (Result<([String: [GTFSShapePoint]], CGRect), GTFSError>) -> Void) {
         DispatchQueue.global().async {
-            var shapeEntries: [GTFSShapeEntry] = []
+            var shapePoints: [GTFSShapePointRecord] = []
             
             guard let fileString = try? String(contentsOf: fileUrl) else {
                 print("couldn't read fileString")
@@ -272,14 +273,13 @@ class GTFSManager: ObservableObject {
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
-            let limit = fileLines.count //50000
             
             var minLat: Double?
             var maxLat: Double?
             var minLon: Double?
             var maxLon: Double?
             
-            for i in 1..<limit { // Don't want first (header) line
+            for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count > 4 else { break }
                 
@@ -288,7 +288,7 @@ class GTFSManager: ObservableObject {
                 guard let ptLon = Double(splitLine[2]) else { break }
                 guard let ptSequence = Int(splitLine[3]) else { break }
                 let distTraveled = Float(splitLine[4])
-                shapeEntries.append(GTFSShapeEntry(id: id, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
+                shapePoints.append(GTFSShapePointRecord(id: id, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
                 
                 if minLat == nil || ptLat < minLat! { minLat = ptLat }
                 if maxLat == nil || ptLat > maxLat! { maxLat = ptLat }
@@ -298,7 +298,7 @@ class GTFSManager: ObservableObject {
             
             var shapes = [String: [GTFSShapePoint]]()
             
-            for entry in shapeEntries {
+            for entry in shapePoints {
                 if let _ = shapes[entry.id] {
                     shapes[entry.id]?.append(GTFSShapePoint(from: entry))
                 } else {
@@ -323,18 +323,47 @@ class GTFSManager: ObservableObject {
                 return
             }
             let fileLines = fileString.components(separatedBy: "\n")
-            let limit = fileLines.count
+            let colTitles = fileLines[0].components(separatedBy: ",")
+            
+            var stopIdCol: Int?
+            var stopCodeCol: Int?
+            var stopNameCol: Int?
+            var stopLatCol: Int?
+            var stopLonCol: Int?
+            
+            for i in 0..<colTitles.count {
+                switch colTitles[i] {
+                case "stop_id":
+                    stopIdCol = i
+                case "stop_code":
+                    stopCodeCol = i
+                case "stop_name":
+                    stopNameCol = i
+                case "stop_lat":
+                    stopLatCol = i
+                case "stop_lon":
+                    stopLonCol = i
+                default:
+                    break
+                }
+            }
+            
+            guard let stopIdColumn = stopIdCol else {
+                completed(.failure(.invalidStopData(issue: "Missing stop_id column in stops.txt")))
+                return
+            }
+            
             var stops = [GTFSStop]()
             
-            for i in 1..<limit { // Don't want first (header) line
+            for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count > 7 else { break }
                 
-                let stopId = splitLine[0]
-                let stopCode = splitLine[1]
-                let stopName = splitLine[2]
-                let stopLat = Double(splitLine[6]) ?? 0.0
-                let stopLon = Double(splitLine[7]) ?? 0.0
+                let stopId = splitLine[stopIdColumn]
+                let stopCode = stopCodeCol == nil ? nil : splitLine[stopCodeCol!]
+                let stopName = stopNameCol == nil ? nil : splitLine[stopNameCol!]
+                let stopLat = stopLatCol == nil ? nil : Double(splitLine[stopLatCol!])
+                let stopLon = stopLonCol == nil ? nil : Double(splitLine[stopLonCol!])
                 
                 stops.append(GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon))
             }

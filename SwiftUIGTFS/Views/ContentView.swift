@@ -38,10 +38,10 @@ struct ContentView: View {
         ZStack {
             ZStack {
                 GeometryReader { geometry in
-                    GTFSShapes(shapes: self.gtfsManager.shapes, viewport: self.gtfsManager.viewport, scale: self.scale)
+                    GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
                     .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
-                    GTFSShape(shapePoints: self.gtfsManager.shapes["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                    GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                     
                     GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
@@ -92,7 +92,7 @@ struct ContentView: View {
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
-                        Text("Shape count: \(gtfsManager.shapes.count)")
+                        Text("Shape count: \(gtfsManager.shapeDictionary.count)")
                         Text("Stop count: \(gtfsManager.stops.count)")
                         Text("Scale: \(scale)")
                         Slider(value: $scale, in: minScale...maxScale)
@@ -127,10 +127,14 @@ struct GTFSStopShape: Shape {
             path.move(to: CGPoint(x: stop.stopLon, y: stop.stopLat))
             path.addEllipse(in: rect)
         }*/
-        guard let first = stops.first else { return path }
-        path.move(to: CGPoint(x: first.stopLon, y: first.stopLat))
+        guard let first = stops.first,
+            let firstStopLon = first.stopLon,
+            let firstStopLat = first.stopLat else { return path }
+        path.move(to: CGPoint(x: firstStopLon, y: firstStopLat))
         for stop in stops {
-            path.addLine(to: CGPoint(x: stop.stopLon, y: stop.stopLon))
+            guard let lon = stop.stopLon,
+                let lat = stop.stopLat else { break }
+            path.addLine(to: CGPoint(x: lon, y: lat))
         }
         
         let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)

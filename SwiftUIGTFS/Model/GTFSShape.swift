@@ -16,7 +16,7 @@ struct GTFSShapePoint {
 }
 
 extension GTFSShapePoint {
-    init(from entry: GTFSShapeEntry) {
+    init(from entry: GTFSShapePointRecord) {
         ptLat = entry.ptLat
         ptLon = entry.ptLon
         ptSequence = entry.ptSequence
@@ -24,7 +24,7 @@ extension GTFSShapePoint {
     }
 }
 
-struct GTFSShapeEntry: Identifiable {
+struct GTFSShapePointRecord: Identifiable {
     let id: String
     let ptLat: Double
     let ptLon: Double
