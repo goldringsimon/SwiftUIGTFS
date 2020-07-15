@@ -121,23 +121,38 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        loadTrips(from: tripsUrl) { [weak self] result in
+        /*loadTrips(from: tripsUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let trips):
                 DispatchQueue.main.async {
-                    self.trips = trips
-                    self.loadTripDictionary()
+         self.trips = trips
+         self.loadTripDictionary()
+         }
+         case .failure(let error):
+         print(error.localizedDescription)
+         }
+         }*/
+        
+        loadTripsPublisher(from: tripsUrl)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
+            }) { trips in
+                self.trips = trips
+                self.loadTripDictionary() // ToDo: Make this async work with a seperate bit of combine pipeline
         }
+        .store(in: &cancellables)
         
         /*loadShapes(from: shapesUrl) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let (shapes, viewport)):
+         guard let self = self else { return }
+         switch result {
+         case .success(let (shapes, viewport)):
                 DispatchQueue.main.async {
                     self.shapeDictionary = shapes
                     self.viewport = viewport
@@ -147,7 +162,21 @@ class GTFSManager: ObservableObject {
             }
         }*/
         
-        loadStops(from: stopsUrl) { [weak self] result in
+        loadStopsPublisher(from: stopsUrl)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }) { stops in
+                self.stops = stops
+        }
+        .store(in: &cancellables)
+        
+        /*loadStops(from: stopsUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let stops):
@@ -155,7 +184,7 @@ class GTFSManager: ObservableObject {
             case .failure(let error):
                 print(error.localizedDescription)
             }
-        }
+        }*/
     }
     
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError> {
