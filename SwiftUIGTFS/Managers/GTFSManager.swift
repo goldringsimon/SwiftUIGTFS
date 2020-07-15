@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 enum GTFSError: Error {
     case invalidRouteData(issue: String)
@@ -18,20 +19,38 @@ enum GTFSError: Error {
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
-    @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:]
     @Published var stops: [GTFSStop] = []
+    
+    @Published var tripDictionary: [String: [GTFSTrip]] = [:] // key is route Id
+    @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:] // key is shape Id
     
     @Published var viewport: CGRect = CGRect.zero
     
+    var cancellables = Set<AnyCancellable>()
+    
     init() {
         loadMbtaData()
+//        loadTripDictionary()
+    }
+    
+    private func loadTripDictionary() {
+        //DispatchQueue.global().async {
+            for trip in self.trips {
+                if let _ = self.tripDictionary[trip.routeId] {
+                    self.tripDictionary[trip.routeId]?.append(trip)
+                } else {
+                    self.tripDictionary[trip.routeId] = [trip]
+                }
+            }
+        //}
     }
     
     func getShapeId(for routeId: String) -> [GTFSShapePoint] {
         //let possibleRoutes = routes.filter({ $0.routeId == routeId })
         //guard let route = possibleRoutes.first else { return [] }
-        let routeTrips = trips.filter({ $0.routeId == routeId })
-        guard let firstTrip = routeTrips.first else { return [] }
+        //let routeTrips = trips.filter({ $0.routeId == routeId })
+        //guard let firstTrip = routeTrips.first else { return [] }
+        guard let firstTrip = tripDictionary[routeId]?.first else { return [] }
         guard let shapeId = firstTrip.shapeId else { return [] }
         return shapeDictionary[shapeId] ?? []
     }
@@ -53,7 +72,7 @@ class GTFSManager: ObservableObject {
                 return
         }
         
-        loadRoutes(from: routesUrl) { [weak self] result in
+        /*loadRoutes(from: routesUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let routes):
@@ -61,13 +80,31 @@ class GTFSManager: ObservableObject {
             case .failure(let error):
                 print(error.localizedDescription)
             }
-        }
+        }*/
+        
+        loadRoutesPublisher(from: routesUrl)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                    break
+                }
+            }, receiveValue: { routes in
+                self.routes = routes
+            })
+            .store(in: &cancellables)
         
         loadTrips(from: tripsUrl) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let trips):
-                DispatchQueue.main.async { self.trips = trips }
+                DispatchQueue.main.async {
+                    self.trips = trips
+                    self.loadTripDictionary()
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -93,6 +130,14 @@ class GTFSManager: ObservableObject {
                 DispatchQueue.main.async { self.stops = stops }
             case .failure(let error):
                 print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadRoutesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
+        return Future<[GTFSRoute], GTFSError> { promise in
+            return self.loadRoutes(from: fileUrl) { (result) in
+                promise(result)
             }
         }
     }

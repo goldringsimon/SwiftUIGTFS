@@ -41,6 +41,11 @@ struct ContentView: View {
                     GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
                     .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                     
+                    /*ForEach(self.gtfsManager.routes) { route in
+                        GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                        .stroke(Color.red, style: StrokeStyle(lineWidth: 1))
+                    }*/
+                    
                     GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                     
@@ -56,7 +61,7 @@ struct ContentView: View {
                     }*/
                 }
             }
-//            .drawingGroup()
+            .drawingGroup()
             .clipped()
             .edgesIgnoringSafeArea(.all)
             
@@ -112,7 +117,6 @@ struct UICard: ViewModifier {
         .background(Color(UIColor.secondarySystemBackground.withAlphaComponent(0.75)))
         .cornerRadius(8)
         .padding()
-        
     }
 }
 
