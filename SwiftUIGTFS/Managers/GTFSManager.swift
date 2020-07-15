@@ -37,11 +37,19 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadMbtaData() {
-        guard let routesUrl = Bundle.main.url(forResource: "mbtaRoutes", withExtension: "txt"),
-            let tripsUrl = Bundle.main.url(forResource: "mbtaTrips", withExtension: "txt"),
-            let shapesUrl = Bundle.main.url(forResource: "mbtaShapes", withExtension: "txt"),
-            let stopsUrl = Bundle.main.url(forResource: "mbtaStops", withExtension: "txt") else {
-                print("couldn't create an Url for MBTA data")
+        loadLocalData(stops: "mbtaStops", routes: "mbtaRoutes", trips: "mbtaTrips", shapes: "mbtaShapes")
+    }
+    
+    private func loadCtaData() {
+        loadLocalData(stops: "ctaStops", routes: "ctaRoutes", trips: "ctaTrips", shapes: "ctaShapes")
+    }
+    
+    private func loadLocalData(stops: String, routes: String, trips: String, shapes: String) {
+        guard let routesUrl = Bundle.main.url(forResource: routes, withExtension: "txt"),
+            let tripsUrl = Bundle.main.url(forResource: trips, withExtension: "txt"),
+            let shapesUrl = Bundle.main.url(forResource: shapes, withExtension: "txt"),
+            let stopsUrl = Bundle.main.url(forResource: stops, withExtension: "txt") else {
+                print("couldn't create an Url for local data")
                 return
         }
         
