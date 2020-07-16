@@ -32,6 +32,8 @@ class GTFSManager: ObservableObject {
     @Published var isFinishedLoadingShapes = false
     @Published var isFinishedLoadingStops = false
     
+    @Published var trainRoutes: [GTFSRoute] = []
+    
     private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
     
     var cancellables = Set<AnyCancellable>()
@@ -98,6 +100,15 @@ class GTFSManager: ObservableObject {
             .sink { (isFinishedLoadingRoutes, isFinishedLoadingTrips, isFinishedLoadingShapes, isFinishedLoadingStops) in
                 self.isFinishedLoading = isFinishedLoadingRoutes && isFinishedLoadingTrips && isFinishedLoadingShapes && isFinishedLoadingStops
         }
+        .store(in: &cancellables)
+        
+        $routes.map { (routes) -> [GTFSRoute] in
+            return routes.filter({
+                Int($0.routeType) ?? 4 < 3
+            })
+        }
+        .receive(on: RunLoop.main)
+        .assign(to: \.trainRoutes, on: self)
         .store(in: &cancellables)
         
         gtfsLoader.loadRoutesPublisher(from: routesUrl)

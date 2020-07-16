@@ -34,17 +34,36 @@ struct ContentView: View {
         return returnValue
     }
     
+    @State private var selectedRoutes = RoutesPicker.trainRoutes
+    
+    enum RoutesPicker {
+        case trainRoutes
+        case allShapes
+    }
+    
     var body: some View {
         ZStack {
+            
             ZStack {
                 GeometryReader { geometry in
-                    GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
-                    .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                    if self.selectedRoutes == RoutesPicker.allShapes {
+                        GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
+                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                        .animation(.easeInOut(duration: 5.0))
+                        .transition(.opacity)
+                    }
                     
                     /*ForEach(self.gtfsManager.routes) { route in
                         GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                         .stroke(Color.red, style: StrokeStyle(lineWidth: 1))
                     }*/
+                    
+                    if self.selectedRoutes == RoutesPicker.trainRoutes {
+                        ForEach(self.gtfsManager.trainRoutes) { route in
+                            GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                        }
+                    }
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
@@ -54,23 +73,27 @@ struct ContentView: View {
                 
                     /*ForEach(self.gtfsManager.stops) { stop in
 //                        Text(stop.stopName)
-                        Circle()
-                        .foregroundColor(.green)
-                        .frame(width: 5, height: 5)
-                            .position(CGPoint(x: stop.stopLon, y: stop.stopLat).applying(self.getTransformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)))
+                            Circle()
+                                .foregroundColor(.green)
+                                .frame(width: 5, height: 5)
+                                .position(CGPoint(x: stop.stopLon!, y: stop.stopLat!).applying(self.getTransformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)))
                     }*/
                 }
             }
-            .drawingGroup()
+//            .drawingGroup()
             .clipped()
             .edgesIgnoringSafeArea(.all)
             
-            VStack{
-                HStack {
-                    Spacer()
+            HStack {
+                Spacer()
+                VStack {
                     VStack{
+                        Picker("Routes:", selection: $selectedRoutes) {
+                            Text("Train Routes").tag(RoutesPicker.trainRoutes)
+                            Text("All Shapes").tag(RoutesPicker.allShapes)
+                            }.pickerStyle(SegmentedPickerStyle())
                         List{
-                            ForEach(gtfsManager.routes) { route in
+                            ForEach(gtfsManager.trainRoutes) { route in
                                 Button(action: {
                                     self.selectedRoute = route.routeId
                                 }, label: {
@@ -82,28 +105,21 @@ struct ContentView: View {
                     .padding()
                     .frame(width: 300, height: 400)
                     .modifier(UICard())
-                }
-                Spacer()
-                HStack{
                     Spacer()
-                    VStack{
-                        /*Picker("Route", selection: $selectedRoute) {
-                            /*ForEach(gtfsManager.routes, id:\.routeId) { route in
-                             Text(route.routeLongName).tag(route.routeId)
-                             }*/
-                            Text("Red").tag("Red")
-                            Text("Orange").tag("Orange")
-                        }.pickerStyle(SegmentedPickerStyle())*/
-                        Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
-                        Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
-                        Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
-                        Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
-                        Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
+                    VStack(alignment: .leading) {
+                        /*VStack(alignment: .leading) {
+                            Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
+                            Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
+                            Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
+                            Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
+                            Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
+                        }.font(Font.subheadline.lowercaseSmallCaps())*/
+                        
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
-                        //Text("Shape count: \(gtfsManager.shapeDictionary.count)")
-                        //Text("Stop count: \(gtfsManager.stops.count)")
+                        Text("Shape count: \(gtfsManager.shapeDictionary.count)")
+                        Text("Stop count: \(gtfsManager.stops.count)")
                         Text("Scale: \(scale)")
                         Slider(value: $scale, in: minScale...maxScale)
                     }
@@ -111,6 +127,27 @@ struct ContentView: View {
                     .frame(width: 300)
                     .modifier(UICard())
                 }
+            }
+            
+            if !gtfsManager.isFinishedLoading {
+                HStack {
+                    Spacer()
+                    VStack {
+                        Spacer()
+                        VStack(alignment: .leading) {
+                            Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
+                            Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
+                            Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
+                            Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
+                            Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
+                        }.font(Font.subheadline.lowercaseSmallCaps())
+                            .padding()
+                            .modifier(UICard())
+                        Spacer()
+                    }
+                    Spacer()
+                }.background(Color(UIColor.black.withAlphaComponent(0.8)))
+                    .edgesIgnoringSafeArea(.all)
             }
         }
     }
