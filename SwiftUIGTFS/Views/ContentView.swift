@@ -94,12 +94,16 @@ struct ContentView: View {
                             Text("Red").tag("Red")
                             Text("Orange").tag("Orange")
                         }.pickerStyle(SegmentedPickerStyle())*/
-                        Text("Finished Loading: \(String(gtfsManager.isFinishedLoading))")
+                        Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
+                        Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
+                        Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
+                        Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
+                        Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
-                        Text("Shape count: \(gtfsManager.shapeDictionary.count)")
-                        Text("Stop count: \(gtfsManager.stops.count)")
+                        //Text("Shape count: \(gtfsManager.shapeDictionary.count)")
+                        //Text("Stop count: \(gtfsManager.stops.count)")
                         Text("Scale: \(scale)")
                         Slider(value: $scale, in: minScale...maxScale)
                     }
@@ -148,7 +152,7 @@ struct GTFSStopShape: Shape {
 }
 
 struct GTFSShape: Shape {
-    var shapePoints: [GTFSShapePoint]
+    var shapePoints: [GTFSShapePointRecord]
     var viewport: CGRect
     var scale: CGFloat
     
@@ -166,7 +170,7 @@ struct GTFSShape: Shape {
 }
 
 struct GTFSShapes: Shape {
-    var shapes: [String: [GTFSShapePoint]]
+    var shapes: [String: [GTFSShapePointRecord]]
     var viewport: CGRect
     var scale: CGFloat
     

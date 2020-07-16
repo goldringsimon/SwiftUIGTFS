@@ -12,7 +12,8 @@ import Combine
 protocol GTFSLoader {
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError>
     func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError>
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError>
+//    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError>
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePointRecord], CGRect), GTFSError>
     func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError>
 }
 
@@ -208,15 +209,15 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError> {
-        return Future<([String: [GTFSShapePoint]], CGRect), GTFSError> { promise in
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePointRecord], CGRect), GTFSError> {
+        return Future<([GTFSShapePointRecord], CGRect), GTFSError> { promise in
             return self.loadShapes(from: fileUrl) { (result) in
                 promise(result)
             }
         }.eraseToAnyPublisher()
     }
     
-    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([String: [GTFSShapePoint]], CGRect), GTFSError>) -> Void) {
+    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([GTFSShapePointRecord], CGRect), GTFSError>) -> Void) {
         DispatchQueue.global().async {
             var shapePoints: [GTFSShapePointRecord] = []
             
@@ -293,23 +294,13 @@ class SimpleGTFSLoader: GTFSLoader {
                 if maxLon == nil || ptLon > maxLon! { maxLon = ptLon }
             }
             
-            var shapeDictionary = [String: [GTFSShapePoint]]()
-            
-            for entry in shapePoints {
-                if let _ = shapeDictionary[entry.id] {
-                    shapeDictionary[entry.id]?.append(GTFSShapePoint(from: entry))
-                } else {
-                    shapeDictionary[entry.id] = [GTFSShapePoint(from: entry)]
-                }
-            }
-            
             guard minLat != nil,
             maxLat != nil,
             minLon != nil,
             maxLon != nil else { return }
             
             let viewport = CGRect(x: minLon!, y: minLat!, width: maxLon! - minLon!, height: maxLat! - minLat!)
-            completed(.success((shapeDictionary, viewport)))
+            completed(.success((shapePoints, viewport)))
         }
     }
     
