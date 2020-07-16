@@ -24,6 +24,7 @@
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
 		F49DE61224BF11210099A46A /* ctaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60E24BF11210099A46A /* ctaStops.txt */; };
+		F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */; };
 		F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */; };
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
@@ -48,6 +49,7 @@
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
 		F49DE60E24BF11210099A46A /* ctaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaStops.txt; sourceTree = "<group>"; };
+		F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleGTFSLoader.swift; sourceTree = "<group>"; };
 		F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSStop.swift; sourceTree = "<group>"; };
 		F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaStops.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
+				F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShape.swift in Sources */,
