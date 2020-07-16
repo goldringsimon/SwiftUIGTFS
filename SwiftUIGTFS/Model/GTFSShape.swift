@@ -8,24 +8,9 @@
 
 import Foundation
 
-struct GTFSShapePoint {
-    let ptLat: Double
-    let ptLon: Double
-    let ptSequence: Int
-    let distTraveled: Float?
-}
-
-extension GTFSShapePoint {
-    init(from entry: GTFSShapePointRecord) {
-        ptLat = entry.ptLat
-        ptLon = entry.ptLon
-        ptSequence = entry.ptSequence
-        distTraveled = entry.distTraveled
-    }
-}
-
-struct GTFSShapePointRecord: Identifiable {
-    let id: String
+struct GTFSShapePoint: Identifiable {
+    var id: String { return shapeId}
+    let shapeId: String
     let ptLat: Double
     let ptLon: Double
     let ptSequence: Int

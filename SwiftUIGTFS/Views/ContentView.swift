@@ -152,7 +152,7 @@ struct GTFSStopShape: Shape {
 }
 
 struct GTFSShape: Shape {
-    var shapePoints: [GTFSShapePointRecord]
+    var shapePoints: [GTFSShapePoint]
     var viewport: CGRect
     var scale: CGFloat
     
@@ -170,7 +170,7 @@ struct GTFSShape: Shape {
 }
 
 struct GTFSShapes: Shape {
-    var shapes: [String: [GTFSShapePointRecord]]
+    var shapes: [String: [GTFSShapePoint]]
     var viewport: CGRect
     var scale: CGFloat
     

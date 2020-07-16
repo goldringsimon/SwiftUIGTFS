@@ -13,7 +13,7 @@ protocol GTFSLoader {
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError>
     func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError>
 //    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError>
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePointRecord], CGRect), GTFSError>
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError>
     func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError>
 }
 
@@ -209,17 +209,17 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePointRecord], CGRect), GTFSError> {
-        return Future<([GTFSShapePointRecord], CGRect), GTFSError> { promise in
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError> {
+        return Future<([GTFSShapePoint], CGRect), GTFSError> { promise in
             return self.loadShapes(from: fileUrl) { (result) in
                 promise(result)
             }
         }.eraseToAnyPublisher()
     }
     
-    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([GTFSShapePointRecord], CGRect), GTFSError>) -> Void) {
+    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([GTFSShapePoint], CGRect), GTFSError>) -> Void) {
         DispatchQueue.global().async {
-            var shapePoints: [GTFSShapePointRecord] = []
+            var shapePoints: [GTFSShapePoint] = []
             
             guard let fileString = try? String(contentsOf: fileUrl) else {
                 completed(.failure(.invalidShapeData(issue: "Couldn't read shapes.txt as string")))
@@ -281,12 +281,12 @@ class SimpleGTFSLoader: GTFSLoader {
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count > 4 else { break }
                 
-                let id = splitLine[shapeIdColumn]
+                let shapeId = splitLine[shapeIdColumn]
                 guard let ptLat = Double(splitLine[shapePtLatColumn]) else { break }
                 guard let ptLon = Double(splitLine[shapePtLonColumn]) else { break }
                 guard let ptSequence = Int(splitLine[shapePtSequenceColumn]) else { break }
                 let distTraveled = shapeDistTravelledCol == nil ? nil : Float(splitLine[shapeDistTravelledCol!])
-                shapePoints.append(GTFSShapePointRecord(id: id, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
+                shapePoints.append(GTFSShapePoint(shapeId: shapeId, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
                 
                 if minLat == nil || ptLat < minLat! { minLat = ptLat }
                 if maxLat == nil || ptLat > maxLat! { maxLat = ptLat }
