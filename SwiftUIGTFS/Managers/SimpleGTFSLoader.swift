@@ -34,7 +34,19 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
-            let colTitles = fileLines[0].components(separatedBy: ",")
+            //let colTitles = fileLines[0].components(separatedBy: ",")
+            
+            guard let regex = try? NSRegularExpression(pattern: """
+(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
+""", options: []) else {
+                print("failed creating regex")
+                completed(.failure(.invalidRouteData(issue: "Couldn't init RegExp")))
+                return
+            }
+            let range = NSRange(fileLines[0].startIndex..<fileLines[0].endIndex, in: fileLines[0])
+            let colTitles = regex.matches(in: fileLines[0], options: [], range: range).map { (result) -> String in
+                return String(fileLines[0][Range(result.range(at: 1), in: fileLines[0])!])
+            }
             
             var routeIdCol: Int?
             var agencyIdCol: Int?
@@ -101,7 +113,12 @@ class SimpleGTFSLoader: GTFSLoader {
             var routes = [GTFSRoute]()
             
             for i in 1..<fileLines.count { // Don't want first (header) line
-                let splitLine = fileLines[i].components(separatedBy: ",")
+                let currentLine = fileLines[i]
+                //let splitLine = fileLines[i].components(separatedBy: ",")
+                let range = NSRange(currentLine.startIndex..<fileLines[i].endIndex, in: currentLine)
+                let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
+                    return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
+                }
                 guard splitLine.count == colTitles.count else { break }
                 
                 let routeId = splitLine[routeIdColumn] // GTFS required field, non-optional
@@ -353,8 +370,8 @@ class SimpleGTFSLoader: GTFSLoader {
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
                 guard splitLine.count == colTitles.count else {
-                    print("This line didn't have the same number of columns as the header row:")
-                    print(fileLines[i])
+                    //print("This line didn't have the same number of columns as the header row:")
+                    //print(fileLines[i])
                     continue
                 }
                 

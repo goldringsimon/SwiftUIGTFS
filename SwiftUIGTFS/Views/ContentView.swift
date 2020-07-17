@@ -69,6 +69,8 @@ struct ContentView: View {
     @State private var selectedRoutes = RoutesPicker.trainRoutes
     @State private var isDisplayingRouteColors = false
     
+//    @State var displayedRoutes: [GTFSRoute] = gtfsManager.trainRoutes
+    
     enum RoutesPicker {
         case trainRoutes
         case allShapes
@@ -76,9 +78,18 @@ struct ContentView: View {
     
     private func getDisplayColor(for route: GTFSRoute) -> Color {
         if isDisplayingRouteColors {
-            return Color(UIColor(gtfsHex: route.routeColor ?? "") ?? .systemFill)
+            return Color(UIColor(gtfsHex: route.routeColor ?? "") ?? UIColor.systemFill)
         } else {
             return Color(UIColor.systemFill)
+        }
+    }
+    
+    private func getDisplayedRoutes() -> [GTFSRoute] {
+        switch selectedRoutes {
+        case .allShapes:
+            return gtfsManager.routes
+        case .trainRoutes:
+            return gtfsManager.trainRoutes
         }
     }
     
@@ -87,9 +98,9 @@ struct ContentView: View {
             
             ZStack {
                 GeometryReader { geometry in
-                    if self.selectedRoutes == RoutesPicker.allShapes {
+                    /*if self.selectedRoutes == RoutesPicker.allShapes {
                         GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
-                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                            .stroke(Color(.systemFill), style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
                         .animation(.easeInOut(duration: 5.0))
                         .transition(.opacity)
                     }
@@ -101,32 +112,22 @@ struct ContentView: View {
                     
                     if self.selectedRoutes == RoutesPicker.trainRoutes {
                         ForEach(self.gtfsManager.trainRoutes) { route in
-                            GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                        
+                            /*GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
                             
-                            /*GTFSShape(shapePoints: self.gtfsManager.getAllShapesForRoute(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))*/
+                            ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
+                                GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                            }
+                        }
+                    }*/
+                    
+                    ForEach(self.getDisplayedRoutes()) { route in
+                        ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
+                            GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                            .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                         }
                     }
-                    
-                    /*GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
-                    
-                    /*if (self.isDisplayingRouteColors) {
-                        GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                            .stroke(Color.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                        
-                            .transition(.slide)
-                    }*/
-                
-                    /*ForEach(self.gtfsManager.stops) { stop in
-//                        Text(stop.stopName)
-                            Circle()
-                                .foregroundColor(.green)
-                                .frame(width: 5, height: 5)
-                                .position(CGPoint(x: stop.stopLon!, y: stop.stopLat!).applying(self.getTransformViewportToScreen(from: self.gtfsManager.viewport, to: geometry.size)))
-                    }*/
                 }
             }
 //            .drawingGroup()
@@ -163,14 +164,6 @@ struct ContentView: View {
                     .modifier(UICard())
                     Spacer()
                     VStack(alignment: .leading) {
-                        /*VStack(alignment: .leading) {
-                            Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
-                            Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
-                            Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
-                            Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
-                            Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
-                        }.font(Font.subheadline.lowercaseSmallCaps())*/
-                        
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
