@@ -12,7 +12,6 @@ import Combine
 protocol GTFSLoader {
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError>
     func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError>
-//    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([String: [GTFSShapePoint]], CGRect), GTFSError>
     func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError>
     func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError>
 }
@@ -353,7 +352,11 @@ class SimpleGTFSLoader: GTFSLoader {
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count == colTitles.count else { break }
+                guard splitLine.count == colTitles.count else {
+                    print("This line didn't have the same number of columns as the header row:")
+                    print(fileLines[i])
+                    continue
+                }
                 
                 let stopId = splitLine[stopIdColumn]
                 let stopCode = stopCodeCol == nil ? nil : splitLine[stopCodeCol!]
@@ -361,7 +364,10 @@ class SimpleGTFSLoader: GTFSLoader {
                 let stopLat = stopLatCol == nil ? nil : Double(splitLine[stopLatCol!])
                 let stopLon = stopLonCol == nil ? nil : Double(splitLine[stopLonCol!])
                 
-                stops.append(GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon))
+                //print("appending stop")
+                let stop = GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon)
+                //print(stop)
+                stops.append(stop)
             }
             
             completed(.success(stops))

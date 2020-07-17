@@ -48,6 +48,23 @@ class GTFSManager: ObservableObject {
         return shapeDictionary[shapeId] ?? []
     }
     
+    func getAllTrips(for routeId: String) -> [GTFSTrip] {
+        return tripDictionary[routeId] ?? []
+    }
+    
+    func getAllShapes(for tripId: String) -> [GTFSShapePoint] {
+        return shapeDictionary[tripId] ?? []
+    }
+    
+    func getAllShapesForRoute(for routeId: String) -> [GTFSShapePoint] {
+        var returnValue = [GTFSShapePoint]()
+        for trip in getAllTrips(for: routeId) {
+            guard let shapeId = trip.shapeId else { break }
+            returnValue += getAllShapes(for: shapeId)
+        }
+        return returnValue
+    }
+    
     private func loadMbtaData() {
         loadLocalData(routes: "mbtaRoutes", trips: "mbtaTrips", shapes: "mbtaShapes", stops: "mbtaStops")
     }

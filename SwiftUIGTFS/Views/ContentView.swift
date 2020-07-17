@@ -35,6 +35,7 @@ struct ContentView: View {
     }
     
     @State private var selectedRoutes = RoutesPicker.trainRoutes
+    @State private var toggled = false
     
     enum RoutesPicker {
         case trainRoutes
@@ -62,14 +63,22 @@ struct ContentView: View {
                         ForEach(self.gtfsManager.trainRoutes) { route in
                             GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                             .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                        
+                            
+                            /*GTFSShape(shapePoints: self.gtfsManager.getAllShapesForRoute(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))*/
                         }
                     }
                     
                     GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                     .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                     
-                    GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                    .stroke(Color.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                    if (self.toggled) {
+                        GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                            .stroke(Color.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                        
+                            .transition(.slide)
+                    }
                 
                     /*ForEach(self.gtfsManager.stops) { stop in
 //                        Text(stop.stopName)
@@ -88,6 +97,13 @@ struct ContentView: View {
                 Spacer()
                 VStack {
                     VStack{
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 1.0)) {
+                                self.toggled.toggle()
+                            }
+                        }, label: {
+                            Text("Toggle colour")
+                        })
                         Picker("Routes:", selection: $selectedRoutes) {
                             Text("Train Routes").tag(RoutesPicker.trainRoutes)
                             Text("All Shapes").tag(RoutesPicker.allShapes)
@@ -214,7 +230,7 @@ struct GTFSShapes: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         
-        for (id, shapePoints) in shapes {
+        for (_, shapePoints) in shapes {
             guard let first = shapePoints.first else { break }
             path.move(to: CGPoint(x: first.ptLon, y: first.ptLat))
             for point in shapePoints {
