@@ -40,7 +40,7 @@ class GTFSManager: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     
     init() {
-        loadCtaData()
+        loadMbtaData()
     }
     
     func getShapeId(for routeId: String) -> [GTFSShapePoint] {
@@ -98,51 +98,25 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {
-        $routes
-            .receive(on: RunLoop.main)
-            .sink { routes in
-                self.isFinishedLoadingRoutes = !routes.isEmpty
-        }
-        .store(in: &cancellables)
+        let loadRoutesPublisher = gtfsLoader.loadRoutesPublisher(from: routesUrl)
         
-        $tripDictionary
-            .receive(on: RunLoop.main)
-            .sink { dict in
-                self.isFinishedLoadingTrips = !dict.isEmpty
-        }
-        .store(in: &cancellables)
-        
-        $shapes
-            .receive(on: RunLoop.main)
-            .sink { shapes in
-                self.isFinishedLoadingShapes = !shapes.isEmpty
-        }
-        .store(in: &cancellables)
-        
-        $stops
-            .receive(on: RunLoop.main)
-            .sink { stops in
-                self.isFinishedLoadingStops = !stops.isEmpty
-        }
-        .store(in: &cancellables)
-        
-        Publishers.CombineLatest4($isFinishedLoadingRoutes, $isFinishedLoadingTrips, $isFinishedLoadingShapes, $isFinishedLoadingStops)
-            .sink { (isFinishedLoadingRoutes, isFinishedLoadingTrips, isFinishedLoadingShapes, isFinishedLoadingStops) in
-                self.isFinishedLoading = isFinishedLoadingRoutes && isFinishedLoadingTrips && isFinishedLoadingShapes && isFinishedLoadingStops
-        }
-        .store(in: &cancellables)
-        
-        $routes.map { (routes) -> [GTFSRoute] in
+        loadRoutesPublisher
+            .map { (routes) -> [GTFSRoute] in
             return routes.filter({
                 Int($0.routeType) ?? 4 < 3
             })
         }
         .receive(on: RunLoop.main)
-        .assign(to: \.trainRoutes, on: self)
+        //.assign(to: \.trainRoutes, on: self)
+            .sink(receiveCompletion: { (completion) in
+                
+            }, receiveValue: { (trainRoutes) in
+                self.trainRoutes = trainRoutes
+            })
         .store(in: &cancellables)
-        
-        var loadRoutesPublisher = gtfsLoader.loadRoutesPublisher(from: routesUrl)
-        /*.receive(on: RunLoop.main)
+            
+        loadRoutesPublisher
+        .receive(on: RunLoop.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -152,15 +126,18 @@ class GTFSManager: ObservableObject {
             }
         }) { routes in
             self.routes = routes
-        }*/
-        //.store(in: &cancellables)
+            self.isFinishedLoadingRoutes = true
+        }
+        .store(in: &cancellables)
         
-        var loadTripsPublisher = gtfsLoader.loadTripsPublisher(from: tripsUrl)
+        let loadTripsPublisher = gtfsLoader.loadTripsPublisher(from: tripsUrl)
             .map { (trips) -> ([GTFSTrip], [String: [GTFSTrip]]) in
                 let dictionary = Dictionary(grouping: trips, by: { $0.routeId })
                 return (trips, dictionary)
-        }
-        /*.receive(on: RunLoop.main)
+            }
+            
+        loadTripsPublisher
+        .receive(on: RunLoop.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -171,15 +148,18 @@ class GTFSManager: ObservableObject {
         }) { (trips, tripDictionary) in
             self.trips = trips
             self.tripDictionary = tripDictionary
-        }*/
-        //.store(in: &cancellables)
+            self.isFinishedLoadingTrips = true
+        }
+        .store(in: &cancellables)
         
-        var loadShapesPublisher = gtfsLoader.loadShapesPublisher(from: shapesUrl)
+        let loadShapesPublisher = gtfsLoader.loadShapesPublisher(from: shapesUrl)
             .map { (shapes, viewport) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
                 let dictionary = Dictionary(grouping: shapes, by: { $0.shapeId })
                 return (shapes, dictionary, viewport)
         }
-        /*.receive(on: RunLoop.main)
+            
+        loadShapesPublisher
+        .receive(on: RunLoop.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -191,11 +171,14 @@ class GTFSManager: ObservableObject {
             self.shapes = shapes
             self.shapeDictionary = shapeDictionary
             self.viewport = viewport
-        }*/
-        //.store(in: &cancellables)
+            self.isFinishedLoadingShapes = true
+        }
+        .store(in: &cancellables)
         
-        var loadStopsPublisher = gtfsLoader.loadStopsPublisher(from: stopsUrl)
-        /*.receive(on: RunLoop.main)
+        let loadStopsPublisher = gtfsLoader.loadStopsPublisher(from: stopsUrl)
+        
+        loadStopsPublisher
+        .receive(on: RunLoop.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -205,11 +188,11 @@ class GTFSManager: ObservableObject {
             }
         }) { stops in
             self.stops = stops
-        }*/
-        //.store(in: &cancellables)
+            self.isFinishedLoadingStops = true
+        }
+        .store(in: &cancellables)
         
-        Publishers.Zip4(loadRoutesPublisher, loadTripsPublisher, loadShapesPublisher, loadStopsPublisher)
-            .receive(on: RunLoop.main)
+        Publishers.Zip4(loadRoutesPublisher, loadTripsPublisher, loadShapesPublisher, loadStopsPublisher) // TODO only zip necessary publishers for this processing
         .receive(on: RunLoop.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
@@ -219,18 +202,10 @@ class GTFSManager: ObservableObject {
                 print(error.localizedDescription)
             }
         }) { (routes, tripsArg, shapesArg, stops) in
-            self.routes = routes
-            
             let (trips, tripDictionary) = tripsArg
-            self.trips = trips
-            self.tripDictionary = tripDictionary
-            
             let (shapes, shapeDictionary, viewport) = shapesArg
-            self.shapes = shapes
-            self.shapeDictionary = shapeDictionary
-            self.viewport = viewport
             
-            //Processing work here for now
+            //Processing work here for now // TODO this is odd to reference properties and methods of self not the closure arguments
             for route in routes {
                 var shapeIds = Set<String>()
                 for trip in self.getAllTrips(for: route.routeId) {
@@ -239,9 +214,8 @@ class GTFSManager: ObservableObject {
                 }
                 self.routeToShapeDictionary[route.routeId] = Array(shapeIds)
             }
-            print(self.routeToShapeDictionary)
             
-            self.stops = stops
+            self.isFinishedLoading = true
         }
         .store(in: &cancellables)
     }

@@ -335,7 +335,20 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             let fileLines = fileString.components(separatedBy: "\n")
-            let colTitles = fileLines[0].components(separatedBy: ",")
+            let headerLine = fileLines[0]
+            //let colTitles = fileLines[0].components(separatedBy: ",")
+            
+            guard let regex = try? NSRegularExpression(pattern: """
+(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
+""", options: []) else {
+                print("failed creating regex")
+                completed(.failure(.invalidStopData(issue: "Couldn't init RegExp")))
+                return
+            }
+            let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
+            let colTitles = regex.matches(in: headerLine, options: [], range: range).map { (result) -> String in
+                return String(headerLine[Range(result.range(at: 1), in: headerLine)!])
+            }
             
             var stopIdCol: Int?
             var stopCodeCol: Int?
@@ -368,10 +381,15 @@ class SimpleGTFSLoader: GTFSLoader {
             var stops = [GTFSStop]()
             
             for i in 1..<fileLines.count { // Don't want first (header) line
-                let splitLine = fileLines[i].components(separatedBy: ",")
+                let currentLine = fileLines[i]
+                //let splitLine = currentLine.components(separatedBy: ",")
+                let range = NSRange(currentLine.startIndex..<currentLine.endIndex, in: currentLine)
+                let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
+                    return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
+                }
                 guard splitLine.count == colTitles.count else {
-                    //print("This line didn't have the same number of columns as the header row:")
-                    //print(fileLines[i])
+                    print("This line didn't have the same number of columns as the header row:")
+                    print(fileLines[i])
                     continue
                 }
                 
