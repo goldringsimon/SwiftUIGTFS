@@ -8,6 +8,38 @@
 
 import SwiftUI
 
+extension UIColor {
+    public convenience init?(hex: String) {
+        let r, g, b, a: CGFloat
+
+        if hex.hasPrefix("#") {
+            let start = hex.index(hex.startIndex, offsetBy: 1)
+            let hexColor = String(hex[start...])
+
+            if hexColor.count == 8 {
+                let scanner = Scanner(string: hexColor)
+                var hexNumber: UInt64 = 0
+
+                if scanner.scanHexInt64(&hexNumber) {
+                    r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
+                    g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
+                    b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
+                    a = CGFloat(hexNumber & 0x000000ff) / 255
+
+                    self.init(red: r, green: g, blue: b, alpha: a)
+                    return
+                }
+            }
+        }
+
+        return nil
+    }
+    
+    public convenience init?(gtfsHex: String) {
+        self.init(hex: "#" + gtfsHex + "FF")
+    }
+}
+
 extension Shape {
     func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
@@ -35,11 +67,19 @@ struct ContentView: View {
     }
     
     @State private var selectedRoutes = RoutesPicker.trainRoutes
-    @State private var toggled = false
+    @State private var isDisplayingRouteColors = false
     
     enum RoutesPicker {
         case trainRoutes
         case allShapes
+    }
+    
+    private func getDisplayColor(for route: GTFSRoute) -> Color {
+        if isDisplayingRouteColors {
+            return Color(UIColor(gtfsHex: route.routeColor ?? "") ?? .systemFill)
+        } else {
+            return Color(UIColor.systemFill)
+        }
     }
     
     var body: some View {
@@ -62,7 +102,7 @@ struct ContentView: View {
                     if self.selectedRoutes == RoutesPicker.trainRoutes {
                         ForEach(self.gtfsManager.trainRoutes) { route in
                             GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                            .stroke(Color.red, style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                         
                             
                             /*GTFSShape(shapePoints: self.gtfsManager.getAllShapesForRoute(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
@@ -70,15 +110,15 @@ struct ContentView: View {
                         }
                     }
                     
-                    GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    /*GTFSShape(shapePoints: self.gtfsManager.shapeDictionary["9890009"] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
                     
-                    if (self.toggled) {
+                    /*if (self.isDisplayingRouteColors) {
                         GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: self.selectedRoute), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                             .stroke(Color.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
                         
                             .transition(.slide)
-                    }
+                    }*/
                 
                     /*ForEach(self.gtfsManager.stops) { stop in
 //                        Text(stop.stopName)
@@ -99,10 +139,10 @@ struct ContentView: View {
                     VStack{
                         Button(action: {
                             withAnimation(.easeInOut(duration: 1.0)) {
-                                self.toggled.toggle()
+                                self.isDisplayingRouteColors.toggle()
                             }
                         }, label: {
-                            Text("Toggle colour")
+                            Text("Toggle route colours")
                         })
                         Picker("Routes:", selection: $selectedRoutes) {
                             Text("Train Routes").tag(RoutesPicker.trainRoutes)
