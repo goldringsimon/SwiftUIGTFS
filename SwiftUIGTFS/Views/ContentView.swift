@@ -186,39 +186,34 @@ struct ContentView: View {
                     VStack {
                         Spacer()
                         VStack(alignment: .leading) {
-                            HStack {
-                                Text("Loading routes...")
-                                Spacer()
-                                Image(systemName: "checkmark.circle")
-                                .opacity(gtfsManager.isFinishedLoadingRoutes ? 1 : 0)
-                            }
-                            HStack {
-                                Text("Loading trips...")
-                                Spacer()
-                                Image(systemName: "checkmark.circle")
-                                .opacity(gtfsManager.isFinishedLoadingTrips ? 1 : 0)
-                            }
-                            HStack {
-                                Text("Loading shapes...")
-                                Spacer()
-                                Image(systemName: "checkmark.circle")
-                                    .opacity(gtfsManager.isFinishedLoadingShapes ? 1 : 0)
-                            }
-                            HStack {
-                                Text("Loading stops...")
-                                Spacer()
-                                Image(systemName: "checkmark.circle")
-                                    .opacity(gtfsManager.isFinishedLoadingStops ? 1 : 0)
-                            }
+                            LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
+                            LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
+                            LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
+                            LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
                         }.font(Font.subheadline.lowercaseSmallCaps())
                             .padding()
                             .modifier(UICard())
                             .frame(width: 400)
                         Spacer()
                     }
+                    .animation(.easeIn)
                     Spacer()
                 }
             }
+        }
+    }
+}
+
+struct LoadingRow: View {
+    var description: String
+    @Binding var isFinished: Bool
+    
+    var body: some View {
+        HStack {
+            Text(description)
+            Spacer()
+            Image(systemName: "checkmark.circle")
+            .opacity(isFinished ? 1 : 0)
         }
     }
 }
