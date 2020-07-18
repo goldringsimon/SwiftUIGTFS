@@ -11,27 +11,27 @@ import SwiftUI
 extension UIColor {
     public convenience init?(hex: String) {
         let r, g, b, a: CGFloat
-
+        
         if hex.hasPrefix("#") {
             let start = hex.index(hex.startIndex, offsetBy: 1)
             let hexColor = String(hex[start...])
-
+            
             if hexColor.count == 8 {
                 let scanner = Scanner(string: hexColor)
                 var hexNumber: UInt64 = 0
-
+                
                 if scanner.scanHexInt64(&hexNumber) {
                     r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
                     g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
                     b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
                     a = CGFloat(hexNumber & 0x000000ff) / 255
-
+                    
                     self.init(red: r, green: g, blue: b, alpha: a)
                     return
                 }
             }
         }
-
+        
         return nil
     }
     
@@ -44,9 +44,9 @@ extension Shape {
     func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
         let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-        .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width)) // The negative sign for the y-coordinate is slight voodoo to fix SwiftUI's coordinate system starting in the lower left corner, not the top right
-        .scaledBy(x: scale, y: scale)
-        .translatedBy(x: -viewport.midX, y: -viewport.midY)
+            .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width)) // The negative sign for the y-coordinate is slight voodoo to fix SwiftUI's coordinate system starting in the lower left corner, not the top right
+            .scaledBy(x: scale, y: scale)
+            .translatedBy(x: -viewport.midX, y: -viewport.midY)
         return self.transform(transform)
     }
 }
@@ -60,21 +60,13 @@ struct ContentView: View {
     
     func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
         let returnValue = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-        .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width))
-        .scaledBy(x: scale, y: scale)
-        .translatedBy(x: -viewport.midX, y: -viewport.midY)
+            .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width))
+            .scaledBy(x: scale, y: scale)
+            .translatedBy(x: -viewport.midX, y: -viewport.midY)
         return returnValue
     }
     
-    @State private var selectedRoutes = RoutesPicker.trainRoutes
     @State private var isDisplayingRouteColors = false
-    
-//    @State var displayedRoutes: [GTFSRoute] = gtfsManager.trainRoutes
-    
-    enum RoutesPicker {
-        case trainRoutes
-        case allShapes
-    }
     
     private func getDisplayColor(for route: GTFSRoute) -> Color {
         if isDisplayingRouteColors {
@@ -84,60 +76,55 @@ struct ContentView: View {
         }
     }
     
-    private func getDisplayedRoutes() -> [GTFSRoute] {
-        switch selectedRoutes {
-        case .allShapes:
-            return gtfsManager.routes
-        case .trainRoutes:
-            return gtfsManager.trainRoutes
-        }
-    }
-    
     var body: some View {
         ZStack {
-            
-            ZStack {
-                GeometryReader { geometry in
-                    /*if self.selectedRoutes == RoutesPicker.allShapes {
-                        GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
-                            .stroke(Color(.systemFill), style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-                        .animation(.easeInOut(duration: 5.0))
-                        .transition(.opacity)
-                    }
-                    
-                    /*ForEach(self.gtfsManager.routes) { route in
-                        GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                        .stroke(Color.red, style: StrokeStyle(lineWidth: 1))
-                    }*/
-                    
-                    if self.selectedRoutes == RoutesPicker.trainRoutes {
-                        ForEach(self.gtfsManager.trainRoutes) { route in
-                            /*GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
-                            
-                            ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
-                                GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                                .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                            }
-                        }
-                    }*/
-                    
-                    ForEach(self.getDisplayedRoutes()) { route in
-                        ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
-                            GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+            GeometryReader { geometry in
+                /*if self.selectedRoutes == RoutesPicker.allShapes {
+                 GTFSShapes(shapes: self.gtfsManager.shapeDictionary, viewport: self.gtfsManager.viewport, scale: self.scale)
+                 .stroke(Color(.systemFill), style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                 .animation(.easeInOut(duration: 5.0))
+                 .transition(.opacity)
+                 }
+                 
+                 /*ForEach(self.gtfsManager.routes) { route in
+                 GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                 .stroke(Color.red, style: StrokeStyle(lineWidth: 1))
+                 }*/
+                 
+                 if self.selectedRoutes == RoutesPicker.trainRoutes {
+                 ForEach(self.gtfsManager.trainRoutes) { route in
+                 /*GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
+                 
+                 ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
+                 GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                 }
+                 }
+                 }*/
+                
+                ForEach(self.gtfsManager.displayedRoutes) { route in
+                    ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
+                        GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
                             .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                        }
                     }
                 }
+                
+                /*ForEach(self.getDisplayedRoutes()) { route in
+                 ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
+                 GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                 }
+                 }*/
             }
-//            .drawingGroup()
-            .clipped()
-            .edgesIgnoringSafeArea(.all)
+                //            .drawingGroup()
+                .clipped()
+                .edgesIgnoringSafeArea(.all)
             
             HStack {
                 Spacer()
                 VStack {
-                    VStack{
+                    VStack(alignment: .leading){
                         Button(action: {
                             withAnimation(.easeInOut(duration: 1.0)) {
                                 self.isDisplayingRouteColors.toggle()
@@ -145,28 +132,67 @@ struct ContentView: View {
                         }, label: {
                             Text("Toggle route colours")
                         })
-                        Picker("Routes:", selection: $selectedRoutes) {
-                            Text("Train Routes").tag(RoutesPicker.trainRoutes)
-                            Text("All Shapes").tag(RoutesPicker.allShapes)
+                        /*List{
+                         ForEach(gtfsManager.trainRoutes) { route in
+                         Button(action: {
+                         self.selectedRoute = route.routeId
+                         }, label: {
+                         Text(route.routeLongName ?? "").tag(route.routeId)
+                         })
+                         }
+                         }*/
+                        HStack{
+                            Text("Enable route colours:")
+                            Spacer()
+                            Picker("Route colours:", selection: $isDisplayingRouteColors) {
+                                Text("Off").tag(false)
+                                Text("On").tag(true)
                             }.pickerStyle(SegmentedPickerStyle())
-                        List{
-                            ForEach(gtfsManager.trainRoutes) { route in
-                                Button(action: {
-                                    self.selectedRoute = route.routeId
-                                }, label: {
-                                    Text(route.routeLongName ?? "").tag(route.routeId)
-                                })
-                            }
                         }
+                        Divider()
+                        HStack{
+                            Text("Display trams:")
+                            Spacer()
+                            Picker("Tram routes:", selection: $gtfsManager.displayTrams) {
+                                Text("Off").tag(false)
+                                Text("On").tag(true)
+                            }.pickerStyle(SegmentedPickerStyle())
+                        }
+                        HStack{
+                            Text("Display metro:")
+                            Spacer()
+                            Picker("Metro routes:", selection: $gtfsManager.displayMetro) {
+                                Text("Off").tag(false)
+                                Text("On").tag(true)
+                            }.pickerStyle(SegmentedPickerStyle())
+                        }
+                        HStack{
+                            Text("Display rail:")
+                            Spacer()
+                            Picker("Rail routes:", selection: $gtfsManager.displayRail) {
+                                Text("Off").tag(false)
+                                Text("On").tag(true)
+                            }.pickerStyle(SegmentedPickerStyle())
+                        }
+                        HStack{
+                            Text("Display buses:")
+                            Spacer()
+                            Picker("Bus routes:", selection: $gtfsManager.displayBuses) {
+                                Text("Off").tag(false)
+                                Text("On").tag(true)
+                            }.pickerStyle(SegmentedPickerStyle())
+                        }
+                        Text("# displayed routes: \(self.gtfsManager.displayedRoutes.count)")
                     }
                     .padding()
-                    .frame(width: 300, height: 400)
+                    .frame(width: 300)
                     .modifier(UICard())
                     Spacer()
                     VStack(alignment: .leading) {
                         Text("Selected route: \(selectedRoute)")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
+                        Text("Shape point count: \(gtfsManager.shapes.count)")
                         Text("Shape count: \(gtfsManager.shapeDictionary.count)")
                         Text("Stop count: \(gtfsManager.stops.count)")
                         Text("Scale: \(scale)")
@@ -185,7 +211,23 @@ struct ContentView: View {
                     Spacer()
                     VStack {
                         Spacer()
-                        VStack(alignment: .leading) {
+                        VStack {
+                            HStack {
+                                Button(action: {
+                                    self.gtfsManager.loadMbtaData()
+                                }) {
+                                    Text("Load MBTA data")
+                                }
+                                .padding()
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                                Button(action: {
+                                    self.gtfsManager.loadCtaData()
+                                }) {
+                                    Text("Load CTA data")
+                                }
+                                .padding()
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                            }
                             LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
                             LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
                             LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
@@ -213,7 +255,7 @@ struct LoadingRow: View {
             Text(description)
             Spacer()
             Image(systemName: "checkmark.circle")
-            .opacity(isFinished ? 1 : 0)
+                .opacity(isFinished ? 1 : 0)
         }
     }
 }
@@ -221,35 +263,9 @@ struct LoadingRow: View {
 struct UICard: ViewModifier {
     func body(content: Content) -> some View {
         content
-        .background(Color(UIColor.secondarySystemBackground.withAlphaComponent(0.75)))
-        .cornerRadius(8)
-        .padding()
-    }
-}
-
-struct GTFSStopShape: Shape {
-    var stops: [GTFSStop]
-    var viewport: CGRect
-    var scale: CGFloat
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        /*for stop in stops {
-            path.move(to: CGPoint(x: stop.stopLon, y: stop.stopLat))
-            path.addEllipse(in: rect)
-        }*/
-        guard let first = stops.first,
-            let firstStopLon = first.stopLon,
-            let firstStopLat = first.stopLat else { return path }
-        path.move(to: CGPoint(x: firstStopLon, y: firstStopLat))
-        for stop in stops {
-            guard let lon = stop.stopLon,
-                let lat = stop.stopLat else { break }
-            path.addLine(to: CGPoint(x: lon, y: lat))
-        }
-        
-        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
-        return transformed.path(in: rect)
+            .background(Color(UIColor.secondarySystemBackground.withAlphaComponent(0.75)))
+            .cornerRadius(8)
+            .padding()
     }
 }
 
