@@ -16,6 +16,15 @@ enum GTFSError: Error {
     case invalidStopData(issue: String)
 }
 
+enum GTFSRouteType: Int, CaseIterable {
+    case trams = 0
+    case metro = 1
+    case rail = 2
+    case buses = 3
+    
+    
+}
+
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
@@ -33,8 +42,8 @@ class GTFSManager: ObservableObject {
     @Published var isFinishedLoadingShapes = false
     @Published var isFinishedLoadingStops = false
     
-    @Published var trainRoutes: [GTFSRoute] = []
     @Published var displayedRoutes: [GTFSRoute] = []
+    
     @Published var displayedTrams: [GTFSRoute] = []
     @Published var displayedMetro: [GTFSRoute] = []
     @Published var displayedRail: [GTFSRoute] = []
@@ -44,12 +53,20 @@ class GTFSManager: ObservableObject {
     @Published var displayRail = false
     @Published var displayBuses = false
     
+    var displayRouteType: [Published<Bool>] = []
+    @Published var displayedRoutesByType: [[GTFSRoute]] = []
+    
     private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
     
     var cancellables = Set<AnyCancellable>()
     
     init() {
         //loadMbtaData()
+        for routeType in GTFSRouteType.allCases {
+            displayRouteType.append(Published.init(wrappedValue: false))
+            displayedRoutesByType.append([])
+        }
+        //displayRouteType[0] = Published.init(wrappedValue: false)
     }
     
     func getShapeId(for routeId: String) -> [GTFSShapePoint] {
@@ -108,21 +125,19 @@ class GTFSManager: ObservableObject {
     
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {
         let loadRoutesPublisher = gtfsLoader.loadRoutesPublisher(from: routesUrl)
-        
-        loadRoutesPublisher
-            .map { (routes) -> [GTFSRoute] in
-            return routes.filter({
-                Int($0.routeType) ?? 4 < 3
-            })
-        }
-        .receive(on: RunLoop.main)
-        //.assign(to: \.trainRoutes, on: self)
-            .sink(receiveCompletion: { (completion) in
-                
-            }, receiveValue: { (trainRoutes) in
-                self.trainRoutes = trainRoutes
-            })
-        .store(in: &cancellables)
+        //print(displayRouteType)
+        /*for routeType in GTFSRouteType.allCases {
+            displayRouteType[routeType.rawValue].projectedValue
+            .map({ display -> [GTFSRoute] in
+                    if display {
+                        return self.routes.filter { Int($0.routeType) == routeType.rawValue }
+                    }
+                    return []
+                })
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.displayedRoutesByType[routeType.rawValue], on: self)
+            .store(in: &cancellables)
+        }*/
         
         $displayTrams
             .map({ (displayTrams) -> [GTFSRoute] in
@@ -132,7 +147,7 @@ class GTFSManager: ObservableObject {
                 return []
             })
         .receive(on: DispatchQueue.main)
-        .assign(to: \.displayedTrams, on: self)
+        .assign(to: \.displayedRoutesByType[GTFSRouteType.trams.rawValue], on: self)
         .store(in: &cancellables)
         
         $displayMetro
@@ -143,7 +158,7 @@ class GTFSManager: ObservableObject {
                 return []
             })
         .receive(on: DispatchQueue.main)
-        .assign(to: \.displayedMetro, on: self)
+        .assign(to: \.displayedRoutesByType[GTFSRouteType.metro.rawValue], on: self)
         .store(in: &cancellables)
         
         $displayRail
@@ -154,7 +169,7 @@ class GTFSManager: ObservableObject {
                 return []
             })
         .receive(on: DispatchQueue.main)
-        .assign(to: \.displayedRail, on: self)
+        .assign(to: \.displayedRoutesByType[GTFSRouteType.rail.rawValue], on: self)
         .store(in: &cancellables)
         
         $displayBuses
@@ -165,16 +180,35 @@ class GTFSManager: ObservableObject {
                 return []
             })
         .receive(on: DispatchQueue.main)
-        .assign(to: \.displayedBuses, on: self)
+        .assign(to: \.displayedRoutesByType[GTFSRouteType.buses.rawValue], on: self)
         .store(in: &cancellables)
         
-        Publishers.CombineLatest4($displayedTrams, $displayedMetro, $displayedRail, $displayedBuses)
+        /*Publishers.CombineLatest4(displayedRoutesByType[0].projectedValue,
+                                  displayedRoutesByType[1].projectedValue,
+                                  displayedRoutesByType[2].projectedValue,
+                                  displayedRoutesByType[3].projectedValue)
             .map({ (a, b, c, d) -> [GTFSRoute] in
                 return a + b + c + d
             })
         .receive(on: DispatchQueue.main)
         .assign(to: \.displayedRoutes, on: self)
+        .store(in: &cancellables)*/
+            
+        $displayedRoutesByType
+            .map { (routes) -> [GTFSRoute] in
+                return routes.flatMap({ $0 })
+        }
+        .receive(on: DispatchQueue.main)
+        .assign(to: \.displayedRoutes, on: self)
         .store(in: &cancellables)
+        
+        /*Publishers.CombineLatest4($displayedTrams, $displayedMetro, $displayedRail, $displayedBuses)
+            .map({ (a, b, c, d) -> [GTFSRoute] in
+                return a + b + c + d
+            })
+        .receive(on: DispatchQueue.main)
+        .assign(to: \.displayedRoutes, on: self)
+        .store(in: &cancellables)*/
         
         loadRoutesPublisher
         .receive(on: RunLoop.main)
