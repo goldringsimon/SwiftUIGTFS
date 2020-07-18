@@ -12,11 +12,16 @@ import Combine
 protocol GTFSLoader {
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError>
     func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError>
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError>
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError> // TODO move viewport code to manager
     func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError>
 }
 
 class SimpleGTFSLoader: GTFSLoader {
+        
+        static let csvRegEx = """
+(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
+"""
+    
     func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError> {
         return Future<[GTFSRoute], GTFSError> { promise in
             return self.loadRoutes(from: fileUrl) { (result) in
@@ -34,18 +39,20 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
-            //let colTitles = fileLines[0].components(separatedBy: ",")
-            
-            guard let regex = try? NSRegularExpression(pattern: """
-(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
-""", options: []) else {
-                print("failed creating regex")
-                completed(.failure(.invalidRouteData(issue: "Couldn't init RegExp")))
+            guard let headerLine = fileLines.first else {
+                completed(.failure(.invalidRouteData(issue: "Missing header row in routes.txt")))
                 return
             }
-            let range = NSRange(fileLines[0].startIndex..<fileLines[0].endIndex, in: fileLines[0])
-            let colTitles = regex.matches(in: fileLines[0], options: [], range: range).map { (result) -> String in
-                return String(fileLines[0][Range(result.range(at: 1), in: fileLines[0])!])
+            //let colTitles = headerLine.components(separatedBy: ",")
+            
+            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+                print("failed creating regex")
+                completed(.failure(.invalidRouteData(issue: "Couldn't init RegExp for routes.txt")))
+                return
+            }
+            let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
+            let colTitles = regex.matches(in: headerLine, options: [], range: range).map { (result) -> String in
+                return String(headerLine[Range(result.range(at: 1), in: headerLine)!])
             }
             
             var routeIdCol: Int?
@@ -114,12 +121,16 @@ class SimpleGTFSLoader: GTFSLoader {
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let currentLine = fileLines[i]
-                //let splitLine = fileLines[i].components(separatedBy: ",")
+                //let splitLine = currentLine.components(separatedBy: ",")
                 let range = NSRange(currentLine.startIndex..<fileLines[i].endIndex, in: currentLine)
                 let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
                     return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
                 }
-                guard splitLine.count == colTitles.count else { break }
+                guard splitLine.count == colTitles.count else {
+                    print("This route line didn't have the same number of columns as the header row:")
+                    print(fileLines[i])
+                    continue
+                }
                 
                 let routeId = splitLine[routeIdColumn] // GTFS required field, non-optional
                 let agencyId = agencyIdCol == nil ? nil : splitLine[agencyIdCol!]
@@ -158,7 +169,21 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
-            let colTitles = fileLines[0].components(separatedBy: ",")
+            guard let headerLine = fileLines.first else {
+                completed(.failure(.invalidTripData(issue: "Missing header row in trips.txt")))
+                return
+            }
+            //let colTitles = headerLine.components(separatedBy: ",")
+            
+            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+                print("failed creating regex")
+                completed(.failure(.invalidTripData(issue: "Couldn't init RegExp for trips.txt")))
+                return
+            }
+            let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
+            let colTitles = regex.matches(in: headerLine, options: [], range: range).map { (result) -> String in
+                return String(headerLine[Range(result.range(at: 1), in: headerLine)!])
+            }
             
             var routeIdCol: Int?
             var serviceIdCol: Int?
@@ -207,8 +232,17 @@ class SimpleGTFSLoader: GTFSLoader {
             var trips = [GTFSTrip]()
             
             for i in 1..<fileLines.count { // Don't want first (header) line
-                let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count == colTitles.count else { break }
+                let currentLine = fileLines[i]
+                //let splitLine = currentLine.components(separatedBy: ",")
+                let range = NSRange(currentLine.startIndex..<currentLine.endIndex, in: currentLine)
+                let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
+                    return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
+                }
+                guard splitLine.count == colTitles.count else {
+                    print("This line didn't have the same number of columns as the header row:")
+                    print(fileLines[i])
+                    continue
+                }
                 
                 let routeId = splitLine[routeIdColumn]
                 let serviceId = splitLine[serviceIdColumn]
@@ -243,7 +277,20 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
-            let colTitles = fileLines[0].components(separatedBy: ",")
+            guard let headerLine = fileLines.first else {
+                completed(.failure(.invalidShapeData(issue: "Missing header row in shapes.txt")))
+                return
+            }
+            //let colTitles = headerLine.components(separatedBy: ",")
+            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+                print("failed creating regex")
+                completed(.failure(.invalidShapeData(issue: "Couldn't init RegExp for shapes.txt")))
+                return
+            }
+            let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
+            let colTitles = regex.matches(in: headerLine, options: [], range: range).map { (result) -> String in
+                return String(headerLine[Range(result.range(at: 1), in: headerLine)!])
+            }
             
             var shapeIdCol: Int?
             var shapePtLatCol: Int?
@@ -294,8 +341,17 @@ class SimpleGTFSLoader: GTFSLoader {
             var maxLon: Double?
             
             for i in 1..<fileLines.count { // Don't want first (header) line
-                let splitLine = fileLines[i].components(separatedBy: ",")
-                guard splitLine.count > 4 else { break }
+                let currentLine = fileLines[i]
+                //let splitLine = currentLine.components(separatedBy: ",")
+                let range = NSRange(currentLine.startIndex..<currentLine.endIndex, in: currentLine)
+                let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
+                    return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
+                }
+                guard splitLine.count == colTitles.count else {
+                    print("This shape line didn't have the same number of columns as the header row:")
+                    print(fileLines[i])
+                    continue
+                }
                 
                 let shapeId = splitLine[shapeIdColumn]
                 guard let ptLat = Double(splitLine[shapePtLatColumn]) else { break }
@@ -335,14 +391,15 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             let fileLines = fileString.components(separatedBy: "\n")
-            let headerLine = fileLines[0]
-            //let colTitles = fileLines[0].components(separatedBy: ",")
+            guard let headerLine = fileLines.first else {
+                completed(.failure(.invalidStopData(issue: "Missing header row in stops.txt")))
+                return
+            }
+            //let colTitles = headerLine.components(separatedBy: ",")
             
-            guard let regex = try? NSRegularExpression(pattern: """
-(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
-""", options: []) else {
+            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
                 print("failed creating regex")
-                completed(.failure(.invalidStopData(issue: "Couldn't init RegExp")))
+                completed(.failure(.invalidStopData(issue: "Couldn't init RegExp for stops.txt")))
                 return
             }
             let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
@@ -388,7 +445,7 @@ class SimpleGTFSLoader: GTFSLoader {
                     return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
                 }
                 guard splitLine.count == colTitles.count else {
-                    print("This line didn't have the same number of columns as the header row:")
+                    print("This stop line didn't have the same number of columns as the header row:")
                     print(fileLines[i])
                     continue
                 }
@@ -399,9 +456,7 @@ class SimpleGTFSLoader: GTFSLoader {
                 let stopLat = stopLatCol == nil ? nil : Double(splitLine[stopLatCol!])
                 let stopLon = stopLonCol == nil ? nil : Double(splitLine[stopLonCol!])
                 
-                //print("appending stop")
                 let stop = GTFSStop(stopId: stopId, stopCode: stopCode, stopName: stopName, stopLat: stopLat, stopLon: stopLon)
-                //print(stop)
                 stops.append(stop)
             }
             

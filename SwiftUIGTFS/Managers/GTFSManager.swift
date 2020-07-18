@@ -74,7 +74,7 @@ class GTFSManager: ObservableObject {
         }
         return Array(shapeIds)*/
         let returnValue = routeToShapeDictionary[routeId] ?? []
-        print(returnValue)
+        //print(returnValue)
         return returnValue
     }
     

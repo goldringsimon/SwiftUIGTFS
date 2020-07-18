@@ -179,24 +179,45 @@ struct ContentView: View {
             }
             
             if !gtfsManager.isFinishedLoading {
+                Color(UIColor.black.withAlphaComponent(0.85))
+                    .edgesIgnoringSafeArea(.all)
                 HStack {
                     Spacer()
                     VStack {
                         Spacer()
                         VStack(alignment: .leading) {
-                            Text("Finished loading routes: \(String(gtfsManager.isFinishedLoadingRoutes))")
-                            Text("Finished loading trips: \(String(gtfsManager.isFinishedLoadingTrips))")
-                            Text("Finished loading shapes: \(String(gtfsManager.isFinishedLoadingShapes))")
-                            Text("Finished loading stops: \(String(gtfsManager.isFinishedLoadingStops))")
-                            Text("Finished loading: \(String(gtfsManager.isFinishedLoading))")
+                            HStack {
+                                Text("Loading routes...")
+                                Spacer()
+                                Image(systemName: "checkmark.circle")
+                                .opacity(gtfsManager.isFinishedLoadingRoutes ? 1 : 0)
+                            }
+                            HStack {
+                                Text("Loading trips...")
+                                Spacer()
+                                Image(systemName: "checkmark.circle")
+                                .opacity(gtfsManager.isFinishedLoadingTrips ? 1 : 0)
+                            }
+                            HStack {
+                                Text("Loading shapes...")
+                                Spacer()
+                                Image(systemName: "checkmark.circle")
+                                    .opacity(gtfsManager.isFinishedLoadingShapes ? 1 : 0)
+                            }
+                            HStack {
+                                Text("Loading stops...")
+                                Spacer()
+                                Image(systemName: "checkmark.circle")
+                                    .opacity(gtfsManager.isFinishedLoadingStops ? 1 : 0)
+                            }
                         }.font(Font.subheadline.lowercaseSmallCaps())
                             .padding()
                             .modifier(UICard())
+                            .frame(width: 400)
                         Spacer()
                     }
                     Spacer()
-                }.background(Color(UIColor.black.withAlphaComponent(0.8)))
-                    .edgesIgnoringSafeArea(.all)
+                }
             }
         }
     }
