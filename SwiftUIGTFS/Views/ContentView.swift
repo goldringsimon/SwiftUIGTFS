@@ -176,3 +176,65 @@ struct ContentView: View {
         }
     }
 }
+
+/*struct UIOverlay: View {
+    @ObservedObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                
+                VStack(alignment: .leading){
+                    /*List{
+                     ForEach(gtfsManager.trainRoutes) { route in
+                     Button(action: {
+                     self.selectedRoute = route.routeId
+                     }, label: {
+                     Text(route.routeLongName ?? "").tag(route.routeId)
+                     })
+                     }
+                     }*/
+                    Toggle(isOn: $isDisplayingRouteColors.animation()) {
+                        Text("Display route colours:")
+                    }
+                    Divider()
+                    Toggle(isOn: $gtfsManager.displayTrams) {
+                        Text("Display trams:")
+                    }
+                    Toggle(isOn: $gtfsManager.displayMetro) {
+                        Text("Display metro:")
+                    }
+                    Toggle(isOn: $gtfsManager.displayRail) {
+                        Text("Display rail:")
+                    }
+                    Toggle(isOn: $gtfsManager.displayBuses) {
+                        Text("Display buses:")
+                    }
+                    Text("# displayed routes: \(self.gtfsManager.displayedRoutes.count)")
+                }
+                .padding()
+                .frame(width: 300)
+                .modifier(UICard())
+            }
+            Spacer()
+            HStack {
+                Spacer()
+                
+                VStack(alignment: .leading) {
+                    Text("Selected route: \(selectedRoute ?? "")")
+                    Text("Route count: \(gtfsManager.routes.count)")
+                    Text("Trip count: \(gtfsManager.trips.count)")
+                    Text("Shape point count: \(gtfsManager.shapes.count)")
+                    Text("Shape count: \(gtfsManager.shapeDictionary.count)")
+                    Text("Stop count: \(gtfsManager.stops.count)")
+                    Text("Scale: \(scale)")
+                    Slider(value: $scale, in: minScale...maxScale)
+                }
+                .padding()
+                .frame(width: 300)
+                .modifier(UICard())
+            }
+        }
+    }
+}*/

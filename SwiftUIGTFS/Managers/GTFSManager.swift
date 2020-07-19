@@ -21,8 +21,6 @@ enum GTFSRouteType: Int, CaseIterable {
     case metro = 1
     case rail = 2
     case buses = 3
-    
-    
 }
 
 class GTFSManager: ObservableObject {
@@ -31,40 +29,31 @@ class GTFSManager: ObservableObject {
     @Published var shapes: [GTFSShapePoint] = []
     @Published var stops: [GTFSStop] = []
     
-    @Published var tripDictionary: [String: [GTFSTrip]] = [:] // key is route Id
-    @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:] // key is shape Id
-    @Published var viewport: CGRect = CGRect.zero
+    @Published var tripDictionary: [String: [GTFSTrip]] = [:] // key is routeId, value is all trips for that route
+    @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:] // key is shape Id, value is ShapePoints that make up that shape
     @Published var routeToShapeDictionary: [String: [String]] = [:] // key is routeId, value is all unique shapeIds for that route
+    
+    @Published var viewport: CGRect = CGRect.zero
     
     @Published var isFinishedLoading = false
     @Published var isFinishedLoadingRoutes = false
     @Published var isFinishedLoadingTrips = false
     @Published var isFinishedLoadingShapes = false
     @Published var isFinishedLoadingStops = false
+    @Published var isFinishedProcessingRouteToShapeDictionary = false
     
-    @Published var displayedRoutes: [GTFSRoute] = []
-    
-    //@Published var displayedTrams: [GTFSRoute] = []
-    //@Published var displayedMetro: [GTFSRoute] = []
-    //@Published var displayedRail: [GTFSRoute] = []
-    //@Published var displayedBuses: [GTFSRoute] = []
+    // This array of arrays used to 4x e.g. @Published var displayedTrams: [GTFSRoute] = []
+    // I'd like to also replace the the 4x @Published var displayTrams = false etc with an array of @Published booleans
+    @Published var displayedRoutesByType: [[GTFSRoute]] = Array(repeating: [], count: GTFSRouteType.allCases.count)
+    @Published var displayedRoutes: [GTFSRoute] = [] // Combine, um, combines the array of arrays into this for display by the main View
     @Published var displayTrams = false
     @Published var displayMetro = false
     @Published var displayRail = false
     @Published var displayBuses = false
     
-    var displayRouteType: [Published<Bool>] = []
-    @Published var displayedRoutesByType: [[GTFSRoute]] = []
-    
     private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
     
-    var cancellables = Set<AnyCancellable>()
-    
-    init() {
-        for routeType in GTFSRouteType.allCases {
-            displayedRoutesByType.append([])
-        }
-    }
+    private var cancellables = Set<AnyCancellable>()
     
     func getShapeId(for routeId: String) -> [GTFSShapePoint] {
         guard let firstTrip = tripDictionary[routeId]?.first else { return [] }
@@ -90,12 +79,6 @@ class GTFSManager: ObservableObject {
     }
     
     func getUniqueShapesIdsForRoute(for routeId: String) -> [String] {
-        /*var shapeIds = Set<String>()
-        for trip in getAllTrips(for: routeId) {
-            guard let shapeId = trip.shapeId else { continue }
-            shapeIds.insert(shapeId)
-        }
-        return Array(shapeIds)*/
         return routeToShapeDictionary[routeId] ?? []
     }
     
@@ -121,6 +104,7 @@ class GTFSManager: ObservableObject {
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {
         let loadRoutesPublisher = gtfsLoader.loadRoutesPublisher(from: routesUrl)
         
+        // This is not ideal. I wish I could replace these four variables with an array of Published<Bool>
         for (i, publisher) in [$displayTrams, $displayMetro, $displayRail, $displayBuses].enumerated() {
             publisher
             .map({ (display) -> [GTFSRoute] in
@@ -143,7 +127,7 @@ class GTFSManager: ObservableObject {
         .store(in: &cancellables)
         
         loadRoutesPublisher
-        .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -164,7 +148,7 @@ class GTFSManager: ObservableObject {
             }
             
         loadTripsPublisher
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -186,7 +170,7 @@ class GTFSManager: ObservableObject {
         }
             
         loadShapesPublisher
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -205,7 +189,7 @@ class GTFSManager: ObservableObject {
         let loadStopsPublisher = gtfsLoader.loadStopsPublisher(from: stopsUrl)
         
         loadStopsPublisher
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -219,31 +203,47 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        Publishers.Zip4(loadRoutesPublisher, loadTripsPublisher, loadShapesPublisher, loadStopsPublisher) // TODO only zip necessary publishers for this processing
-        .receive(on: RunLoop.main)
-        .sink(receiveCompletion: { (completion) in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }) { (routes, tripsArg, shapesArg, stops) in
-            let (trips, tripDictionary) = tripsArg
-            let (shapes, shapeDictionary, viewport) = shapesArg
-            
-            //Processing work here for now // TODO this is odd to reference properties and methods of self not the closure arguments
-            for route in routes {
-                var shapeIds = Set<String>()
-                for trip in self.getAllTrips(for: route.routeId) {
-                    guard let shapeId = trip.shapeId else { continue }
-                    shapeIds.insert(shapeId)
+        Publishers.Zip(loadRoutesPublisher, loadTripsPublisher)
+            .map { (routes, tripsArg) -> [String: [String]] in
+                let (_, tripDictionary) = tripsArg
+                
+                var routeToShapeDictionary: [String: [String]] = [:]
+                
+                for route in routes {
+                    var shapeIds = Set<String>()
+                    if let routeTrips = tripDictionary[route.routeId] {
+                        for trip in routeTrips {
+                            guard let shapeId = trip.shapeId else { continue }
+                            shapeIds.insert(shapeId)
+                        }
+                    }
+                    routeToShapeDictionary[route.routeId] = Array(shapeIds)
                 }
-                self.routeToShapeDictionary[route.routeId] = Array(shapeIds)
+                return routeToShapeDictionary
             }
-            
-            self.isFinishedLoading = true
-        }
-        .store(in: &cancellables)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                }
+            }, receiveValue: { (routeToShapeDictionary) in
+                self.routeToShapeDictionary = routeToShapeDictionary
+                self.isFinishedProcessingRouteToShapeDictionary = true
+            })
+            .store(in: &cancellables)
+        
+        Publishers.Zip4($isFinishedLoadingRoutes, $isFinishedLoadingStops, $isFinishedLoadingShapes, $isFinishedLoadingStops)
+            .map({ (a, b, c, d) -> Bool in
+                return a && b && c && d
+            })
+            .zip($isFinishedProcessingRouteToShapeDictionary)
+            .map({ (a, b) -> Bool in
+                return a && b
+            })
+            .assign(to: \.isFinishedLoading, on: self)
+            .store(in: &cancellables)
     }
 }
