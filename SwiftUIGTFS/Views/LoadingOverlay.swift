@@ -1,0 +1,70 @@
+//
+//  LoadingOverlay.swift
+//  SwiftUIGTFS
+//
+//  Created by Simon Goldring on 7/19/20.
+//  Copyright © 2020 Simon Goldring. All rights reserved.
+//
+
+import SwiftUI
+
+struct LoadingOverlay: View {
+    @ObservedObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            VStack {
+                Spacer()
+                VStack {
+                    HStack {
+                        Button(action: {
+                            self.gtfsManager.loadMbtaData()
+                        }) {
+                            Text("Load MBTA data")
+                        }
+                        .padding()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                        Button(action: {
+                            self.gtfsManager.loadCtaData()
+                        }) {
+                            Text("Load CTA data")
+                        }
+                        .padding()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                    }
+                    LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
+                    LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
+                    LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
+                    LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
+                }.font(Font.subheadline.lowercaseSmallCaps())
+                    .padding()
+                    .modifier(UICard())
+                    .frame(width: 400)
+                Spacer()
+            }
+            .animation(.easeIn)
+            Spacer()
+        }
+    }
+}
+
+struct LoadingRow: View {
+    var description: String
+    @Binding var isFinished: Bool
+    
+    var body: some View {
+        HStack {
+            Text(description)
+            Spacer()
+            Image(systemName: "checkmark.circle")
+                .opacity(isFinished ? 1 : 0)
+        }
+    }
+}
+
+/*struct LoadingOverlay_Previews: PreviewProvider {
+    static var previews: some View {
+        LoadingOverlay()
+    }
+}*/

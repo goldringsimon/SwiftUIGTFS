@@ -20,6 +20,9 @@
 		F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */; };
 		F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */; };
 		F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */; };
+		F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */; };
+		F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB224C4E27C004BEB51 /* UICard.swift */; };
+		F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */; };
 		F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60B24BF11210099A46A /* ctaTrips.txt */; };
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
@@ -45,6 +48,9 @@
 		F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaRoutes.txt; sourceTree = "<group>"; };
 		F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaTrips.txt; sourceTree = "<group>"; };
 		F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSTrip.swift; sourceTree = "<group>"; };
+		F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
+		F486FDB224C4E27C004BEB51 /* UICard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICard.swift; sourceTree = "<group>"; };
+		F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSShape.swift; sourceTree = "<group>"; };
 		F49DE60B24BF11210099A46A /* ctaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaTrips.txt; sourceTree = "<group>"; };
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
@@ -161,6 +167,9 @@
 			isa = PBXGroup;
 			children = (
 				F45E777724BB2694007A2F2C /* ContentView.swift */,
+				F486FDB224C4E27C004BEB51 /* UICard.swift */,
+				F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */,
+				F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -246,7 +255,10 @@
 			files = (
 				F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
+				F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */,
+				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
+				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShape.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
