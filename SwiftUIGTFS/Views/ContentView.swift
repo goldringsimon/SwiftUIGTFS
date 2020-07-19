@@ -8,49 +8,6 @@
 
 import SwiftUI
 
-extension UIColor {
-    public convenience init?(hex: String) {
-        let r, g, b, a: CGFloat
-        
-        if hex.hasPrefix("#") {
-            let start = hex.index(hex.startIndex, offsetBy: 1)
-            let hexColor = String(hex[start...])
-            
-            if hexColor.count == 8 {
-                let scanner = Scanner(string: hexColor)
-                var hexNumber: UInt64 = 0
-                
-                if scanner.scanHexInt64(&hexNumber) {
-                    r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
-                    g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
-                    b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
-                    a = CGFloat(hexNumber & 0x000000ff) / 255
-                    
-                    self.init(red: r, green: g, blue: b, alpha: a)
-                    return
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    public convenience init?(gtfsHex: String) {
-        self.init(hex: "#" + gtfsHex + "FF")
-    }
-}
-
-extension Shape {
-    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
-        // This is the reverse order to previous implementation
-        let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
-            .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width)) // The negative sign for the y-coordinate is slight voodoo to fix SwiftUI's coordinate system starting in the lower left corner, not the top right
-            .scaledBy(x: scale, y: scale)
-            .translatedBy(x: -viewport.midX, y: -viewport.midY)
-        return self.transform(transform)
-    }
-}
-
 struct ContentView: View {
     @ObservedObject var gtfsManager: GTFSManager
     @State private var scale: CGFloat = 1
@@ -61,13 +18,13 @@ struct ContentView: View {
     
     @State private var animationAmount: CGFloat = 1
     
-    func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
+    /*func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
         let returnValue = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
             .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width))
             .scaledBy(x: scale, y: scale)
             .translatedBy(x: -viewport.midX, y: -viewport.midY)
         return returnValue
-    }
+    }*/
     
     private func getDisplayColor(for route: GTFSRoute) -> Color {
         if isDisplayingRouteColors {

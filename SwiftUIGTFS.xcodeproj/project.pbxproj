@@ -28,6 +28,7 @@
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
 		F49DE61224BF11210099A46A /* ctaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60E24BF11210099A46A /* ctaStops.txt */; };
 		F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */; };
+		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
 		F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */; };
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
@@ -56,6 +57,7 @@
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
 		F49DE60E24BF11210099A46A /* ctaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaStops.txt; sourceTree = "<group>"; };
 		F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleGTFSLoader.swift; sourceTree = "<group>"; };
+		F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSStop.swift; sourceTree = "<group>"; };
 		F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaStops.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,6 +125,7 @@
 		F45E777224BB2694007A2F2C /* SwiftUIGTFS */ = {
 			isa = PBXGroup;
 			children = (
+				F4BF575724C4F30C0070CC88 /* Utility */,
 				F45E779224BBA98B007A2F2C /* Data */,
 				F44F115B24BBB816008E85C6 /* Model */,
 				F45E779324BBA9A0007A2F2C /* Views */,
@@ -172,6 +175,14 @@
 				F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		F4BF575724C4F30C0070CC88 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,6 +270,7 @@
 				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
+				F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
