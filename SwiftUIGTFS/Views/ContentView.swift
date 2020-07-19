@@ -56,7 +56,10 @@ struct ContentView: View {
     @State private var scale: CGFloat = 1
     private let minScale: CGFloat = 0.1
     private let maxScale: CGFloat = 10.0
-    @State private var selectedRoute = "Orange"
+    @State private var selectedRoute: String? = nil
+    @State private var isDisplayingRouteColors = false
+    
+    @State private var animationAmount: CGFloat = 1
     
     func getTransformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> CGAffineTransform {
         let returnValue = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
@@ -65,8 +68,6 @@ struct ContentView: View {
             .translatedBy(x: -viewport.midX, y: -viewport.midY)
         return returnValue
     }
-    
-    @State private var isDisplayingRouteColors = false
     
     private func getDisplayColor(for route: GTFSRoute) -> Color {
         if isDisplayingRouteColors {
@@ -85,53 +86,37 @@ struct ContentView: View {
                  .animation(.easeInOut(duration: 5.0))
                  .transition(.opacity)
                  }
-                 
-                 /*ForEach(self.gtfsManager.routes) { route in
-                 GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                 .stroke(Color.red, style: StrokeStyle(lineWidth: 1))
-                 }*/
-                 
-                 if self.selectedRoutes == RoutesPicker.trainRoutes {
-                 ForEach(self.gtfsManager.trainRoutes) { route in
-                 /*GTFSShape(shapePoints: self.gtfsManager.getShapeId(for: route.routeId), viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))*/
-                 
-                 ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
-                 GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                 }
-                 }
                  }*/
                 
                 ForEach(self.gtfsManager.displayedRoutes) { route in
                     ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
                         GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                            .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                            .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                            .onTapGesture {
+                                self.selectedRoute = route.routeId
+                        }
                     }
                 }
                 
-                /*ForEach(self.getDisplayedRoutes()) { route in
-                 ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
-                 GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
-                 .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                 }
-                 }*/
+                if self.selectedRoute != nil {
+                    ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: self.selectedRoute!), id: \.self) { shapeId in
+                        GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.viewport, scale: self.scale) // 010070
+                            .stroke(Color(.systemPink), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                            .onTapGesture {
+                                self.selectedRoute = nil
+                        }
+                    }
+                }
             }
-                //            .drawingGroup()
-                .clipped()
-                .edgesIgnoringSafeArea(.all)
+            //.drawingGroup()
+            .clipped()
+            .edgesIgnoringSafeArea(.all)
             
-            HStack {
-                Spacer()
-                VStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    
                     VStack(alignment: .leading){
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 1.0)) {
-                                self.isDisplayingRouteColors.toggle()
-                            }
-                        }, label: {
-                            Text("Toggle route colours")
-                        })
                         /*List{
                          ForEach(gtfsManager.trainRoutes) { route in
                          Button(action: {
@@ -141,55 +126,34 @@ struct ContentView: View {
                          })
                          }
                          }*/
-                        HStack{
-                            Text("Enable route colours:")
-                            Spacer()
-                            Picker("Route colours:", selection: $isDisplayingRouteColors) {
-                                Text("Off").tag(false)
-                                Text("On").tag(true)
-                            }.pickerStyle(SegmentedPickerStyle())
+                        Toggle(isOn: $isDisplayingRouteColors.animation()) {
+                            Text("Display route colours:")
                         }
                         Divider()
-                        HStack{
+                        Toggle(isOn: $gtfsManager.displayTrams) {
                             Text("Display trams:")
-                            Spacer()
-                            Picker("Tram routes:", selection: $gtfsManager.displayTrams) {
-                                Text("Off").tag(false)
-                                Text("On").tag(true)
-                            }.pickerStyle(SegmentedPickerStyle())
                         }
-                        HStack{
+                        Toggle(isOn: $gtfsManager.displayMetro) {
                             Text("Display metro:")
-                            Spacer()
-                            Picker("Metro routes:", selection: $gtfsManager.displayMetro) {
-                                Text("Off").tag(false)
-                                Text("On").tag(true)
-                            }.pickerStyle(SegmentedPickerStyle())
                         }
-                        HStack{
+                        Toggle(isOn: $gtfsManager.displayRail) {
                             Text("Display rail:")
-                            Spacer()
-                            Picker("Rail routes:", selection: $gtfsManager.displayRail) {
-                                Text("Off").tag(false)
-                                Text("On").tag(true)
-                            }.pickerStyle(SegmentedPickerStyle())
                         }
-                        HStack{
+                        Toggle(isOn: $gtfsManager.displayBuses) {
                             Text("Display buses:")
-                            Spacer()
-                            Picker("Bus routes:", selection: $gtfsManager.displayBuses) {
-                                Text("Off").tag(false)
-                                Text("On").tag(true)
-                            }.pickerStyle(SegmentedPickerStyle())
                         }
                         Text("# displayed routes: \(self.gtfsManager.displayedRoutes.count)")
                     }
                     .padding()
                     .frame(width: 300)
                     .modifier(UICard())
+                }
+                Spacer()
+                HStack {
                     Spacer()
+                    
                     VStack(alignment: .leading) {
-                        Text("Selected route: \(selectedRoute)")
+                        Text("Selected route: \(selectedRoute ?? "")")
                         Text("Route count: \(gtfsManager.routes.count)")
                         Text("Trip count: \(gtfsManager.trips.count)")
                         Text("Shape point count: \(gtfsManager.shapes.count)")
@@ -207,41 +171,49 @@ struct ContentView: View {
             if !gtfsManager.isFinishedLoading {
                 Color(UIColor.black.withAlphaComponent(0.85))
                     .edgesIgnoringSafeArea(.all)
-                HStack {
-                    Spacer()
-                    VStack {
-                        Spacer()
-                        VStack {
-                            HStack {
-                                Button(action: {
-                                    self.gtfsManager.loadMbtaData()
-                                }) {
-                                    Text("Load MBTA data")
-                                }
-                                .padding()
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                                Button(action: {
-                                    self.gtfsManager.loadCtaData()
-                                }) {
-                                    Text("Load CTA data")
-                                }
-                                .padding()
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                            }
-                            LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
-                            LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
-                            LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
-                            LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
-                        }.font(Font.subheadline.lowercaseSmallCaps())
-                            .padding()
-                            .modifier(UICard())
-                            .frame(width: 400)
-                        Spacer()
-                    }
-                    .animation(.easeIn)
-                    Spacer()
-                }
+                LoadingOverlay(gtfsManager: gtfsManager)
             }
+        }
+    }
+}
+
+struct LoadingOverlay: View {
+    @ObservedObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            VStack {
+                Spacer()
+                VStack {
+                    HStack {
+                        Button(action: {
+                            self.gtfsManager.loadMbtaData()
+                        }) {
+                            Text("Load MBTA data")
+                        }
+                        .padding()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                        Button(action: {
+                            self.gtfsManager.loadCtaData()
+                        }) {
+                            Text("Load CTA data")
+                        }
+                        .padding()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                    }
+                    LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
+                    LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
+                    LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
+                    LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
+                }.font(Font.subheadline.lowercaseSmallCaps())
+                    .padding()
+                    .modifier(UICard())
+                    .frame(width: 400)
+                Spacer()
+            }
+            .animation(.easeIn)
+            Spacer()
         }
     }
 }
