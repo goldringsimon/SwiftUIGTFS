@@ -33,8 +33,6 @@ class GTFSManager: ObservableObject {
     @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:] // key is shape Id, value is ShapePoints that make up that shape
     @Published var routeToShapeDictionary: [String: [String]] = [:] // key is routeId, value is all unique shapeIds for that route
     
-    @Published var viewport: CGRect = CGRect.zero
-    
     @Published var isFinishedLoading = false
     @Published var isFinishedLoadingRoutes = false
     @Published var isFinishedLoadingTrips = false
@@ -51,9 +49,41 @@ class GTFSManager: ObservableObject {
     @Published var displayRail = false
     @Published var displayBuses = false
     
+    @Published var overviewViewport: CGRect = CGRect.zero
+    @Published var currentViewport: CGRect = CGRect.zero
+    @Published var scale: CGFloat = 1
+    let minScale: CGFloat = 0.1
+    let maxScale: CGFloat = 10.0
+    
     private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
     
     private var cancellables = Set<AnyCancellable>()
+    
+    static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
+        (routes, tripDictionary) in
+        var routeToShapeDictionary: [String: [String]] = [:]
+        
+        for route in routes {
+            var shapeIds = Set<String>()
+            if let routeTrips = tripDictionary[route.routeId] {
+                for trip in routeTrips {
+                    guard let shapeId = trip.shapeId else { continue }
+                    shapeIds.insert(shapeId)
+                }
+            }
+            routeToShapeDictionary[route.routeId] = Array(shapeIds)
+        }
+        return routeToShapeDictionary
+    }
+    
+    init() {
+        Publishers.Zip($overviewViewport, $scale)
+            .map { (overview, scale) -> CGRect in
+                return overview.applying(CGAffineTransform.init(scaleX: scale, y: scale))
+        }
+        .assign(to: \.currentViewport, on: self)
+        .store(in: &cancellables)
+    }
     
     func getShapeId(for routeId: String) -> [GTFSShapePoint] {
         guard let firstTrip = tripDictionary[routeId]?.first else { return [] }
@@ -181,7 +211,7 @@ class GTFSManager: ObservableObject {
         }) { (shapes, shapeDictionary, viewport) in
             self.shapes = shapes
             self.shapeDictionary = shapeDictionary
-            self.viewport = viewport
+            self.overviewViewport = viewport
             self.isFinishedLoadingShapes = true
         }
         .store(in: &cancellables)
@@ -204,23 +234,11 @@ class GTFSManager: ObservableObject {
         .store(in: &cancellables)
         
         Publishers.Zip(loadRoutesPublisher, loadTripsPublisher)
-            .map { (routes, tripsArg) -> [String: [String]] in
+            .map({ (routes, tripsArg) -> ([GTFSRoute], [String: [GTFSTrip]]) in
                 let (_, tripDictionary) = tripsArg
-                
-                var routeToShapeDictionary: [String: [String]] = [:]
-                
-                for route in routes {
-                    var shapeIds = Set<String>()
-                    if let routeTrips = tripDictionary[route.routeId] {
-                        for trip in routeTrips {
-                            guard let shapeId = trip.shapeId else { continue }
-                            shapeIds.insert(shapeId)
-                        }
-                    }
-                    routeToShapeDictionary[route.routeId] = Array(shapeIds)
-                }
-                return routeToShapeDictionary
-            }
+                return (routes, tripDictionary)
+            })
+            .map(GTFSManager.createRouteToShapeDictionary)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { (completion) in
                 switch completion {

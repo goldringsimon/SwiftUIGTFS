@@ -12,40 +12,33 @@ struct LoadingOverlay: View {
     @ObservedObject var gtfsManager: GTFSManager
     
     var body: some View {
-        HStack {
-            Spacer()
-            VStack {
-                Spacer()
-                VStack {
-                    HStack {
-                        Button(action: {
-                            self.gtfsManager.loadMbtaData()
-                        }) {
-                            Text("Load MBTA data")
-                        }
-                        .padding()
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                        Button(action: {
-                            self.gtfsManager.loadCtaData()
-                        }) {
-                            Text("Load CTA data")
-                        }
-                        .padding()
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                    }
-                    LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
-                    LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
-                    LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
-                    LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
-                }.font(Font.subheadline.lowercaseSmallCaps())
-                    .padding()
-                    .modifier(UICard())
-                    .frame(width: 400)
-                Spacer()
+        VStack {
+            HStack {
+                Button(action: {
+                    self.gtfsManager.loadMbtaData()
+                }) {
+                    Text("Load MBTA data")
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                Button(action: {
+                    self.gtfsManager.loadCtaData()
+                }) {
+                    Text("Load CTA data")
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
             }
-            .animation(.easeIn)
-            Spacer()
+            LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
+            LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
+            LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
+            LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
         }
+        .font(Font.subheadline.lowercaseSmallCaps())
+        .padding()
+        .modifier(UICard())
+        .frame(width: 400)
+        .animation(.easeInOut)
     }
 }
 

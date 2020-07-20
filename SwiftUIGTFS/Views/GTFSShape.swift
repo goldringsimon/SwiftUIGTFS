@@ -11,7 +11,7 @@ import SwiftUI
 struct GTFSShape: Shape {
     var shapePoints: [GTFSShapePoint]
     var viewport: CGRect
-    var scale: CGFloat
+    //var scale: CGFloat
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -21,7 +21,7 @@ struct GTFSShape: Shape {
             path.addLine(to: CGPoint(x: point.ptLon, y: point.ptLat))
         }
         
-        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
         return transformed.path(in: rect)
     }
 }
@@ -29,7 +29,7 @@ struct GTFSShape: Shape {
 struct GTFSShapes: Shape {
     var shapes: [String: [GTFSShapePoint]]
     var viewport: CGRect
-    var scale: CGFloat
+    //var scale: CGFloat
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -42,7 +42,7 @@ struct GTFSShapes: Shape {
             }
         }
         
-        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size, scale: scale)
+        let transformed = path.transformViewportToScreen(from: viewport, to: rect.size)
         return transformed.path(in: rect)
     }
 }
