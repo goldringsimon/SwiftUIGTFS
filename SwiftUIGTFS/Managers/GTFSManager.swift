@@ -51,9 +51,12 @@ class GTFSManager: ObservableObject {
     
     @Published var overviewViewport: CGRect = CGRect.zero
     @Published var currentViewport: CGRect = CGRect.zero
+    @Published var screen: CGSize = CGSize.zero
     @Published var scale: CGFloat = 1
     let minScale: CGFloat = 0.1
     let maxScale: CGFloat = 10.0
+    
+    @Published var selectedRoute: String? = nil
     
     private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
     
@@ -77,9 +80,10 @@ class GTFSManager: ObservableObject {
     }
     
     init() {
-        Publishers.Zip($overviewViewport, $scale)
+        Publishers.CombineLatest($overviewViewport, $scale)
             .map { (overview, scale) -> CGRect in
-                return overview.applying(CGAffineTransform.init(scaleX: scale, y: scale))
+                let transform = CGAffineTransform.init(translationX: overview.midX, y: overview.midY).scaledBy(x: 1/scale, y: 1/scale).translatedBy(x: -overview.midX, y: -overview.midY)
+                return overview.applying(transform)
         }
         .assign(to: \.currentViewport, on: self)
         .store(in: &cancellables)

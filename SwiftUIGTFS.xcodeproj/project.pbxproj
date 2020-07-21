@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */; };
 		F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115924BBB6EE008E85C6 /* GTFSManager.swift */; };
+		F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSLoader.swift */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
 		F44F115924BBB6EE008E85C6 /* GTFSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSManager.swift; sourceTree = "<group>"; };
+		F456F6CC24C782D800B2218F /* GTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSLoader.swift; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */,
+				F456F6CC24C782D800B2218F /* GTFSLoader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
+				F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,11 +13,12 @@ struct GTFSStop: Identifiable {
     let stopId: String
     let stopCode: String?
     let stopName: String?
+    let stopLat: Double?
+    let stopLon: Double?
+    
     //let stopDesc: String
     //let platformCode: String
     //let platformName: String
-    let stopLat: Double?
-    let stopLon: Double?
     //let zoneId: String
     //let stopAddress: String
     //let stopUrl: String

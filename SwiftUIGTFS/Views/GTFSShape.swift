@@ -11,7 +11,11 @@ import SwiftUI
 struct GTFSShape: Shape {
     var shapePoints: [GTFSShapePoint]
     var viewport: CGRect
-    //var scale: CGFloat
+    
+    var animatableData: CGRect {
+        get { viewport}
+        set { viewport = newValue }
+    }
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -29,7 +33,6 @@ struct GTFSShape: Shape {
 struct GTFSShapes: Shape {
     var shapes: [String: [GTFSShapePoint]]
     var viewport: CGRect
-    //var scale: CGFloat
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -48,11 +51,11 @@ struct GTFSShapes: Shape {
 }
 
 extension Shape {
-    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize, scale: CGFloat = 1) -> TransformedShape<Self> {
+    func transformViewportToScreen(from viewport: CGRect, to screen: CGSize) -> TransformedShape<Self> {
         // This is the reverse order to previous implementation
         let transform = CGAffineTransform.init(translationX: screen.width / 2, y: screen.height / 2)
             .scaledBy(x: CGFloat(screen.width / viewport.width), y: -CGFloat(screen.width / viewport.width)) // The negative sign for the y-coordinate is slight voodoo to fix SwiftUI's coordinate system starting in the lower left corner, not the top right
-            .scaledBy(x: scale, y: scale)
+            //.scaledBy(x: scale, y: scale)
             .translatedBy(x: -viewport.midX, y: -viewport.midY)
         return self.transform(transform)
     }
