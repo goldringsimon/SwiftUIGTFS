@@ -8,7 +8,7 @@
 
 import CoreGraphics
 
-struct GTFSShapePoint: Identifiable {
+struct GTFSShapePoint: Identifiable, Decodable {
     var id: String { return shapeId}
     let shapeId: String
     let ptLat: Double
@@ -16,8 +16,15 @@ struct GTFSShapePoint: Identifiable {
     let ptSequence: Int
     let distTraveled: Float?
     
+    enum CodingKeys: String, CodingKey {
+        case shapeId = "shape_id"
+        case ptLat = "shape_pt_lat"
+        case ptLon = "shape_pt_lon"
+        case ptSequence = "shape_pt_sequence"
+        case distTraveled = "shape_dist_traveled"
+    }
+    
     static func getOverviewViewport(for shapePoints: [GTFSShapePoint]) -> CGRect {
-        
         let points = shapePoints.map { CGPoint(x: $0.ptLon, y: $0.ptLat) }
         guard let firstPoint = points.first else { return .zero }
         let minX = points.reduce(firstPoint.x, { CGFloat.minimum($0, $1.x) })

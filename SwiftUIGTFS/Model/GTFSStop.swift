@@ -8,13 +8,21 @@
 
 import Foundation
 
-struct GTFSStop: Identifiable {
+struct GTFSStop: Identifiable, Decodable {
     var id: String { return stopId }
     let stopId: String
     let stopCode: String?
     let stopName: String?
     let stopLat: Double?
     let stopLon: Double?
+    
+    enum CodingKeys: String, CodingKey {
+        case stopId = "stop_id"
+        case stopCode = "stop_code"
+        case stopName = "stop_name"
+        case stopLat = "stop_lat"
+        case stopLon = "stop_lon"
+    }
     
     //let stopDesc: String
     //let platformCode: String

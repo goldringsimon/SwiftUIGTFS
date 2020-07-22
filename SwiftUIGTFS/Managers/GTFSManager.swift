@@ -58,7 +58,7 @@ class GTFSManager: ObservableObject {
     
     @Published var selectedRoute: String? = nil
     
-    private var gtfsLoader : GTFSLoader = SimpleGTFSLoader()
+    private var gtfsLoader : GTFSLoader = CSVLoader()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -171,7 +171,7 @@ class GTFSManager: ObservableObject {
             case .finished:
                 break
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }) { routes in
             self.routes = routes
@@ -192,7 +192,7 @@ class GTFSManager: ObservableObject {
             case .finished:
                 break
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }) { (trips, tripDictionary) in
             self.trips = trips
@@ -205,6 +205,7 @@ class GTFSManager: ObservableObject {
             .map { (shapes) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
                 let dictionary = Dictionary(grouping: shapes, by: { $0.shapeId })
                 let viewport = GTFSShapePoint.getOverviewViewport(for: shapes)
+                print(viewport)
                 return (shapes, dictionary, viewport)
         }
             
@@ -215,7 +216,7 @@ class GTFSManager: ObservableObject {
             case .finished:
                 break
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }) { (shapes, shapeDictionary, viewport) in
             self.shapes = shapes

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,8 @@
 		F456F6E624C83ED100B2218F /* bartTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E024C83ED100B2218F /* bartTrips.txt */; };
 		F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E124C83ED100B2218F /* bartStop_times.txt */; };
 		F456F6E824C83ED100B2218F /* bartStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E224C83ED100B2218F /* bartStops.txt */; };
+		F456F6EB24C8487400B2218F /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EA24C8487400B2218F /* CSV */; };
+		F456F6ED24C848A500B2218F /* CSVLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6EC24C848A500B2218F /* CSVLoader.swift */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -50,6 +52,7 @@
 		F456F6E024C83ED100B2218F /* bartTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartTrips.txt; sourceTree = "<group>"; };
 		F456F6E124C83ED100B2218F /* bartStop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStop_times.txt; sourceTree = "<group>"; };
 		F456F6E224C83ED100B2218F /* bartStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStops.txt; sourceTree = "<group>"; };
+		F456F6EC24C848A500B2218F /* CSVLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVLoader.swift; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F456F6EB24C8487400B2218F /* CSV in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +185,7 @@
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */,
 				F456F6CC24C782D800B2218F /* GTFSLoader.swift */,
+				F456F6EC24C848A500B2218F /* CSVLoader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -230,6 +235,9 @@
 			dependencies = (
 			);
 			name = SwiftUIGTFS;
+			packageProductDependencies = (
+				F456F6EA24C8487400B2218F /* CSV */,
+			);
 			productName = SwiftUIGTFS;
 			productReference = F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */;
 			productType = "com.apple.product-type.application";
@@ -258,6 +266,9 @@
 				Base,
 			);
 			mainGroup = F45E776724BB2694007A2F2C;
+			packageReferences = (
+				F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */,
+			);
 			productRefGroup = F45E777124BB2694007A2F2C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -302,6 +313,7 @@
 				F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
 				F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */,
+				F456F6ED24C848A500B2218F /* CSVLoader.swift in Sources */,
 				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
@@ -506,6 +518,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yaslab/CSV.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F456F6EA24C8487400B2218F /* CSV */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */;
+			productName = CSV;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F45E776824BB2694007A2F2C /* Project object */;
 }
