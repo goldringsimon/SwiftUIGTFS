@@ -28,6 +28,13 @@ struct LoadingOverlay: View {
                 }
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                Button(action: {
+                    self.gtfsManager.loadBartData()
+                }) {
+                    Text("Load BART data")
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
             }
             LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
             LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)

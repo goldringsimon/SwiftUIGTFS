@@ -1,0 +1,15 @@
+route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color
+1,YL-S,Antioch to SFIA/Millbrae,,1,http://www.bart.gov/schedules/bylineresults?route=1,FFFF33
+2,YL-N,Millbrae/SFIA to Antioch,,1,http://www.bart.gov/schedules/bylineresults?route=2,FFFF33
+3,OR-N,Berryessa/North San Jose to Richmond,,1,http://www.bart.gov/schedules/bylineresults?route=3,FF9933
+4,OR-S,Richmond to Berryessa/North San Jose,,1,http://www.bart.gov/schedules/bylineresults?route=4,FF9933
+5,GN-S,Berryessa/North San Jose to Daly City,,1,http://www.bart.gov/schedules/bylineresults?route=5,339933
+6,GN-N,Daly City to Berryessa/North San Jose,,1,http://www.bart.gov/schedules/bylineresults?route=6,339933
+7,RD-S,Richmond to Daly City/Millbrae,,1,http://www.bart.gov/schedules/bylineresults?route=7,FF0000
+8,RD-N,Millbrae/Daly City to Richmond,,1,http://www.bart.gov/schedules/bylineresults?route=8,FF0000
+11,BL-S,Dublin/Pleasanton to Daly City,,1,http://www.bart.gov/schedules/bylineresults?route=11,0099CC
+12,BL-N,Daly City to Dublin/Pleasanton,,1,http://www.bart.gov/schedules/bylineresults?route=12,0099CC
+13,PR-N,Millbrae to San Francisco International Airport,,1,http://www.bart.gov/schedules/bylineresults?route=13,C463C5
+14,PR-S,San Francisco International Airport to Millbrae,,1,http://www.bart.gov/schedules/bylineresults?route=14,C463C5
+19,BG-N,Oakland Airport to Coliseum,,1,http://www.bart.gov/schedules/bylineresults?route=19,D5CFA3
+20,BG-S,Coliseum to Oakland Airport,,1,http://www.bart.gov/schedules/bylineresults?route=20,D5CFA3

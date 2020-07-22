@@ -62,7 +62,7 @@ class GTFSManager: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
-    static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
+    private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
         var routeToShapeDictionary: [String: [String]] = [:]
         
@@ -122,6 +122,10 @@ class GTFSManager: ObservableObject {
     
     func loadCtaData() {
         loadLocalData(routes: "ctaRoutes", trips: "ctaTrips", shapes: "ctaShapes", stops: "ctaStops")
+    }
+    
+    func loadBartData() {
+        loadLocalData(routes: "bartRoutes", trips: "bartTrips", shapes: "bartShapes", stops: "bartStops")
     }
     
     private func loadLocalData(routes: String, trips: String, shapes: String, stops: String) {
@@ -198,8 +202,9 @@ class GTFSManager: ObservableObject {
         .store(in: &cancellables)
         
         let loadShapesPublisher = gtfsLoader.loadShapesPublisher(from: shapesUrl)
-            .map { (shapes, viewport) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
+            .map { (shapes) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
                 let dictionary = Dictionary(grouping: shapes, by: { $0.shapeId })
+                let viewport = GTFSShapePoint.getOverviewViewport(for: shapes)
                 return (shapes, dictionary, viewport)
         }
             
@@ -229,7 +234,7 @@ class GTFSManager: ObservableObject {
             case .finished:
                 break
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }) { stops in
             self.stops = stops

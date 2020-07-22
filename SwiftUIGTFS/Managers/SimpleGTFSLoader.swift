@@ -252,15 +252,15 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<([GTFSShapePoint], CGRect), GTFSError> {
-        return Future<([GTFSShapePoint], CGRect), GTFSError> { promise in
+    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSShapePoint], GTFSError> {
+        return Future<[GTFSShapePoint], GTFSError> { promise in
             return self.loadShapes(from: fileUrl) { (result) in
                 promise(result)
             }
         }.eraseToAnyPublisher()
     }
     
-    func loadShapes(from fileUrl: URL, completed: @escaping (Result<([GTFSShapePoint], CGRect), GTFSError>) -> Void) {
+    func loadShapes(from fileUrl: URL, completed: @escaping (Result<[GTFSShapePoint], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             var shapePoints: [GTFSShapePoint] = []
             
@@ -328,11 +328,6 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             
-            var minLat: Double?
-            var maxLat: Double?
-            var minLon: Double?
-            var maxLon: Double?
-            
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let currentLine = fileLines[i]
                 //let splitLine = currentLine.components(separatedBy: ",")
@@ -352,20 +347,8 @@ class SimpleGTFSLoader: GTFSLoader {
                 guard let ptSequence = Int(splitLine[shapePtSequenceColumn]) else { break }
                 let distTraveled = shapeDistTravelledCol == nil ? nil : Float(splitLine[shapeDistTravelledCol!])
                 shapePoints.append(GTFSShapePoint(shapeId: shapeId, ptLat: ptLat, ptLon: ptLon, ptSequence: ptSequence, distTraveled: distTraveled))
-                
-                if minLat == nil || ptLat < minLat! { minLat = ptLat }
-                if maxLat == nil || ptLat > maxLat! { maxLat = ptLat }
-                if minLon == nil || ptLon < minLon! { minLon = ptLon }
-                if maxLon == nil || ptLon > maxLon! { maxLon = ptLon }
             }
-            
-            guard minLat != nil,
-            maxLat != nil,
-            minLon != nil,
-            maxLon != nil else { return }
-            
-            let viewport = CGRect(x: minLon!, y: minLat!, width: maxLon! - minLon!, height: maxLat! - minLat!)
-            completed(.success((shapePoints, viewport)))
+            completed(.success(shapePoints))
         }
     }
     

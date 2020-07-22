@@ -10,6 +10,12 @@
 		F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */; };
 		F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115924BBB6EE008E85C6 /* GTFSManager.swift */; };
 		F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSLoader.swift */; };
+		F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DD24C83ED100B2218F /* bartRoutes.txt */; };
+		F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DE24C83ED100B2218F /* bartAgency.txt */; };
+		F456F6E524C83ED100B2218F /* bartShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DF24C83ED100B2218F /* bartShapes.txt */; };
+		F456F6E624C83ED100B2218F /* bartTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E024C83ED100B2218F /* bartTrips.txt */; };
+		F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E124C83ED100B2218F /* bartStop_times.txt */; };
+		F456F6E824C83ED100B2218F /* bartStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E224C83ED100B2218F /* bartStops.txt */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -38,6 +44,12 @@
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
 		F44F115924BBB6EE008E85C6 /* GTFSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSManager.swift; sourceTree = "<group>"; };
 		F456F6CC24C782D800B2218F /* GTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSLoader.swift; sourceTree = "<group>"; };
+		F456F6DD24C83ED100B2218F /* bartRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartRoutes.txt; sourceTree = "<group>"; };
+		F456F6DE24C83ED100B2218F /* bartAgency.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartAgency.txt; sourceTree = "<group>"; };
+		F456F6DF24C83ED100B2218F /* bartShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartShapes.txt; sourceTree = "<group>"; };
+		F456F6E024C83ED100B2218F /* bartTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartTrips.txt; sourceTree = "<group>"; };
+		F456F6E124C83ED100B2218F /* bartStop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStop_times.txt; sourceTree = "<group>"; };
+		F456F6E224C83ED100B2218F /* bartStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStops.txt; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +120,19 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		F456F6CE24C83E5500B2218F /* BART */ = {
+			isa = PBXGroup;
+			children = (
+				F456F6DE24C83ED100B2218F /* bartAgency.txt */,
+				F456F6DD24C83ED100B2218F /* bartRoutes.txt */,
+				F456F6DF24C83ED100B2218F /* bartShapes.txt */,
+				F456F6E124C83ED100B2218F /* bartStop_times.txt */,
+				F456F6E224C83ED100B2218F /* bartStops.txt */,
+				F456F6E024C83ED100B2218F /* bartTrips.txt */,
+			);
+			path = BART;
+			sourceTree = "<group>";
+		};
 		F45E776724BB2694007A2F2C = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +188,7 @@
 		F45E779224BBA98B007A2F2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				F456F6CE24C83E5500B2218F /* BART */,
 				F4062FDC24BE0DD20076C78D /* CTA */,
 				F4062FDB24BE0D9B0076C78D /* MBTA */,
 			);
@@ -248,14 +274,20 @@
 			files = (
 				F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */,
 				F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */,
+				F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */,
+				F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */,
+				F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */,
 				F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */,
 				F45E778A24BB6001007A2F2C /* mbtaShapes.txt in Resources */,
 				F49DE61224BF11210099A46A /* ctaStops.txt in Resources */,
 				F45E778024BB2696007A2F2C /* LaunchScreen.storyboard in Resources */,
+				F456F6E824C83ED100B2218F /* bartStops.txt in Resources */,
+				F456F6E624C83ED100B2218F /* bartTrips.txt in Resources */,
 				F45E777D24BB2696007A2F2C /* Preview Assets.xcassets in Resources */,
 				F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */,
 				F45E777A24BB2696007A2F2C /* Assets.xcassets in Resources */,
 				F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */,
+				F456F6E524C83ED100B2218F /* bartShapes.txt in Resources */,
 				F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
