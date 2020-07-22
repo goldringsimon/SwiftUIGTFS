@@ -18,6 +18,8 @@
 		F456F6E824C83ED100B2218F /* bartStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E224C83ED100B2218F /* bartStops.txt */; };
 		F456F6EB24C8487400B2218F /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EA24C8487400B2218F /* CSV */; };
 		F456F6ED24C848A500B2218F /* CSVLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6EC24C848A500B2218F /* CSVLoader.swift */; };
+		F456F6F024C893D700B2218F /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EF24C893D700B2218F /* Zip */; };
+		F456F6F224C8947700B2218F /* bart.zip in Resources */ = {isa = PBXBuildFile; fileRef = F456F6F124C8947700B2218F /* bart.zip */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -53,6 +55,7 @@
 		F456F6E124C83ED100B2218F /* bartStop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStop_times.txt; sourceTree = "<group>"; };
 		F456F6E224C83ED100B2218F /* bartStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStops.txt; sourceTree = "<group>"; };
 		F456F6EC24C848A500B2218F /* CSVLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVLoader.swift; sourceTree = "<group>"; };
+		F456F6F124C8947700B2218F /* bart.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = bart.zip; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -84,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F456F6F024C893D700B2218F /* Zip in Frameworks */,
 				F456F6EB24C8487400B2218F /* CSV in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,6 +197,7 @@
 		F45E779224BBA98B007A2F2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				F456F6F124C8947700B2218F /* bart.zip */,
 				F456F6CE24C83E5500B2218F /* BART */,
 				F4062FDC24BE0DD20076C78D /* CTA */,
 				F4062FDB24BE0D9B0076C78D /* MBTA */,
@@ -237,6 +242,7 @@
 			name = SwiftUIGTFS;
 			packageProductDependencies = (
 				F456F6EA24C8487400B2218F /* CSV */,
+				F456F6EF24C893D700B2218F /* Zip */,
 			);
 			productName = SwiftUIGTFS;
 			productReference = F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */;
@@ -268,6 +274,7 @@
 			mainGroup = F45E776724BB2694007A2F2C;
 			packageReferences = (
 				F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */,
+				F456F6EE24C893D700B2218F /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = F45E777124BB2694007A2F2C /* Products */;
 			projectDirPath = "";
@@ -285,6 +292,7 @@
 			files = (
 				F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */,
 				F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */,
+				F456F6F224C8947700B2218F /* bart.zip in Resources */,
 				F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */,
 				F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */,
 				F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */,
@@ -528,6 +536,14 @@
 				minimumVersion = 2.4.3;
 			};
 		};
+		F456F6EE24C893D700B2218F /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -535,6 +551,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */;
 			productName = CSV;
+		};
+		F456F6EF24C893D700B2218F /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F456F6EE24C893D700B2218F /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

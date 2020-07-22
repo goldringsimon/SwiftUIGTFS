@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Combine
+import Zip
 
 enum GTFSRouteType: Int, CaseIterable {
     case trams = 0
@@ -107,6 +108,21 @@ class GTFSManager: ObservableObject {
     
     func getUniqueShapesIdsForRoute(for routeId: String) -> [String] {
         return routeToShapeDictionary[routeId] ?? []
+    }
+    
+    func loadZippedData() {
+        do {
+            let filePath = Bundle.main.url(forResource: "bart", withExtension: "zip")!
+            let unzipDirectory = try Zip.quickUnzipFile(filePath)
+            let routesUrl = URL(fileURLWithPath: "routes.txt", relativeTo: unzipDirectory)
+            let tripsUrl = URL(fileURLWithPath: "trips.txt", relativeTo: unzipDirectory)
+            let shapesUrl = URL(fileURLWithPath: "shapes.txt", relativeTo: unzipDirectory)
+            let stopsUrl = URL(fileURLWithPath: "stops.txt", relativeTo: unzipDirectory)
+            loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
+        }
+        catch {
+          print("Something went wrong")
+        }
     }
     
     func loadMbtaData() {

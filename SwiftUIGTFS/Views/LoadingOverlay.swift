@@ -12,8 +12,8 @@ struct LoadingOverlay: View {
     @ObservedObject var gtfsManager: GTFSManager
     
     var body: some View {
-        VStack {
-            HStack {
+        HStack {
+            VStack {
                 Button(action: {
                     self.gtfsManager.loadMbtaData()
                 }) {
@@ -35,16 +35,24 @@ struct LoadingOverlay: View {
                 }
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                Button(action: {
+                    self.gtfsManager.loadZippedData()
+                }) {
+                    Text("Load zipped BART data")
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
             }
-            LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
-            LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
-            LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
-            LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
+            VStack {
+                LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
+                LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
+                LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
+                LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
+            }
         }
         .font(Font.subheadline.lowercaseSmallCaps())
-        .padding()
         .modifier(UICard())
-        .frame(width: 400)
+        .frame(width: 600)
         .animation(.easeInOut)
     }
 }
