@@ -10,6 +10,9 @@ import SwiftUI
 import Combine
 import Zip
 
+let mbtaGtfsPermalink = "https://cdn.mbta.com/MBTA_GTFS.zip"
+let bartGtfsPermalink = "https://www.bart.gov/dev/schedules/google_transit.zip"
+
 enum GTFSRouteType: Int, CaseIterable {
     case trams = 0
     case metro = 1
@@ -156,7 +159,7 @@ class GTFSManager: ObservableObject {
             publisher
             .map({ (display) -> [GTFSRoute] in
                     if display {
-                        return self.routes.filter { Int($0.routeType) == i }
+                        return self.routes.filter { $0.routeType == i }
                     }
                     return []
                 })

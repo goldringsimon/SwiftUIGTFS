@@ -15,7 +15,7 @@ struct GTFSRoute: Identifiable, Decodable {
     let routeShortName: String?
     let routeLongName: String?
     let routeDesc: String?
-    let routeType: String
+    let routeType: Int
     let routeUrl: String?
     let routeColor: String?
     let routeTextColor: String?

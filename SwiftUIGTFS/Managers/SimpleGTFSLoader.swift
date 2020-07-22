@@ -146,12 +146,16 @@ class SimpleGTFSLoader: GTFSLoader {
                     continue
                 }
                 
+                guard let routeType = Int(splitLine[routeTypeColumn]) else { // GTFS required field, non-optional
+                    completed(.failure(.invalidRowFormat(issue: "route_type wasn't an Int value")))
+                    return
+                }
+                
                 let routeId = splitLine[routeIdColumn] // GTFS required field, non-optional
                 let agencyId = agencyIdCol == nil ? nil : splitLine[agencyIdCol!]
                 let routeShortName = routeShortNameCol == nil ? nil : splitLine[routeShortNameCol!]
                 let routeLongName = routeLongNameCol == nil ? nil : splitLine[routeLongNameCol!]
                 let routeDesc = routeDescCol == nil ? nil : splitLine[routeDescCol!]
-                let routeType = splitLine[routeTypeColumn] // GTFS required field, non-optional
                 let routeUrl = routeUrlCol == nil ? nil : splitLine[routeUrlCol!]
                 let routeColor = routeColorCol == nil ? nil : splitLine[routeColorCol!]
                 let routeTextColor = routeTextColorCol == nil ? nil : splitLine[routeTextColorCol!]
