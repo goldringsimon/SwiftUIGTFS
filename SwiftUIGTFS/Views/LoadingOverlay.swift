@@ -13,43 +13,14 @@ struct LoadingOverlay: View {
     
     var body: some View {
         HStack {
-            VStack {
-                Button(action: {
-                    self.gtfsManager.loadMbtaData()
-                }) {
-                    Text("Load MBTA data")
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                Button(action: {
-                    self.gtfsManager.loadCtaData()
-                }) {
-                    Text("Load CTA data")
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                Button(action: {
-                    self.gtfsManager.loadBartData()
-                }) {
-                    Text("Load BART data")
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                Button(action: {
-                    self.gtfsManager.loadLocalBartZippedData()
-                }) {
-                    Text("Load local BART zipped data")
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-                Button(action: {
-                    self.gtfsManager.loadRemoteBartZippedData()
-                }) {
-                    Text("Load remote BART zipped data")
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
-            }
+            VStack(alignment: .leading, spacing: 0) {
+                LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
+                LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
+                LoadButton(action: { self.gtfsManager.loadBartData() }, label: "Load BART data from bundle")
+                LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
+                LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
+                LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")
+            }.frame(width: 300)
             VStack {
                 LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
                 LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
@@ -59,8 +30,24 @@ struct LoadingOverlay: View {
         }
         .font(Font.subheadline.lowercaseSmallCaps())
         .modifier(UICard())
-        .frame(width: 600)
+        .frame(width: 700)
         .animation(.easeInOut)
+    }
+}
+
+struct LoadButton: View {
+    var action: () -> Void
+    var label: String
+    
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+        }
+        .padding()
+        .background(Color(.tertiarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke())
+        .padding(2)
     }
 }
 

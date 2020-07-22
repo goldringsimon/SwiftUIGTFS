@@ -113,9 +113,18 @@ class GTFSManager: ObservableObject {
         return routeToShapeDictionary[routeId] ?? []
     }
     
+    func loadRemoteMbtaZippedData() {
+        guard let url = URL(string: mbtaGtfsPermalink) else { return }
+        loadRemoteZippedData(from: url)
+    }
+    
     func loadRemoteBartZippedData() {
-        guard let bartUrl = URL(string: bartGtfsPermalink) else { return }
-        let downloadTask = URLSession.shared.downloadTask(with: bartUrl) { [weak self]
+        guard let url = URL(string: bartGtfsPermalink) else { return }
+        loadRemoteZippedData(from: url)
+    }
+    
+    func loadRemoteZippedData(from url: URL) {
+        let downloadTask = URLSession.shared.downloadTask(with: url) { [weak self]
             urlOrNil, responseOrNil, errorOrNil in
             // check for and handle errors:
             // * errorOrNil should be nil
