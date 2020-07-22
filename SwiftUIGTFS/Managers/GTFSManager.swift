@@ -9,13 +9,6 @@
 import SwiftUI
 import Combine
 
-enum GTFSError: Error {
-    case invalidRouteData(issue: String)
-    case invalidTripData(issue: String)
-    case invalidShapeData(issue: String)
-    case invalidStopData(issue: String)
-}
-
 enum GTFSRouteType: Int, CaseIterable {
     case trams = 0
     case metro = 1
@@ -140,7 +133,7 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {
-        let loadRoutesPublisher = gtfsLoader.loadRoutesPublisher(from: routesUrl)
+        let loadRoutesPublisher = gtfsLoader.routesPublisher(from: routesUrl)
         
         // This is not ideal. I wish I could replace these four variables with an array of Published<Bool>
         for (i, publisher) in [$displayTrams, $displayMetro, $displayRail, $displayBuses].enumerated() {
@@ -157,6 +150,7 @@ class GTFSManager: ObservableObject {
         }
             
         $displayedRoutesByType
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .map { (routes) -> [GTFSRoute] in
                 return routes.flatMap({ $0 })
         }
@@ -179,7 +173,7 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadTripsPublisher = gtfsLoader.loadTripsPublisher(from: tripsUrl)
+        let loadTripsPublisher = gtfsLoader.tripsPublisher(from: tripsUrl)
             .map { (trips) -> ([GTFSTrip], [String: [GTFSTrip]]) in
                 let dictionary = Dictionary(grouping: trips, by: { $0.routeId })
                 return (trips, dictionary)
@@ -201,11 +195,10 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadShapesPublisher = gtfsLoader.loadShapesPublisher(from: shapesUrl)
+        let loadShapesPublisher = gtfsLoader.shapesPublisher(from: shapesUrl)
             .map { (shapes) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
                 let dictionary = Dictionary(grouping: shapes, by: { $0.shapeId })
                 let viewport = GTFSShapePoint.getOverviewViewport(for: shapes)
-                print(viewport)
                 return (shapes, dictionary, viewport)
         }
             
@@ -226,7 +219,7 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadStopsPublisher = gtfsLoader.loadStopsPublisher(from: stopsUrl)
+        let loadStopsPublisher = gtfsLoader.stopsPublisher(from: stopsUrl)
         
         loadStopsPublisher
         .receive(on: DispatchQueue.main)

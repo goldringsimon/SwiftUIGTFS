@@ -9,9 +9,17 @@
 import Foundation
 import Combine
 
+enum GTFSError: Error {
+    case invalidFile(issue: String)
+    case invalidRowFormat(issue: String)
+    case missingCSVHeader(issue: String)
+    case invalidRegEx(issue: String)
+    case missingColumn(issue: String)
+}
+
 protocol GTFSLoader {
-    func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError>
-    func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError>
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSShapePoint], GTFSError> // TODO move viewport code to manager
-    func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError>
+    func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError>
+    func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError>
+    func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError>
+    func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError>
 }

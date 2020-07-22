@@ -11,64 +11,45 @@ import Combine
 import CSV
 
 class CSVLoader: GTFSLoader {
-    
-    func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError> {
-        return Future<[GTFSRoute], GTFSError> { promise in
-            return self.loadEntity(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+    func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
+        loadEntityPublisher(from: fileUrl)
     }
     
-    func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError> {
-        return Future<[GTFSTrip], GTFSError> { promise in
-            return self.loadEntity(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+    func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
+        loadEntityPublisher(from: fileUrl)
     }
     
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSShapePoint], GTFSError> {
-        return Future<[GTFSShapePoint], GTFSError> { promise in
-            return self.loadEntity(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+    func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
+        loadEntityPublisher(from: fileUrl)
     }
     
-    func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError> {
-        return Future<[GTFSStop], GTFSError> { promise in
-            return self.loadEntity(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+    func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
+        loadEntityPublisher(from: fileUrl)
     }
     
-    func loadEntity<T: Decodable>(from fileUrl: URL, completed: @escaping (Result<[T], GTFSError>) -> Void) {
-        DispatchQueue.global().async {
-            guard let fileString = try? String(contentsOf: fileUrl) else {
-                completed(.failure(.invalidRouteData(issue: "CSV loader couldn't open URL \(fileUrl)")))
-                return
-            }
-            
-            var records = [T]()
-            do {
-                let reader = try CSVReader(string: fileString, hasHeaderRow: true)
-                let decoder = CSVRowDecoder()
-                while reader.next() != nil {
-                    
-                    let row = try decoder.decode(T.self, from: reader)
-                    records.append(row)
+    private func loadEntityPublisher<T: Decodable>(from fileUrl: URL) -> Future<[T], GTFSError> {
+        return Future<[T], GTFSError> { promise in
+            DispatchQueue.global(qos: .userInitiated).async {
+                guard let fileString = try? String(contentsOf: fileUrl) else {
+                    promise(.failure(.invalidFile(issue: "CSV loader couldn't open URL \(fileUrl)")))
+                    return
                 }
-            } catch {
-                // Invalid row format
-                completed(.failure(.invalidRouteData(issue: "CSV issue in CSVLoader: \(error)")))
+                
+                var records = [T]()
+                do {
+                    let reader = try CSVReader(string: fileString, hasHeaderRow: true)
+                    let decoder = CSVRowDecoder()
+                    while reader.next() != nil {
+                        let row = try decoder.decode(T.self, from: reader)
+                        records.append(row)
+                    }
+                } catch {
+                    // Invalid row format
+                    promise(.failure(.invalidRowFormat(issue: "CSVLoader found invalid row format: \(error)")))
+                }
+                
+                promise(.success(records))
             }
-            completed(.success(records))
         }
     }
 }

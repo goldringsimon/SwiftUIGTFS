@@ -15,32 +15,54 @@ class SimpleGTFSLoader: GTFSLoader {
 (?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
 """
     
-    func loadRoutesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSRoute], GTFSError> {
+    func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
         return Future<[GTFSRoute], GTFSError> { promise in
             return self.loadRoutes(from: fileUrl) { (result) in
                 promise(result)
             }
         }
-        .eraseToAnyPublisher()
     }
     
-    func loadRoutes(from fileUrl: URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
+    func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
+        return Future<[GTFSTrip], GTFSError> { promise in
+            return self.loadTrips(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }
+    }
+    
+    func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
+        return Future<[GTFSShapePoint], GTFSError> { promise in
+            return self.loadShapes(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }
+    }
+    
+    func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
+        return Future<[GTFSStop], GTFSError> { promise in
+            return self.loadStops(from: fileUrl) { (result) in
+                promise(result)
+            }
+        }
+    }
+    
+    private func loadRoutes(from fileUrl: URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
-                completed(.failure(.invalidRouteData(issue: "Couldn't read routes.txt as string")))
+                completed(.failure(.invalidFile(issue: "Couldn't read routes.txt as string")))
                 return
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
             guard let headerLine = fileLines.first else {
-                completed(.failure(.invalidRouteData(issue: "Missing header row in routes.txt")))
+                completed(.failure(.missingCSVHeader(issue: "Missing header row in routes.txt")))
                 return
             }
-            //let colTitles = headerLine.components(separatedBy: ",")
             
             guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
                 print("failed creating regex")
-                completed(.failure(.invalidRouteData(issue: "Couldn't init RegExp for routes.txt")))
+                completed(.failure(.invalidRegEx(issue: "Couldn't init RegEx for routes.txt")))
                 return
             }
             let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
@@ -96,17 +118,17 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             guard let routeIdColumn = routeIdCol else {
-                completed(.failure(.invalidRouteData(issue: "Missing route_id column in routes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing route_id column in routes.txt")))
                 return
             }
             
             guard let routeTypeColumn = routeTypeCol else {
-                completed(.failure(.invalidRouteData(issue: "Missing route_type column in routes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing route_type column in routes.txt")))
                 return
             }
             
             if routeShortNameCol == nil && routeLongNameCol == nil {
-                completed(.failure(.invalidRouteData(issue: "routes.txt must contain at least one of route_short_name and route_long_name")))
+                completed(.failure(.missingColumn(issue: "routes.txt must contain at least one of route_short_name and route_long_name")))
                 return
             }
             
@@ -114,7 +136,6 @@ class SimpleGTFSLoader: GTFSLoader {
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let currentLine = fileLines[i]
-                //let splitLine = currentLine.components(separatedBy: ",")
                 let range = NSRange(currentLine.startIndex..<fileLines[i].endIndex, in: currentLine)
                 let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
                     return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
@@ -146,31 +167,22 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadTripsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSTrip], GTFSError> {
-        return Future<[GTFSTrip], GTFSError> { promise in
-            return self.loadTrips(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }.eraseToAnyPublisher()
-    }
-    
-    func loadTrips(from fileUrl: URL, completed: @escaping (Result<[GTFSTrip], GTFSError>) -> Void) {
+    private func loadTrips(from fileUrl: URL, completed: @escaping (Result<[GTFSTrip], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
-                completed(.failure(.invalidTripData(issue: "Couldn't read trips.txt as string")))
+                completed(.failure(.invalidFile(issue: "Couldn't read trips.txt as string")))
                 return
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
             guard let headerLine = fileLines.first else {
-                completed(.failure(.invalidTripData(issue: "Missing header row in trips.txt")))
+                completed(.failure(.missingCSVHeader(issue: "Missing header row in trips.txt")))
                 return
             }
-            //let colTitles = headerLine.components(separatedBy: ",")
             
             guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
                 print("failed creating regex")
-                completed(.failure(.invalidTripData(issue: "Couldn't init RegExp for trips.txt")))
+                completed(.failure(.invalidRegEx(issue: "Couldn't init RegEx for trips.txt")))
                 return
             }
             let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
@@ -208,17 +220,17 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             guard let routeIdColumn = routeIdCol else {
-                completed(.failure(.invalidTripData(issue: "Missing route_id column in trips.txt")))
+                completed(.failure(.missingColumn(issue: "Missing route_id column in trips.txt")))
                 return
             }
             
             guard let serviceIdColumn = serviceIdCol else {
-                completed(.failure(.invalidTripData(issue: "Missing service_id column in trips.txt")))
+                completed(.failure(.missingColumn(issue: "Missing service_id column in trips.txt")))
                 return
             }
             
             guard let tripIdColumn = tripIdCol else {
-                completed(.failure(.invalidTripData(issue: "Missing trip_id column in trips.txt")))
+                completed(.failure(.missingColumn(issue: "Missing trip_id column in trips.txt")))
                 return
             }
             
@@ -252,32 +264,23 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadShapesPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSShapePoint], GTFSError> {
-        return Future<[GTFSShapePoint], GTFSError> { promise in
-            return self.loadShapes(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }.eraseToAnyPublisher()
-    }
-    
-    func loadShapes(from fileUrl: URL, completed: @escaping (Result<[GTFSShapePoint], GTFSError>) -> Void) {
+    private func loadShapes(from fileUrl: URL, completed: @escaping (Result<[GTFSShapePoint], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             var shapePoints: [GTFSShapePoint] = []
             
             guard let fileString = try? String(contentsOf: fileUrl) else {
-                completed(.failure(.invalidShapeData(issue: "Couldn't read shapes.txt as string")))
+                completed(.failure(.invalidFile(issue: "Couldn't read shapes.txt as string")))
                 return
             }
             
             let fileLines = fileString.components(separatedBy: "\n")
             guard let headerLine = fileLines.first else {
-                completed(.failure(.invalidShapeData(issue: "Missing header row in shapes.txt")))
+                completed(.failure(.missingCSVHeader(issue: "Missing header row in shapes.txt")))
                 return
             }
-            //let colTitles = headerLine.components(separatedBy: ",")
             guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
                 print("failed creating regex")
-                completed(.failure(.invalidShapeData(issue: "Couldn't init RegExp for shapes.txt")))
+                completed(.failure(.invalidRegEx(issue: "Couldn't init RegExp for shapes.txt")))
                 return
             }
             let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
@@ -309,28 +312,27 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             guard let shapeIdColumn = shapeIdCol else {
-                completed(.failure(.invalidShapeData(issue: "Missing shape_id column in shapes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing shape_id column in shapes.txt")))
                 return
             }
             
             guard let shapePtLatColumn = shapePtLatCol else {
-                completed(.failure(.invalidShapeData(issue: "Missing shape_pt_lat column in shapes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing shape_pt_lat column in shapes.txt")))
                 return
             }
             
             guard let shapePtLonColumn = shapePtLonCol else {
-                completed(.failure(.invalidShapeData(issue: "Missing shape_pt_lon column in shapes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing shape_pt_lon column in shapes.txt")))
                 return
             }
             
             guard let shapePtSequenceColumn = shapePtSequenceCol else {
-                completed(.failure(.invalidShapeData(issue: "Missing shape_pt_lon column in shapes.txt")))
+                completed(.failure(.missingColumn(issue: "Missing shape_pt_lon column in shapes.txt")))
                 return
             }
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let currentLine = fileLines[i]
-                //let splitLine = currentLine.components(separatedBy: ",")
                 let range = NSRange(currentLine.startIndex..<currentLine.endIndex, in: currentLine)
                 let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
                     return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
@@ -352,30 +354,21 @@ class SimpleGTFSLoader: GTFSLoader {
         }
     }
     
-    func loadStopsPublisher(from fileUrl: URL) -> AnyPublisher<[GTFSStop], GTFSError> {
-        return Future<[GTFSStop], GTFSError> { promise in
-            return self.loadStops(from: fileUrl) { (result) in
-                promise(result)
-            }
-        }.eraseToAnyPublisher()
-    }
-    
-    func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {
+    private func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
-                completed(.failure(.invalidStopData(issue: "Couldn't read stops.txt as string")))
+                completed(.failure(.invalidFile(issue: "Couldn't read stops.txt as string")))
                 return
             }
             let fileLines = fileString.components(separatedBy: "\n")
             guard let headerLine = fileLines.first else {
-                completed(.failure(.invalidStopData(issue: "Missing header row in stops.txt")))
+                completed(.failure(.missingCSVHeader(issue: "Missing header row in stops.txt")))
                 return
             }
-            //let colTitles = headerLine.components(separatedBy: ",")
             
             guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
                 print("failed creating regex")
-                completed(.failure(.invalidStopData(issue: "Couldn't init RegExp for stops.txt")))
+                completed(.failure(.invalidRegEx(issue: "Couldn't init RegExp for stops.txt")))
                 return
             }
             let range = NSRange(headerLine.startIndex..<headerLine.endIndex, in: headerLine)
@@ -407,7 +400,7 @@ class SimpleGTFSLoader: GTFSLoader {
             }
             
             guard let stopIdColumn = stopIdCol else {
-                completed(.failure(.invalidStopData(issue: "Missing stop_id column in stops.txt")))
+                completed(.failure(.missingColumn(issue: "Missing stop_id column in stops.txt")))
                 return
             }
             
@@ -415,7 +408,6 @@ class SimpleGTFSLoader: GTFSLoader {
             
             for i in 1..<fileLines.count { // Don't want first (header) line
                 let currentLine = fileLines[i]
-                //let splitLine = currentLine.components(separatedBy: ",")
                 let range = NSRange(currentLine.startIndex..<currentLine.endIndex, in: currentLine)
                 let splitLine = regex.matches(in: currentLine, options: [], range: range).map { (result) -> String in
                     return String(currentLine[Range(result.range(at: 1), in: currentLine)!])
