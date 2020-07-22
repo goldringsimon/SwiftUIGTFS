@@ -36,9 +36,16 @@ struct LoadingOverlay: View {
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke())
                 Button(action: {
-                    self.gtfsManager.loadZippedData()
+                    self.gtfsManager.loadLocalBartZippedData()
                 }) {
-                    Text("Load zipped BART data")
+                    Text("Load local BART zipped data")
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                Button(action: {
+                    self.gtfsManager.loadRemoteBartZippedData()
+                }) {
+                    Text("Load remote BART zipped data")
                 }
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke())

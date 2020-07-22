@@ -113,18 +113,74 @@ class GTFSManager: ObservableObject {
         return routeToShapeDictionary[routeId] ?? []
     }
     
-    func loadZippedData() {
+    func loadRemoteBartZippedData() {
+        guard let bartUrl = URL(string: bartGtfsPermalink) else { return }
+        let downloadTask = URLSession.shared.downloadTask(with: bartUrl) { [weak self]
+            urlOrNil, responseOrNil, errorOrNil in
+            // check for and handle errors:
+            // * errorOrNil should be nil
+            // * responseOrNil should be an HTTPURLResponse with statusCode in 200..<299
+            guard errorOrNil == nil else { return }
+            guard let response = responseOrNil as? HTTPURLResponse,
+                (200..<299).contains(response.statusCode) else { return }
+            
+            guard let fileUrl = urlOrNil else { return }
+            do {
+                let documentsURL = try
+                    FileManager.default.url(for: .documentDirectory,
+                                            in: .userDomainMask,
+                                            appropriateFor: nil,
+                                            create: false)
+                /*var savedURL = documentsURL.appendingPathComponent(fileUrl.lastPathComponent)
+                savedURL.deletePathExtension()
+                savedURL.appendPathExtension(".zip")*/
+                let savedURL = documentsURL.appendingPathComponent("gtfs.zip")
+                if FileManager.default.fileExists(atPath: savedURL.path) {
+                    try FileManager.default.removeItem(at: savedURL)
+                }
+                try FileManager.default.moveItem(at: fileUrl, to: savedURL)
+                self?.loadZippedData(from: savedURL)
+            } catch {
+                print ("file error: \(error)")
+            }
+        }
+        downloadTask.resume()
+    }
+    
+    func loadLocalBartZippedData() {
+        let filePath = Bundle.main.url(forResource: "bart", withExtension: "zip")!
+        loadZippedData(from: filePath)
+    }
+    
+    func loadZippedData(from url: URL) {
         do {
-            let filePath = Bundle.main.url(forResource: "bart", withExtension: "zip")!
-            let unzipDirectory = try Zip.quickUnzipFile(filePath)
+            let unzipDirectory = try Zip.quickUnzipFile(url)
+            
             let routesUrl = URL(fileURLWithPath: "routes.txt", relativeTo: unzipDirectory)
             let tripsUrl = URL(fileURLWithPath: "trips.txt", relativeTo: unzipDirectory)
             let shapesUrl = URL(fileURLWithPath: "shapes.txt", relativeTo: unzipDirectory)
             let stopsUrl = URL(fileURLWithPath: "stops.txt", relativeTo: unzipDirectory)
             loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
+            
+            /*let fileManager = FileManager.default
+            let unzipDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            try Zip.unzipFile(filePath, destination: unzipDirectory, overwrite: true, password: nil, progress: { (progress) in
+                // update progress
+                print(progress)
+            }) { [weak self] (finishedUrl) in
+                finishedUrl.path
+                let routesUrl = URL(fileURLWithPath: "routes.txt", relativeTo: finishedUrl)
+                let tripsUrl = URL(fileURLWithPath: "trips.txt", relativeTo: finishedUrl)
+                let shapesUrl = URL(fileURLWithPath: "shapes.txt", relativeTo: finishedUrl)
+                let stopsUrl = URL(fileURLWithPath: "stops.txt", relativeTo: finishedUrl)
+                self?.loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
+            }*/
+            
         }
         catch {
-          print("Something went wrong")
+            print("Something went wrong")
+            print(error)
         }
     }
     
@@ -178,7 +234,7 @@ class GTFSManager: ObservableObject {
         .store(in: &cancellables)
         
         loadRoutesPublisher
-            .receive(on: DispatchQueue.main)
+        .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
             switch completion {
             case .finished:
@@ -283,6 +339,7 @@ class GTFSManager: ObservableObject {
             .map({ (a, b) -> Bool in
                 return a && b
             })
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isFinishedLoading, on: self)
             .store(in: &cancellables)
     }
