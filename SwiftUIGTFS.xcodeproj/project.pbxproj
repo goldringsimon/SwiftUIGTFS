@@ -10,7 +10,7 @@
 		F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */; };
 		F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */; };
 		F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115924BBB6EE008E85C6 /* GTFSManager.swift */; };
-		F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSLoader.swift */; };
+		F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSReader.swift */; };
 		F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DD24C83ED100B2218F /* bartRoutes.txt */; };
 		F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DE24C83ED100B2218F /* bartAgency.txt */; };
 		F456F6E524C83ED100B2218F /* bartShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DF24C83ED100B2218F /* bartShapes.txt */; };
@@ -18,7 +18,7 @@
 		F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E124C83ED100B2218F /* bartStop_times.txt */; };
 		F456F6E824C83ED100B2218F /* bartStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6E224C83ED100B2218F /* bartStops.txt */; };
 		F456F6EB24C8487400B2218F /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EA24C8487400B2218F /* CSV */; };
-		F456F6ED24C848A500B2218F /* CSVLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6EC24C848A500B2218F /* CSVLoader.swift */; };
+		F456F6ED24C848A500B2218F /* CSVDotSwiftReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */; };
 		F456F6F024C893D700B2218F /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EF24C893D700B2218F /* Zip */; };
 		F456F6F224C8947700B2218F /* bart.zip in Resources */ = {isa = PBXBuildFile; fileRef = F456F6F124C8947700B2218F /* bart.zip */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
@@ -39,8 +39,9 @@
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
 		F49DE61224BF11210099A46A /* ctaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60E24BF11210099A46A /* ctaStops.txt */; };
-		F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */; };
+		F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleCSVReader.swift */; };
 		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
+		F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931D24CA2D6500766C39 /* Constants.swift */; };
 		F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */; };
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
@@ -49,14 +50,14 @@
 		F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSDownloadDelegate.swift; sourceTree = "<group>"; };
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
 		F44F115924BBB6EE008E85C6 /* GTFSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSManager.swift; sourceTree = "<group>"; };
-		F456F6CC24C782D800B2218F /* GTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSLoader.swift; sourceTree = "<group>"; };
+		F456F6CC24C782D800B2218F /* GTFSReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSReader.swift; sourceTree = "<group>"; };
 		F456F6DD24C83ED100B2218F /* bartRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartRoutes.txt; sourceTree = "<group>"; };
 		F456F6DE24C83ED100B2218F /* bartAgency.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartAgency.txt; sourceTree = "<group>"; };
 		F456F6DF24C83ED100B2218F /* bartShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartShapes.txt; sourceTree = "<group>"; };
 		F456F6E024C83ED100B2218F /* bartTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartTrips.txt; sourceTree = "<group>"; };
 		F456F6E124C83ED100B2218F /* bartStop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStop_times.txt; sourceTree = "<group>"; };
 		F456F6E224C83ED100B2218F /* bartStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStops.txt; sourceTree = "<group>"; };
-		F456F6EC24C848A500B2218F /* CSVLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVLoader.swift; sourceTree = "<group>"; };
+		F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVDotSwiftReader.swift; sourceTree = "<group>"; };
 		F456F6F124C8947700B2218F /* bart.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = bart.zip; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,8 +79,9 @@
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
 		F49DE60E24BF11210099A46A /* ctaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaStops.txt; sourceTree = "<group>"; };
-		F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleGTFSLoader.swift; sourceTree = "<group>"; };
+		F49DE61324C08D940099A46A /* SimpleCSVReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCSVReader.swift; sourceTree = "<group>"; };
 		F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
+		F4C9931D24CA2D6500766C39 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSStop.swift; sourceTree = "<group>"; };
 		F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaStops.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,6 +119,16 @@
 				F49DE60B24BF11210099A46A /* ctaTrips.txt */,
 			);
 			path = CTA;
+			sourceTree = "<group>";
+		};
+		F408E9CC24CA286F0040CE81 /* CSVReader */ = {
+			isa = PBXGroup;
+			children = (
+				F49DE61324C08D940099A46A /* SimpleCSVReader.swift */,
+				F456F6CC24C782D800B2218F /* GTFSReader.swift */,
+				F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */,
+			);
+			path = CSVReader;
 			sourceTree = "<group>";
 		};
 		F44F115B24BBB816008E85C6 /* Model */ = {
@@ -162,6 +174,7 @@
 		F45E777224BB2694007A2F2C /* SwiftUIGTFS */ = {
 			isa = PBXGroup;
 			children = (
+				F408E9CC24CA286F0040CE81 /* CSVReader */,
 				F4BF575724C4F30C0070CC88 /* Utility */,
 				F45E779224BBA98B007A2F2C /* Data */,
 				F44F115B24BBB816008E85C6 /* Model */,
@@ -190,9 +203,6 @@
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */,
-				F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */,
-				F456F6CC24C782D800B2218F /* GTFSLoader.swift */,
-				F456F6EC24C848A500B2218F /* CSVLoader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -223,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */,
+				F4C9931D24CA2D6500766C39 /* Constants.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -321,10 +332,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F49DE61424C08D940099A46A /* SimpleGTFSLoader.swift in Sources */,
+				F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */,
+				F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
 				F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */,
-				F456F6ED24C848A500B2218F /* CSVLoader.swift in Sources */,
+				F456F6ED24C848A500B2218F /* CSVDotSwiftReader.swift in Sources */,
 				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
@@ -335,7 +347,7 @@
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
-				F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */,
+				F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -484,7 +496,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Simon-Goldring.SwiftUIGTFS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -504,7 +516,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Simon-Goldring.SwiftUIGTFS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

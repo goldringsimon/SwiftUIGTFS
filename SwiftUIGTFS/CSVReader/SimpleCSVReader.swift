@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-class SimpleGTFSLoader: GTFSLoader {
+class SimpleCSVReader: GTFSReader {
         
     private static let csvRegEx = """
 (?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
@@ -60,7 +60,7 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             
-            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+            guard let regex = try? NSRegularExpression(pattern: SimpleCSVReader.csvRegEx, options: []) else {
                 print("failed creating regex")
                 completed(.failure(.invalidRegEx(issue: "Couldn't init RegEx for routes.txt")))
                 return
@@ -184,7 +184,7 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             
-            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+            guard let regex = try? NSRegularExpression(pattern: SimpleCSVReader.csvRegEx, options: []) else {
                 print("failed creating regex")
                 completed(.failure(.invalidRegEx(issue: "Couldn't init RegEx for trips.txt")))
                 return
@@ -282,7 +282,7 @@ class SimpleGTFSLoader: GTFSLoader {
                 completed(.failure(.missingCSVHeader(issue: "Missing header row in shapes.txt")))
                 return
             }
-            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+            guard let regex = try? NSRegularExpression(pattern: SimpleCSVReader.csvRegEx, options: []) else {
                 print("failed creating regex")
                 completed(.failure(.invalidRegEx(issue: "Couldn't init RegExp for shapes.txt")))
                 return
@@ -370,7 +370,7 @@ class SimpleGTFSLoader: GTFSLoader {
                 return
             }
             
-            guard let regex = try? NSRegularExpression(pattern: SimpleGTFSLoader.csvRegEx, options: []) else {
+            guard let regex = try? NSRegularExpression(pattern: SimpleCSVReader.csvRegEx, options: []) else {
                 print("failed creating regex")
                 completed(.failure(.invalidRegEx(issue: "Couldn't init RegExp for stops.txt")))
                 return

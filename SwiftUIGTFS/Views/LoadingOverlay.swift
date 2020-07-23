@@ -23,21 +23,35 @@ struct LoadingOverlay: View {
             }
             VStack {
                 HStack {
+                    Spacer()
+                    VStack {
+                        Text("SwiftUI GTFS Viewer")
+                            .font(.largeTitle)
+                        Text("Created by Simon Goldring")
+                            .font(.subheadline)
+                    }
+                    Spacer()
+                }
+                Divider()
+                HStack {
                     Text("Downloading: ")
                     Spacer()
                     ProgressBar(amount: gtfsManager.amountDownloaded)
                         .frame(height: 15)
-                        .padding([.trailing])
+                        .padding([.leading, .trailing])
                 }
-                LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
-                LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
-                LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
-                LoadingRow(description: "Loading stops...", isFinished: $gtfsManager.isFinishedLoadingStops)
+                LoadingRow(description: "Loading routes...", isFinished: gtfsManager.isFinishedLoadingRoutes)
+                LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
+                LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
+                LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
             }
+            .padding()
         }
         .font(Font.subheadline.lowercaseSmallCaps())
-        .modifier(UICard())
         .frame(width: 700)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+        .shadow(radius: Constants.cornerRadius)
         .animation(.easeInOut)
     }
 }
@@ -69,16 +83,17 @@ struct LoadButton: View {
             Text(label)
         }
         .padding()
+        .frame(width: 300)
         .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke())
+        .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+        .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke())
         .padding(1)
     }
 }
 
 struct LoadingRow: View {
     var description: String
-    @Binding var isFinished: Bool
+    var isFinished: Bool
     
     var body: some View {
         HStack {
@@ -86,6 +101,7 @@ struct LoadingRow: View {
             Spacer()
             Image(systemName: "checkmark.circle")
                 .opacity(isFinished ? 1 : 0)
+                .padding([.leading, .trailing])
         }
     }
 }

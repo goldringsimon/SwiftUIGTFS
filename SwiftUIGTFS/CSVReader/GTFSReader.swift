@@ -17,7 +17,7 @@ enum GTFSError: Error {
     case missingColumn(issue: String)
 }
 
-protocol GTFSLoader {
+protocol GTFSReader {
     func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError>
     func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError>
     func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError>

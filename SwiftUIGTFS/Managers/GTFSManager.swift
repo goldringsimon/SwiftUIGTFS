@@ -12,13 +12,9 @@ import Zip
 
 let mbtaGtfsPermalink = "https://cdn.mbta.com/MBTA_GTFS.zip"
 let bartGtfsPermalink = "https://www.bart.gov/dev/schedules/google_transit.zip"
-
-enum GTFSRouteType: Int, CaseIterable {
-    case trams = 0
-    case metro = 1
-    case rail = 2
-    case buses = 3
-}
+let ctaGtfsPermalink = "https://www.transitchicago.com/downloads/sch_data/google_transit.zip"
+let ratpGtfsPermalink = "http://dataratp.download.opendatasoft.com/RATP_GTFS_FULL.zip"
+let romeGtfsPermalink = "http://dati.muovi.roma.it/gtfs/rome_static_gtfs.zip"
 
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
@@ -55,7 +51,7 @@ class GTFSManager: ObservableObject {
     
     @Published var selectedRoute: String? = nil
     
-    private var gtfsLoader : GTFSLoader = CSVLoader()
+    private var gtfsLoader : GTFSReader = CSVDotSwiftReader()
     
     private var cancellables = Set<AnyCancellable>()
     

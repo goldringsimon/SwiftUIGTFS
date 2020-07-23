@@ -40,3 +40,10 @@ struct GTFSRoute: Identifiable, Decodable {
         case listedRoute = "listed_route"
     }
 }
+
+enum GTFSRouteType: Int, CaseIterable {
+    case trams = 0
+    case metro = 1
+    case rail = 2
+    case buses = 3
+}
