@@ -59,6 +59,9 @@ class GTFSManager: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
+    var downloadDelegate: GTFSDownloadDelegate?
+    @Published var amountDownloaded = 0.0
+    
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
         var routeToShapeDictionary: [String: [String]] = [:]
@@ -123,8 +126,42 @@ class GTFSManager: ObservableObject {
         loadRemoteZippedData(from: url)
     }
     
+    func downloadDelegate(amountDownloaded: Double) {
+        DispatchQueue.main.async {
+            self.amountDownloaded = amountDownloaded
+        }
+    }
+    
+    func downloadDelegate(didFinishDownloadingTo location: URL) {
+        do {
+            let documentsURL = try
+                FileManager.default.url(for: .documentDirectory,
+                                        in: .userDomainMask,
+                                        appropriateFor: nil,
+                                        create: false)
+            /*var savedURL = documentsURL.appendingPathComponent(fileUrl.lastPathComponent)
+            savedURL.deletePathExtension()
+            savedURL.appendPathExtension(".zip")*/
+            let savedURL = documentsURL.appendingPathComponent("gtfs.zip")
+            if FileManager.default.fileExists(atPath: savedURL.path) {
+                try FileManager.default.removeItem(at: savedURL)
+            }
+            try FileManager.default.moveItem(at: location, to: savedURL)
+            loadZippedData(from: savedURL)
+        } catch {
+            print ("file error: \(error)")
+        }
+    }
+    
     func loadRemoteZippedData(from url: URL) {
-        let downloadTask = URLSession.shared.downloadTask(with: url) { [weak self]
+        downloadDelegate = GTFSDownloadDelegate(gtfsManager: self)
+        let configuration = URLSessionConfiguration.default
+        let operationQueue = OperationQueue()
+        let session = URLSession(configuration: configuration, delegate: downloadDelegate, delegateQueue: operationQueue)
+        let downloadTask = session.downloadTask(with: url)
+        downloadTask.resume()
+        
+        /*let downloadTask = URLSession.shared.downloadTask(with: url) { [weak self]
             urlOrNil, responseOrNil, errorOrNil in
             // check for and handle errors:
             // * errorOrNil should be nil
@@ -153,7 +190,7 @@ class GTFSManager: ObservableObject {
                 print ("file error: \(error)")
             }
         }
-        downloadTask.resume()
+        downloadTask.resume()*/
     }
     
     func loadLocalBartZippedData() {

@@ -20,8 +20,15 @@ struct LoadingOverlay: View {
                 LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
                 LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
                 LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")
-            }.frame(width: 300)
+            }
             VStack {
+                HStack {
+                    Text("Downloading: ")
+                    Spacer()
+                    ProgressBar(amount: gtfsManager.amountDownloaded)
+                        .frame(height: 15)
+                        .padding([.trailing])
+                }
                 LoadingRow(description: "Loading routes...", isFinished: $gtfsManager.isFinishedLoadingRoutes)
                 LoadingRow(description: "Loading trips...", isFinished: $gtfsManager.isFinishedLoadingTrips)
                 LoadingRow(description: "Loading shapes...", isFinished: $gtfsManager.isFinishedLoadingShapes)
@@ -32,6 +39,24 @@ struct LoadingOverlay: View {
         .modifier(UICard())
         .frame(width: 700)
         .animation(.easeInOut)
+    }
+}
+
+struct ProgressBar: View {
+    var amount: Double
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .foregroundColor(Color(.tertiarySystemBackground))
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * CGFloat(self.amount), height: geometry.size.height)
+                    .foregroundColor(Color(.systemFill))
+            }
+        }
     }
 }
 
@@ -47,7 +72,7 @@ struct LoadButton: View {
         .background(Color(.tertiarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).stroke())
-        .padding(2)
+        .padding(1)
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */; };
 		F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */; };
 		F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115924BBB6EE008E85C6 /* GTFSManager.swift */; };
 		F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSLoader.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSDownloadDelegate.swift; sourceTree = "<group>"; };
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
 		F44F115924BBB6EE008E85C6 /* GTFSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSManager.swift; sourceTree = "<group>"; };
 		F456F6CC24C782D800B2218F /* GTFSLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSLoader.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
+				F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */,
 				F49DE61324C08D940099A46A /* SimpleGTFSLoader.swift */,
 				F456F6CC24C782D800B2218F /* GTFSLoader.swift */,
 				F456F6EC24C848A500B2218F /* CSVLoader.swift */,
@@ -330,6 +333,7 @@
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
+				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
 				F456F6CD24C782D800B2218F /* GTFSLoader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
