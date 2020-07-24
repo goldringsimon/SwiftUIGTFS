@@ -9,14 +9,6 @@
 import Foundation
 import Combine
 
-enum GTFSError: Error {
-    case invalidFile(issue: String)
-    case invalidRowFormat(issue: String)
-    case missingCSVHeader(issue: String)
-    case invalidRegEx(issue: String)
-    case missingColumn(issue: String)
-}
-
 protocol GTFSReader {
     func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError>
     func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError>

@@ -58,6 +58,9 @@ class GTFSManager: ObservableObject {
     var downloadDelegate: GTFSDownloadDelegate?
     @Published var amountDownloaded = 0.0
     
+    private var openMobility = OpenMobilityAPI()
+    @Published var feeds = [OpenMobilityAPI.Feed]()
+    
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
         var routeToShapeDictionary: [String: [String]] = [:]
@@ -82,6 +85,49 @@ class GTFSManager: ObservableObject {
                 return overview.applying(transform)
         }
         .assign(to: \.currentViewport, on: self)
+        .store(in: &cancellables)
+        
+        /*openMobility.getLatestFeedVersion(feedId: "mbta/64")
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    break
+                }
+            }, receiveValue: { url in
+                self.loadRemoteZippedData(from: url)
+            })
+            .store(in: &cancellables)*/
+        
+        openMobility.getFeeds()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                    break
+                }
+            }) { feeds in
+                self.feeds = feeds
+        }
+        .store(in: &cancellables)
+    }
+    
+    func loadOpenMobilityFeed(feedId: String) {
+        openMobility.getLatestFeedVersion(feedId: feedId)
+        .sink(receiveCompletion: { (completion) in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                break
+            }
+        }, receiveValue: { url in
+            self.loadRemoteZippedData(from: url)
+        })
         .store(in: &cancellables)
     }
     
@@ -135,9 +181,6 @@ class GTFSManager: ObservableObject {
                                         in: .userDomainMask,
                                         appropriateFor: nil,
                                         create: false)
-            /*var savedURL = documentsURL.appendingPathComponent(fileUrl.lastPathComponent)
-            savedURL.deletePathExtension()
-            savedURL.appendPathExtension(".zip")*/
             let savedURL = documentsURL.appendingPathComponent("gtfs.zip")
             if FileManager.default.fileExists(atPath: savedURL.path) {
                 try FileManager.default.removeItem(at: savedURL)

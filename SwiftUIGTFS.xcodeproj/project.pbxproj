@@ -42,6 +42,8 @@
 		F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleCSVReader.swift */; };
 		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
 		F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931D24CA2D6500766C39 /* Constants.swift */; };
+		F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */; };
+		F4C9932224CAE66700766C39 /* GTFSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9932124CAE66700766C39 /* GTFSError.swift */; };
 		F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */; };
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
@@ -82,6 +84,8 @@
 		F49DE61324C08D940099A46A /* SimpleCSVReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCSVReader.swift; sourceTree = "<group>"; };
 		F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		F4C9931D24CA2D6500766C39 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMobilityAPI.swift; sourceTree = "<group>"; };
+		F4C9932124CAE66700766C39 /* GTFSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSError.swift; sourceTree = "<group>"; };
 		F4F1DCEF24BCF49100BE4D05 /* GTFSStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSStop.swift; sourceTree = "<group>"; };
 		F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaStops.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -203,6 +207,7 @@
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */,
+				F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -234,6 +239,7 @@
 			children = (
 				F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */,
 				F4C9931D24CA2D6500766C39 /* Constants.swift */,
+				F4C9932124CAE66700766C39 /* GTFSError.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -335,6 +341,7 @@
 				F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */,
 				F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
+				F4C9932224CAE66700766C39 /* GTFSError.swift in Sources */,
 				F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */,
 				F456F6ED24C848A500B2218F /* CSVDotSwiftReader.swift in Sources */,
 				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
@@ -345,6 +352,7 @@
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
+				F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */,
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
 				F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */,

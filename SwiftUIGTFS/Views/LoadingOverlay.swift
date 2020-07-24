@@ -13,14 +13,20 @@ struct LoadingOverlay: View {
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 0) {
-                LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
-                LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
+            //VStack(alignment: .leading, spacing: 0) {
+                //LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
+                /*LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
                 LoadButton(action: { self.gtfsManager.loadBartData() }, label: "Load BART data from bundle")
                 LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
                 LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
-                LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")
-            }
+                LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")*/
+                ScrollView {
+                    LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
+                    ForEach(gtfsManager.feeds) { feed in
+                        LoadButton(action: { self.gtfsManager.loadOpenMobilityFeed(feedId: feed.id) }, label: feed.t)
+                    }
+                }
+            //}
             VStack {
                 HStack {
                     Spacer()
