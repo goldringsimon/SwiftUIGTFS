@@ -60,6 +60,7 @@ class GTFSManager: ObservableObject {
     
     private var openMobility = OpenMobilityAPI()
     @Published var feeds = [OpenMobilityAPI.Feed]()
+    @Published var locations = [OpenMobilityAPI.Location]()
     
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
@@ -87,19 +88,6 @@ class GTFSManager: ObservableObject {
         .assign(to: \.currentViewport, on: self)
         .store(in: &cancellables)
         
-        /*openMobility.getLatestFeedVersion(feedId: "mbta/64")
-            .sink(receiveCompletion: { (completion) in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    break
-                }
-            }, receiveValue: { url in
-                self.loadRemoteZippedData(from: url)
-            })
-            .store(in: &cancellables)*/
-        
         openMobility.getFeeds()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { (completion) in
@@ -112,6 +100,21 @@ class GTFSManager: ObservableObject {
                 }
             }) { feeds in
                 self.feeds = feeds
+        }
+        .store(in: &cancellables)
+        
+        openMobility.getLocations()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                    break
+                }
+            }) { locations in
+                self.locations = locations
         }
         .store(in: &cancellables)
     }

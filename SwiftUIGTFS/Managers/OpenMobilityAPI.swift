@@ -31,10 +31,10 @@ class OpenMobilityAPI {
         let id: String
         let ty: String
         let t: String
-        let l: GetFeedsLocation
+        let l: Location
     }
     
-    struct GetFeedsLocation: Decodable {
+    struct Location: Decodable, Identifiable {
         let id: Int
         let pid: Int
         let t: String
@@ -43,7 +43,20 @@ class OpenMobilityAPI {
         let lng: Double
     }
     
+    struct GetLocationsResponse: Decodable {
+        let status: String?
+        let ts: Int?
+        let msg: String?
+        let results: GetLocationsResponseResults?
+    }
+    
+    struct GetLocationsResponseResults: Decodable {
+        let input: String?
+        let locations: [Location]?
+    }
+    
     enum Endpoint: String {
+        case getLocations
         case getFeeds
         case getLatestFeedVersion
     }
@@ -80,8 +93,7 @@ class OpenMobilityAPI {
                 return data
             }
             .decode(type: GetFeedsResponse.self, decoder: JSONDecoder())
-            .tryMap({ (feedsResponse) -> [Feed] in
-                print(feedsResponse)
+            .tryMap({ feedsResponse -> [Feed] in
                 guard let locations = feedsResponse.results.feeds else {
                     throw GTFSError.openMobilityApiError(issue: "Couldn't parse GetFeedsLocations")
                 }
@@ -98,6 +110,40 @@ class OpenMobilityAPI {
                 }
             })
             .eraseToAnyPublisher()
+    }
+    
+    func getLocations() -> AnyPublisher<[Location], GTFSError> {
+        guard let url = makeUrl(endpoint: .getLocations) else {
+            return Fail(error: GTFSError.openMobilityApiError(issue: "Couldn't make URL in getFeeds"))
+                .eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: url)
+        .tryMap { data, response in
+            guard let response = response as? HTTPURLResponse,
+                response.statusCode == 200 else {
+                    throw GTFSError.openMobilityApiError(issue: "Invalid response from OpenMobilityAPI")
+            }
+            return data
+        }
+        .decode(type: GetLocationsResponse.self, decoder: JSONDecoder())
+        .tryMap({ locationsResponse -> [Location] in
+            guard let locations = locationsResponse.results?.locations else {
+                throw GTFSError.openMobilityApiError(issue: "Couldn't parse GetLocations")
+            }
+            return locations
+        })
+        .mapError({ error in
+            switch error {
+            case is Swift.DecodingError:
+                return .openMobilityApiError(issue: "Decoding error: \(error)")
+            case let error as GTFSError:
+                return error
+            default:
+                return GTFSError.openMobilityApiError(issue: "Unknown error: \(error)")
+            }
+        })
+        .eraseToAnyPublisher()
     }
     
     func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, GTFSError> {

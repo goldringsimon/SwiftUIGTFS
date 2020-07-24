@@ -24,7 +24,7 @@ struct ContentView: View {
     
     private func getDisplayColor(for route: GTFSRoute) -> Color {
         if isDisplayingRouteColors {
-            return Color(UIColor(gtfsHex: route.routeColor ?? "") ?? UIColor.systemFill)
+            return Color(UIColor(gtfsHex: route.routeColor ?? "") ?? UIColor.systemGray)
         } else {
             return Color(UIColor.systemGray)
         }
@@ -46,7 +46,7 @@ struct ContentView: View {
                             .onTapGesture {
                                 withAnimation {
                                     self.gtfsManager.selectedRoute = route.routeId
-                                    self.gtfsManager.overviewViewport = GTFSShapePoint.getOverviewViewport(for: self.gtfsManager.shapeDictionary[shapeId] ?? [])
+                                    //self.gtfsManager.overviewViewport = GTFSShapePoint.getOverviewViewport(for: self.gtfsManager.shapeDictionary[shapeId] ?? [])
                                 }
                         }
                     }

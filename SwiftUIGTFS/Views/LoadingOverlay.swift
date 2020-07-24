@@ -13,20 +13,29 @@ struct LoadingOverlay: View {
     
     var body: some View {
         HStack {
-            //VStack(alignment: .leading, spacing: 0) {
-                //LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
-                /*LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
-                LoadButton(action: { self.gtfsManager.loadBartData() }, label: "Load BART data from bundle")
-                LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
-                LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
-                LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")*/
-                ScrollView {
-                    LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
-                    ForEach(gtfsManager.feeds) { feed in
-                        LoadButton(action: { self.gtfsManager.loadOpenMobilityFeed(feedId: feed.id) }, label: feed.t)
-                    }
+            /*ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    //LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
+                    /*LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
+                    LoadButton(action: { self.gtfsManager.loadBartData() }, label: "Load BART data from bundle")
+                    LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
+                    LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
+                    LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")*/
+                        LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
+                        ForEach(gtfsManager.feeds) { feed in
+                            LoadButton(action: { self.gtfsManager.loadOpenMobilityFeed(feedId: feed.id) }, label: feed.t)
+                        }
                 }
-            //}
+            }*/
+            NavigationView {
+                LocationSubList(gtfsManager: gtfsManager, locations: gtfsManager.locations.filter({ $0.pid == 0 }))
+                .navigationBarTitle("GTFS Viewer")
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
+            List {
+                Text("MBTA")
+                Text("CTA")
+            }
             VStack {
                 HStack {
                     Spacer()
@@ -50,15 +59,31 @@ struct LoadingOverlay: View {
                 LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
                 LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
                 LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
-            }
+            }.frame(width: 250)
             .padding()
         }
         .font(Font.subheadline.lowercaseSmallCaps())
-        .frame(width: 700)
+        .frame(width: 900)
         .background(Color(.secondarySystemBackground))
+        .padding([.top, .bottom], 150)
         .cornerRadius(12)
         .shadow(radius: Constants.cornerRadius)
         .animation(.easeInOut)
+    }
+}
+
+struct LocationSubList: View {
+    var gtfsManager: GTFSManager
+    var locations: [OpenMobilityAPI.Location]
+    
+    var body: some View {
+        List {
+            ForEach(locations) { location in
+                NavigationLink(destination: LocationSubList(gtfsManager: self.gtfsManager, locations: self.gtfsManager.locations.filter({ $0.pid == location.id }))) {
+                    Text(location.n)
+                }
+            }
+        }
     }
 }
 
@@ -94,6 +119,7 @@ struct LoadButton: View {
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke())
         .padding(1)
+        .padding([.trailing], 12)
     }
 }
 
