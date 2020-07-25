@@ -29,18 +29,25 @@ struct LoadingOverlay: View {
             }*/
             NavigationView {
                 LocationSubList(gtfsManager: gtfsManager, locations: gtfsManager.locations.filter({ $0.pid == 0 }))
-                .navigationBarTitle("GTFS Viewer")
+                .navigationBarTitle("", displayMode: .inline)
             }
             .navigationViewStyle(StackNavigationViewStyle())
-            List {
-                Text("MBTA")
-                Text("CTA")
+            
+            NavigationView {
+                List {
+                    ForEach(gtfsManager.feeds) { feed in
+                        Text(feed.t)
+                    }
+                }
+                .navigationBarTitle("Transit Systems", displayMode: .inline)
             }
+            .navigationViewStyle(StackNavigationViewStyle())
+            
             VStack {
                 HStack {
                     Spacer()
                     VStack {
-                        Text("SwiftUI GTFS Viewer")
+                        Text("GTFS Viewer")
                             .font(.largeTitle)
                         Text("Created by Simon Goldring")
                             .font(.subheadline)
@@ -48,8 +55,10 @@ struct LoadingOverlay: View {
                     Spacer()
                 }
                 Divider()
+                Spacer()
                 HStack {
                     Text("Downloading: ")
+                    .font(Font.subheadline.lowercaseSmallCaps())
                     Spacer()
                     ProgressBar(amount: gtfsManager.amountDownloaded)
                         .frame(height: 15)
@@ -59,14 +68,15 @@ struct LoadingOverlay: View {
                 LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
                 LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
                 LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
-            }.frame(width: 250)
+            }//.frame(width: 250)
             .padding()
         }
-        .font(Font.subheadline.lowercaseSmallCaps())
-        .frame(width: 900)
+        //.font(Font.subheadline.lowercaseSmallCaps())
+        .frame(minWidth: 768, maxHeight: 600)
         .background(Color(.secondarySystemBackground))
-        .padding([.top, .bottom], 150)
         .cornerRadius(12)
+        .padding([.top, .bottom], 150)
+        .padding([.leading, .trailing], 150)
         .shadow(radius: Constants.cornerRadius)
         .animation(.easeInOut)
     }
@@ -75,15 +85,21 @@ struct LoadingOverlay: View {
 struct LocationSubList: View {
     var gtfsManager: GTFSManager
     var locations: [OpenMobilityAPI.Location]
+    var location: OpenMobilityAPI.Location?
     
     var body: some View {
         List {
-            ForEach(locations) { location in
-                NavigationLink(destination: LocationSubList(gtfsManager: self.gtfsManager, locations: self.gtfsManager.locations.filter({ $0.pid == location.id }))) {
-                    Text(location.n)
+            ForEach(locations) { item in
+                NavigationLink(destination: LocationSubList(gtfsManager: self.gtfsManager, locations: self.gtfsManager.locations.filter({ $0.pid == item.id }), location: item)) {
+                    Text(item.n)
                 }
             }
+            .navigationBarTitle(getTitle(), displayMode: .inline)
         }
+    }
+    
+    func getTitle() -> Text {
+        Text((location?.n ?? "Regions"))
     }
 }
 
@@ -134,7 +150,7 @@ struct LoadingRow: View {
             Image(systemName: "checkmark.circle")
                 .opacity(isFinished ? 1 : 0)
                 .padding([.leading, .trailing])
-        }
+        }.font(Font.subheadline.lowercaseSmallCaps())
     }
 }
 
