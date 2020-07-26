@@ -59,8 +59,13 @@ class GTFSManager: ObservableObject {
     @Published var amountDownloaded = 0.0
     
     private var openMobility = OpenMobilityAPI()
-    @Published var feeds = [OpenMobilityAPI.Feed]()
     @Published var locations = [OpenMobilityAPI.Location]()
+    var locationCancellable: AnyCancellable?
+    @Published var feedsForLocation = [OpenMobilityAPI.Feed]()
+    @Published var showFavourites = true
+    @Published var selectedLocation = [OpenMobilityAPI.Location?](repeating: nil, count: 5)
+    @Published var selectedFeed: OpenMobilityAPI.Feed?
+    @Published var favourites = [OpenMobilityAPI.Feed]()
     
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
@@ -88,18 +93,19 @@ class GTFSManager: ObservableObject {
         .assign(to: \.currentViewport, on: self)
         .store(in: &cancellables)
         
-        openMobility.getFeeds()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { (completion) in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error)
-                    break
-                }
-            }) { feeds in
-                self.feeds = feeds
+        $selectedLocation
+        .removeDuplicates()
+            .map({ (selectedLocations) -> [OpenMobilityAPI.Location] in
+                selectedLocations.compactMap { $0 }
+            })
+            .sink { (selectedLocations) in
+                self.openedLocationSubList(location: selectedLocations.last)
+            }
+        .store(in: &cancellables)
+        
+        $selectedFeed
+            .sink { (feed) in
+                print(feed)
         }
         .store(in: &cancellables)
         
@@ -117,6 +123,33 @@ class GTFSManager: ObservableObject {
                 self.locations = locations
         }
         .store(in: &cancellables)
+    }
+    
+    func openedLocationSubList(location: OpenMobilityAPI.Location?) {
+        if let location = location {
+            showFavourites = false
+            locationCancellable = openMobility.getFeeds(for: String(location.id))
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { (completion) in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        print(error)
+                        break
+                    }
+                }) { feeds in
+                    self.feedsForLocation = feeds
+                }
+        } else {
+            showFavourites = true
+        }
+    }
+    
+    func closedLocationSubList(location: OpenMobilityAPI.Location?) {
+        if let location = location, location.pid == 0 {
+            showFavourites = true
+        }
     }
     
     func loadOpenMobilityFeed(feedId: String) {

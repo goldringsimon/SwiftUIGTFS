@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct LoadingOverlay: View {
-    @ObservedObject var gtfsManager: GTFSManager
+    @EnvironmentObject var gtfsManager: GTFSManager
     
     var body: some View {
         HStack {
@@ -27,21 +27,30 @@ struct LoadingOverlay: View {
                         }
                 }
             }*/
+            
             NavigationView {
-                LocationSubList(gtfsManager: gtfsManager, locations: gtfsManager.locations.filter({ $0.pid == 0 }))
+                LocationSubList(locations: gtfsManager.locations.filter({ $0.pid == 0 }), hierarchy: 0)
                 .navigationBarTitle("", displayMode: .inline)
             }
             .navigationViewStyle(StackNavigationViewStyle())
-            
-            NavigationView {
-                List {
-                    ForEach(gtfsManager.feeds) { feed in
-                        Text(feed.t)
+
+            List(selection: $gtfsManager.selectedFeed.animation()) {
+                if (gtfsManager.showFavourites) {
+                    HStack {
+                        Spacer()
+                        Text("Favourites")
+                            .font(.subheadline)
+                        Spacer()
+                    }
+                    ForEach (gtfsManager.favourites) { feed in
+                        Text(feed.t).tag(feed)
+                    }
+                } else {
+                    ForEach(gtfsManager.feedsForLocation) { feed in
+                        Text(feed.t).tag(feed)
                     }
                 }
-                .navigationBarTitle("Transit Systems", displayMode: .inline)
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
+            }.environment(\.editMode, .constant(.active))
             
             VStack {
                 HStack {
@@ -55,19 +64,24 @@ struct LoadingOverlay: View {
                     Spacer()
                 }
                 Divider()
+                Text(gtfsManager.selectedFeed?.t ?? "").animation(nil)
                 Spacer()
-                HStack {
-                    Text("Downloading: ")
-                    .font(Font.subheadline.lowercaseSmallCaps())
-                    Spacer()
-                    ProgressBar(amount: gtfsManager.amountDownloaded)
-                        .frame(height: 15)
-                        .padding([.leading, .trailing])
+                if (gtfsManager.selectedFeed != nil) {
+                    VStack {
+                        HStack {
+                            Text("Downloading: ")
+                            .font(Font.subheadline.lowercaseSmallCaps())
+                            Spacer()
+                            ProgressBar(amount: gtfsManager.amountDownloaded)
+                                .frame(height: 15)
+                                .padding([.leading, .trailing])
+                        }
+                        LoadingRow(description: "Loading routes...", isFinished: gtfsManager.isFinishedLoadingRoutes)
+                        LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
+                        LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
+                        LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
+                    }.transition(.move(edge: .bottom))
                 }
-                LoadingRow(description: "Loading routes...", isFinished: gtfsManager.isFinishedLoadingRoutes)
-                LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
-                LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
-                LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
             }//.frame(width: 250)
             .padding()
         }
@@ -77,29 +91,40 @@ struct LoadingOverlay: View {
         .cornerRadius(12)
         .padding([.top, .bottom], 150)
         .padding([.leading, .trailing], 150)
-        .shadow(radius: Constants.cornerRadius)
-        .animation(.easeInOut)
+        //.shadow(radius: Constants.cornerRadius)
+        //.animation(.easeInOut)
     }
 }
 
 struct LocationSubList: View {
-    var gtfsManager: GTFSManager
+    @EnvironmentObject var gtfsManager: GTFSManager
     var locations: [OpenMobilityAPI.Location]
     var location: OpenMobilityAPI.Location?
+    var hierarchy: Int
     
     var body: some View {
         List {
-            ForEach(locations) { item in
-                NavigationLink(destination: LocationSubList(gtfsManager: self.gtfsManager, locations: self.gtfsManager.locations.filter({ $0.pid == item.id }), location: item)) {
-                    Text(item.n)
+            ForEach(locations) { rowLocation in
+                NavigationLink(
+                    destination: LocationSubList(
+                        locations: self.gtfsManager.locations.filter({ $0.pid == rowLocation.id }),
+                        location: rowLocation,
+                        hierarchy: self.hierarchy + 1),
+                    tag: rowLocation,
+                    selection: self.$gtfsManager.selectedLocation[self.hierarchy]
+                ) {
+                    Text(rowLocation.n)
                 }
             }
-            .navigationBarTitle(getTitle(), displayMode: .inline)
         }
+        .navigationBarTitle(getTitle(), displayMode: .inline)
     }
     
     func getTitle() -> Text {
-        Text((location?.n ?? "Regions"))
+        if let location = location {
+            return Text(location.n)
+        }
+        return Text("Regions")
     }
 }
 

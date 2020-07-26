@@ -27,14 +27,14 @@ class OpenMobilityAPI {
         let feeds: [Feed]?
     }
     
-    struct Feed: Decodable, Identifiable {
+    struct Feed: Decodable, Identifiable, Hashable {
         let id: String
         let ty: String
         let t: String
         let l: Location
     }
     
-    struct Location: Decodable, Identifiable {
+    struct Location: Decodable, Identifiable, Hashable {
         let id: Int
         let pid: Int
         let t: String
@@ -74,9 +74,9 @@ class OpenMobilityAPI {
     func getFeeds(for location: String? = nil) -> AnyPublisher<[Feed], GTFSError> {
         var url: URL?
         if let location = location {
-            url = makeUrl(endpoint: .getFeeds, queryItems: URLQueryItem(name: "location", value: location))
+            url = makeUrl(endpoint: .getFeeds, queryItems: URLQueryItem(name: "location", value: location), URLQueryItem(name: "type", value: "gtfs"))
         } else {
-            url = makeUrl(endpoint: .getFeeds)
+            url = makeUrl(endpoint: .getFeeds, queryItems: URLQueryItem(name: "type", value: "gtfs"))
         }
             
         guard let finalUrl = url else {

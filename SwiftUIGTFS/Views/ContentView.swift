@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var gtfsManager: GTFSManager
-    
+    //@ObservedObject var gtfsManager: GTFSManager
+    @EnvironmentObject var gtfsManager: GTFSManager
     
     @State private var isDisplayingRouteColors = false
     
@@ -127,7 +127,7 @@ struct ContentView: View {
             if !gtfsManager.isFinishedLoading {
                 Color(UIColor.black.withAlphaComponent(0.85))
                     .edgesIgnoringSafeArea(.all)
-                LoadingOverlay(gtfsManager: gtfsManager)
+                LoadingOverlay()
             }
         }
     }
