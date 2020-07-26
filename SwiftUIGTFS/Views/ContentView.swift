@@ -70,18 +70,22 @@ struct ContentView: View {
             
             VStack {
                 HStack {
+                    Button("Load New System", action: {
+                        
+                    })
+                    .padding()
+                    .modifier(UICard())
+                    
+                    Spacer()
+                }
+                Spacer()
+            }
+            
+            VStack {
+                HStack {
                     Spacer()
                     
                     VStack(alignment: .leading){
-                        /*List{
-                         ForEach(gtfsManager.trainRoutes) { route in
-                         Button(action: {
-                         self.selectedRoute = route.routeId
-                         }, label: {
-                         Text(route.routeLongName ?? "").tag(route.routeId)
-                         })
-                         }
-                         }*/
                         Toggle(isOn: $isDisplayingRouteColors.animation()) {
                             Text("Display route colours:")
                         }
@@ -104,6 +108,10 @@ struct ContentView: View {
                     .frame(width: 300)
                     .modifier(UICard())
                 }
+                Spacer()
+            }
+            
+            VStack {
                 Spacer()
                 HStack {
                     Spacer()

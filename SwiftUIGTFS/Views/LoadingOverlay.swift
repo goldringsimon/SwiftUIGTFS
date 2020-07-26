@@ -36,7 +36,7 @@ struct LoadingOverlay: View {
                         Text(gtfsManager.selectedFeed?.t ?? "")//.animation(nil)
                         .padding([.bottom])
                         LoadButton(action: {
-                            
+                            self.gtfsManager.loadOpenMobilityFeed(feedId: self.gtfsManager.selectedFeed!.id)
                             }, label: "Load")
                             .padding([.bottom])
                         LoadButton(action: {

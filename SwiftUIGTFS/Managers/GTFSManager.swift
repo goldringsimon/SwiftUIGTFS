@@ -103,11 +103,11 @@ class GTFSManager: ObservableObject {
             }
         .store(in: &cancellables)
         
-        $selectedFeed
+        /*$selectedFeed
             .sink { (feed) in
                 print(feed)
         }
-        .store(in: &cancellables)
+        .store(in: &cancellables)*/
         
         openMobility.getLocations()
             .receive(on: DispatchQueue.main)
