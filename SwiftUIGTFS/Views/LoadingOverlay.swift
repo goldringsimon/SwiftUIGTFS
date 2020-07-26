@@ -13,44 +13,10 @@ struct LoadingOverlay: View {
     
     var body: some View {
         HStack {
-            /*ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    //LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
-                    /*LoadButton(action: { self.gtfsManager.loadCtaData() }, label: "Load CTA data from bundle")
-                    LoadButton(action: { self.gtfsManager.loadBartData() }, label: "Load BART data from bundle")
-                    LoadButton(action: { self.gtfsManager.loadLocalBartZippedData() }, label: "Load local BART zipped data")
-                    LoadButton(action: { self.gtfsManager.loadRemoteMbtaZippedData() }, label: "Load remote MBTA zipped data")
-                    LoadButton(action: { self.gtfsManager.loadRemoteBartZippedData() }, label: "Load remote Bart zipped data")*/
-                        LoadButton(action: { self.gtfsManager.loadMbtaData() }, label: "Load MBTA data from bundle")
-                        ForEach(gtfsManager.feeds) { feed in
-                            LoadButton(action: { self.gtfsManager.loadOpenMobilityFeed(feedId: feed.id) }, label: feed.t)
-                        }
-                }
-            }*/
             
-            NavigationView {
-                LocationSubList(locations: gtfsManager.locations.filter({ $0.pid == 0 }), hierarchy: 0)
-                .navigationBarTitle("", displayMode: .inline)
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
+            LocationsPane()
 
-            List(selection: $gtfsManager.selectedFeed.animation()) {
-                if (gtfsManager.showFavourites) {
-                    HStack {
-                        Spacer()
-                        Text("Favourites")
-                            .font(.subheadline)
-                        Spacer()
-                    }
-                    ForEach (gtfsManager.favourites) { feed in
-                        Text(feed.t).tag(feed)
-                    }
-                } else {
-                    ForEach(gtfsManager.feedsForLocation) { feed in
-                        Text(feed.t).tag(feed)
-                    }
-                }
-            }.environment(\.editMode, .constant(.active))
+            FeedsPane()
             
             VStack {
                 HStack {
@@ -64,9 +30,21 @@ struct LoadingOverlay: View {
                     Spacer()
                 }
                 Divider()
-                Text(gtfsManager.selectedFeed?.t ?? "").animation(nil)
                 Spacer()
                 if (gtfsManager.selectedFeed != nil) {
+                    VStack {
+                        Text(gtfsManager.selectedFeed?.t ?? "")//.animation(nil)
+                        .padding([.bottom])
+                        LoadButton(action: {
+                            
+                            }, label: "Load")
+                            .padding([.bottom])
+                        LoadButton(action: {
+                            self.gtfsManager.favourites.append(self.gtfsManager.selectedFeed!)
+                        }, label: "Add To Favourites")
+                        .padding([.bottom])
+                    }.transition(.move(edge: .trailing))
+                    
                     VStack {
                         HStack {
                             Text("Downloading: ")
@@ -85,7 +63,6 @@ struct LoadingOverlay: View {
             }//.frame(width: 250)
             .padding()
         }
-        //.font(Font.subheadline.lowercaseSmallCaps())
         .frame(minWidth: 768, maxHeight: 600)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
@@ -93,6 +70,42 @@ struct LoadingOverlay: View {
         .padding([.leading, .trailing], 150)
         //.shadow(radius: Constants.cornerRadius)
         //.animation(.easeInOut)
+    }
+}
+
+struct LocationsPane: View {
+    @EnvironmentObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        NavigationView {
+            LocationSubList(locations: gtfsManager.locations.filter({ $0.pid == 0 }), hierarchy: 0)
+            .navigationBarTitle("", displayMode: .inline)
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+
+struct FeedsPane: View {
+    @EnvironmentObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        List(selection: $gtfsManager.selectedFeed.animation()) {
+            if (gtfsManager.showFavourites) {
+                HStack {
+                    Spacer()
+                    Text("Favourites")
+                        .font(.subheadline)
+                    Spacer()
+                }
+                ForEach (gtfsManager.favourites) { feed in
+                    Text(feed.t).tag(feed)
+                }
+            } else {
+                ForEach(gtfsManager.feedsForLocation) { feed in
+                    Text(feed.t).tag(feed)
+                }
+            }
+        }.environment(\.editMode, .constant(.active))
     }
 }
 
@@ -152,15 +165,17 @@ struct LoadButton: View {
     
     var body: some View {
         Button(action: action) {
-            Text(label)
+            HStack {
+                Spacer()
+                Text(label)
+                Spacer()
+            }
         }
         .padding()
-        .frame(width: 300)
+        //.frame(width: 300)
         .background(Color(.tertiarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke())
-        .padding(1)
-        .padding([.trailing], 12)
     }
 }
 

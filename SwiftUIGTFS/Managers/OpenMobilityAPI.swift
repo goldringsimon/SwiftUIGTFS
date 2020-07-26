@@ -61,7 +61,7 @@ class OpenMobilityAPI {
         case getLatestFeedVersion
     }
     
-    private func makeUrl(endpoint: Endpoint, queryItems: URLQueryItem...) -> URL? {
+    private func makeUrl(endpoint: Endpoint, queryItems: [URLQueryItem] = []) -> URL? {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "api.transitfeeds.com"
@@ -72,19 +72,17 @@ class OpenMobilityAPI {
     }
     
     func getFeeds(for location: String? = nil) -> AnyPublisher<[Feed], GTFSError> {
-        var url: URL?
+        var queryItems = [URLQueryItem(name: "type", value: "gtfs")]
         if let location = location {
-            url = makeUrl(endpoint: .getFeeds, queryItems: URLQueryItem(name: "location", value: location), URLQueryItem(name: "type", value: "gtfs"))
-        } else {
-            url = makeUrl(endpoint: .getFeeds, queryItems: URLQueryItem(name: "type", value: "gtfs"))
+            queryItems.append(URLQueryItem(name: "location", value: location))
         }
             
-        guard let finalUrl = url else {
+        guard let url = makeUrl(endpoint: .getFeeds, queryItems: queryItems) else {
             return Fail(error: GTFSError.openMobilityApiError(issue: "Couldn't make URL in getFeeds"))
                 .eraseToAnyPublisher()
         }
         
-        return URLSession.shared.dataTaskPublisher(for: finalUrl)
+        return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { data, response in
                 guard let response = response as? HTTPURLResponse,
                     response.statusCode == 200 else {
@@ -147,7 +145,7 @@ class OpenMobilityAPI {
     }
     
     func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, GTFSError> {
-        guard let url = makeUrl(endpoint: .getLatestFeedVersion, queryItems: URLQueryItem(name: "feed", value: feedId)) else {
+        guard let url = makeUrl(endpoint: .getLatestFeedVersion, queryItems: [URLQueryItem(name: "feed", value: feedId)]) else {
             return Fail(error: GTFSError.invalidFile(issue: "test"))
                 .eraseToAnyPublisher()
         }
