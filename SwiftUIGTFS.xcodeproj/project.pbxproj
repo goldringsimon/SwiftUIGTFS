@@ -37,6 +37,7 @@
 		F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB224C4E27C004BEB51 /* UICard.swift */; };
 		F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */; };
 		F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */; };
+		F48CD13324D36349004DB811 /* GTFSProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD13224D36349004DB811 /* GTFSProcessor.swift */; };
 		F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60B24BF11210099A46A /* ctaTrips.txt */; };
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
@@ -93,6 +94,7 @@
 		F48CD12824D2CECD004DB811 /* SwiftUIGTFSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUIGTFSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGTFSTests.swift; sourceTree = "<group>"; };
 		F48CD12C24D2CECD004DB811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F48CD13224D36349004DB811 /* GTFSProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSProcessor.swift; sourceTree = "<group>"; };
 		F49DE60B24BF11210099A46A /* ctaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaTrips.txt; sourceTree = "<group>"; };
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */,
+				F48CD13224D36349004DB811 /* GTFSProcessor.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
+				F48CD13324D36349004DB811 /* GTFSProcessor.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
 				F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
