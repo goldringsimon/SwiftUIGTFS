@@ -13,55 +13,11 @@ struct LoadingOverlay: View {
     
     var body: some View {
         HStack {
-            
             LocationsPane()
 
             FeedsPane()
             
-            VStack {
-                HStack {
-                    Spacer()
-                    VStack {
-                        Text("GTFS Viewer")
-                            .font(.largeTitle)
-                        Text("Created by Simon Goldring")
-                            .font(.subheadline)
-                    }
-                    Spacer()
-                }
-                Divider()
-                Spacer()
-                if (gtfsManager.selectedFeed != nil) {
-                    VStack {
-                        Text(gtfsManager.selectedFeed?.t ?? "")//.animation(nil)
-                        .padding([.bottom])
-                        LoadButton(action: {
-                            self.gtfsManager.loadOpenMobilityFeed(feedId: self.gtfsManager.selectedFeed!.id)
-                            }, label: "Load")
-                            .padding([.bottom])
-                        LoadButton(action: {
-                            self.gtfsManager.favourites.append(self.gtfsManager.selectedFeed!)
-                        }, label: "Add To Favourites")
-                        .padding([.bottom])
-                    }.transition(.move(edge: .trailing))
-                    
-                    VStack {
-                        HStack {
-                            Text("Downloading: ")
-                            .font(Font.subheadline.lowercaseSmallCaps())
-                            Spacer()
-                            ProgressBar(amount: gtfsManager.amountDownloaded)
-                                .frame(height: 15)
-                                .padding([.leading, .trailing])
-                        }
-                        LoadingRow(description: "Loading routes...", isFinished: gtfsManager.isFinishedLoadingRoutes)
-                        LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
-                        LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
-                        LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
-                    }.transition(.move(edge: .bottom))
-                }
-            }//.frame(width: 250)
-            .padding()
+            DetailsPane()
         }
         .frame(minWidth: 768, maxHeight: 600)
         .background(Color(.secondarySystemBackground))
@@ -82,30 +38,6 @@ struct LocationsPane: View {
             .navigationBarTitle("", displayMode: .inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
-    }
-}
-
-struct FeedsPane: View {
-    @EnvironmentObject var gtfsManager: GTFSManager
-    
-    var body: some View {
-        List(selection: $gtfsManager.selectedFeed.animation()) {
-            if (gtfsManager.showFavourites) {
-                HStack {
-                    Spacer()
-                    Text("Favourites")
-                        .font(.subheadline)
-                    Spacer()
-                }
-                ForEach (gtfsManager.favourites) { feed in
-                    Text(feed.t).tag(feed)
-                }
-            } else {
-                ForEach(gtfsManager.feedsForLocation) { feed in
-                    Text(feed.t).tag(feed)
-                }
-            }
-        }.environment(\.editMode, .constant(.active))
     }
 }
 
@@ -138,6 +70,81 @@ struct LocationSubList: View {
             return Text(location.n)
         }
         return Text("Regions")
+    }
+}
+
+struct FeedsPane: View {
+    @EnvironmentObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        List(selection: $gtfsManager.selectedFeed.animation()) {
+            if (gtfsManager.showFavourites) {
+                HStack {
+                    Spacer()
+                    Text("Favourites")
+                        .font(.subheadline)
+                    Spacer()
+                }
+                ForEach (gtfsManager.favourites) { feed in
+                    Text(feed.t).tag(feed)
+                }
+            } else {
+                ForEach(gtfsManager.feedsForLocation) { feed in
+                    Text(feed.t).tag(feed)
+                }
+            }
+        }.environment(\.editMode, .constant(.active))
+    }
+}
+
+struct DetailsPane: View {
+    @EnvironmentObject var gtfsManager: GTFSManager
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                VStack {
+                    Text("GTFS Viewer")
+                        .font(.largeTitle)
+                    Text("Created by Simon Goldring")
+                        .font(.subheadline)
+                }
+                Spacer()
+            }
+            Divider()
+            Spacer()
+            if (gtfsManager.selectedFeed != nil) {
+                VStack {
+                    Text(gtfsManager.selectedFeed?.t ?? "")//.animation(nil)
+                    .padding([.bottom])
+                    LoadButton(action: {
+                        self.gtfsManager.loadOpenMobilityFeed(feedId: self.gtfsManager.selectedFeed!.id)
+                        }, label: "Load")
+                        .padding([.bottom])
+                    LoadButton(action: {
+                        self.gtfsManager.favourites.append(self.gtfsManager.selectedFeed!)
+                    }, label: "Add To Favourites")
+                    .padding([.bottom])
+                }.transition(.move(edge: .trailing))
+                
+                VStack {
+                    HStack {
+                        Text("Downloading: ")
+                        .font(Font.subheadline.lowercaseSmallCaps())
+                        Spacer()
+                        ProgressBar(amount: gtfsManager.amountDownloaded)
+                            .frame(height: 15)
+                            .padding([.leading, .trailing])
+                    }
+                    LoadingRow(description: "Loading routes...", isFinished: gtfsManager.isFinishedLoadingRoutes)
+                    LoadingRow(description: "Loading trips...", isFinished: gtfsManager.isFinishedLoadingTrips)
+                    LoadingRow(description: "Loading shapes...", isFinished: gtfsManager.isFinishedLoadingShapes)
+                    LoadingRow(description: "Loading stops...", isFinished: gtfsManager.isFinishedLoadingStops)
+                }.transition(.move(edge: .bottom))
+            }
+        }//.frame(width: 250)
+        .padding()
     }
 }
 

@@ -11,50 +11,6 @@ import Combine
 
 class OpenMobilityAPI {
     
-    struct GetFeedsResponse: Decodable {
-        let status: String?
-        let ts: Int
-        let msg: String?
-        let results: GetFeedsResponseResults
-    }
-    
-    struct GetFeedsResponseResults: Decodable {
-        let input: String?
-        let total: Int?
-        let limit: Int?
-        let page: Int?
-        let numPages: Int?
-        let feeds: [Feed]?
-    }
-    
-    struct Feed: Decodable, Identifiable, Hashable {
-        let id: String
-        let ty: String
-        let t: String
-        let l: Location
-    }
-    
-    struct Location: Decodable, Identifiable, Hashable {
-        let id: Int
-        let pid: Int
-        let t: String
-        let n: String
-        let lat: Double
-        let lng: Double
-    }
-    
-    struct GetLocationsResponse: Decodable {
-        let status: String?
-        let ts: Int?
-        let msg: String?
-        let results: GetLocationsResponseResults?
-    }
-    
-    struct GetLocationsResponseResults: Decodable {
-        let input: String?
-        let locations: [Location]?
-    }
-    
     enum Endpoint: String {
         case getLocations
         case getFeeds

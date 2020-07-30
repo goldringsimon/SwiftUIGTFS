@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    //@ObservedObject var gtfsManager: GTFSManager
     @EnvironmentObject var gtfsManager: GTFSManager
     
     @State private var isDisplayingRouteColors = false
@@ -39,10 +38,24 @@ struct ContentView: View {
                  .transition(.opacity)
                  }*/
                 
+                ForEach(GTFSRouteType.allCases, id:\.rawValue) { routeType in
+                    Group {
+                        if (self.gtfsManager.displayRoute[routeType.rawValue]) {
+                        
+                            ForEach( self.gtfsManager.displayedRoutesByType[routeType.rawValue] ) { routes in
+                                
+                                Text("")
+                                
+                            }
+                        }
+                        
+                    }
+                }
+                
                 ForEach(self.gtfsManager.displayedRoutes) { route in
                     ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
                         GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.currentViewport)
-                            .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                            .stroke(self.getDisplayColor(for: route), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
                             .onTapGesture {
                                 withAnimation {
                                     self.gtfsManager.selectedRoute = route.routeId
@@ -55,7 +68,7 @@ struct ContentView: View {
                 if self.gtfsManager.selectedRoute != nil {
                     ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: self.gtfsManager.selectedRoute!), id: \.self) { shapeId in
                         GTFSShape(shapePoints: self.gtfsManager.shapeDictionary[shapeId] ?? [], viewport: self.gtfsManager.currentViewport)
-                            .stroke(Color(.systemPink), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                            .stroke(Color(.systemPink), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
                             .onTapGesture {
                                 withAnimation {
                                     self.gtfsManager.selectedRoute = nil
@@ -75,7 +88,6 @@ struct ContentView: View {
                     })
                     .padding()
                     .modifier(UICard())
-                    
                     Spacer()
                 }
                 Spacer()
@@ -84,7 +96,6 @@ struct ContentView: View {
             VStack {
                 HStack {
                     Spacer()
-                    
                     VStack(alignment: .leading){
                         Toggle(isOn: $isDisplayingRouteColors.animation()) {
                             Text("Display route colours:")
@@ -115,7 +126,6 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    
                     VStack(alignment: .leading) {
                         Text("Selected route: \(gtfsManager.selectedRoute ?? "")")
                         Text("Route count: \(gtfsManager.routes.count)")

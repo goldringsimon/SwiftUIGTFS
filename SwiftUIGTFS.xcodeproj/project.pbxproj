@@ -20,7 +20,6 @@
 		F456F6EB24C8487400B2218F /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EA24C8487400B2218F /* CSV */; };
 		F456F6ED24C848A500B2218F /* CSVDotSwiftReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */; };
 		F456F6F024C893D700B2218F /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F456F6EF24C893D700B2218F /* Zip */; };
-		F456F6F224C8947700B2218F /* bart.zip in Resources */ = {isa = PBXBuildFile; fileRef = F456F6F124C8947700B2218F /* bart.zip */; };
 		F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777324BB2694007A2F2C /* AppDelegate.swift */; };
 		F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777524BB2694007A2F2C /* SceneDelegate.swift */; };
 		F45E777824BB2694007A2F2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E777724BB2694007A2F2C /* ContentView.swift */; };
@@ -32,9 +31,12 @@
 		F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */; };
 		F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */; };
 		F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */; };
+		F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */; };
+		F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */; };
 		F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */; };
 		F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB224C4E27C004BEB51 /* UICard.swift */; };
 		F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */; };
+		F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */; };
 		F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60B24BF11210099A46A /* ctaTrips.txt */; };
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
@@ -48,6 +50,16 @@
 		F4F1DCF224BCF4B100BE4D05 /* mbtaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F48CD12D24D2CECD004DB811 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F45E776824BB2694007A2F2C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F45E776F24BB2694007A2F2C;
+			remoteInfo = SwiftUIGTFS;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSDownloadDelegate.swift; sourceTree = "<group>"; };
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
@@ -60,7 +72,6 @@
 		F456F6E124C83ED100B2218F /* bartStop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStop_times.txt; sourceTree = "<group>"; };
 		F456F6E224C83ED100B2218F /* bartStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartStops.txt; sourceTree = "<group>"; };
 		F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVDotSwiftReader.swift; sourceTree = "<group>"; };
-		F456F6F124C8947700B2218F /* bart.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = bart.zip; sourceTree = "<group>"; };
 		F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIGTFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45E777324BB2694007A2F2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F45E777524BB2694007A2F2C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,9 +85,14 @@
 		F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaRoutes.txt; sourceTree = "<group>"; };
 		F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaTrips.txt; sourceTree = "<group>"; };
 		F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSTrip.swift; sourceTree = "<group>"; };
+		F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedsResponse.swift; sourceTree = "<group>"; };
+		F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLocationsResponse.swift; sourceTree = "<group>"; };
 		F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		F486FDB224C4E27C004BEB51 /* UICard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICard.swift; sourceTree = "<group>"; };
 		F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSShape.swift; sourceTree = "<group>"; };
+		F48CD12824D2CECD004DB811 /* SwiftUIGTFSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUIGTFSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGTFSTests.swift; sourceTree = "<group>"; };
+		F48CD12C24D2CECD004DB811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F49DE60B24BF11210099A46A /* ctaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaTrips.txt; sourceTree = "<group>"; };
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
@@ -97,6 +113,13 @@
 			files = (
 				F456F6F024C893D700B2218F /* Zip in Frameworks */,
 				F456F6EB24C8487400B2218F /* CSV in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F48CD12524D2CECD004DB811 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				F45E777224BB2694007A2F2C /* SwiftUIGTFS */,
+				F48CD12924D2CECD004DB811 /* SwiftUIGTFSTests */,
 				F45E777124BB2694007A2F2C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -171,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */,
+				F48CD12824D2CECD004DB811 /* SwiftUIGTFSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,6 +203,7 @@
 		F45E777224BB2694007A2F2C /* SwiftUIGTFS */ = {
 			isa = PBXGroup;
 			children = (
+				F47CE91924CE216700E9EBBF /* OpenMobilityAPI */,
 				F408E9CC24CA286F0040CE81 /* CSVReader */,
 				F4BF575724C4F30C0070CC88 /* Utility */,
 				F45E779224BBA98B007A2F2C /* Data */,
@@ -207,7 +233,6 @@
 			children = (
 				F44F115924BBB6EE008E85C6 /* GTFSManager.swift */,
 				F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */,
-				F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -215,7 +240,6 @@
 		F45E779224BBA98B007A2F2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F456F6F124C8947700B2218F /* bart.zip */,
 				F456F6CE24C83E5500B2218F /* BART */,
 				F4062FDC24BE0DD20076C78D /* CTA */,
 				F4062FDB24BE0D9B0076C78D /* MBTA */,
@@ -232,6 +256,25 @@
 				F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		F47CE91924CE216700E9EBBF /* OpenMobilityAPI */ = {
+			isa = PBXGroup;
+			children = (
+				F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */,
+				F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */,
+				F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */,
+			);
+			path = OpenMobilityAPI;
+			sourceTree = "<group>";
+		};
+		F48CD12924D2CECD004DB811 /* SwiftUIGTFSTests */ = {
+			isa = PBXGroup;
+			children = (
+				F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */,
+				F48CD12C24D2CECD004DB811 /* Info.plist */,
+			);
+			path = SwiftUIGTFSTests;
 			sourceTree = "<group>";
 		};
 		F4BF575724C4F30C0070CC88 /* Utility */ = {
@@ -268,6 +311,24 @@
 			productReference = F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F48CD12724D2CECD004DB811 /* SwiftUIGTFSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F48CD13124D2CECD004DB811 /* Build configuration list for PBXNativeTarget "SwiftUIGTFSTests" */;
+			buildPhases = (
+				F48CD12424D2CECD004DB811 /* Sources */,
+				F48CD12524D2CECD004DB811 /* Frameworks */,
+				F48CD12624D2CECD004DB811 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F48CD12E24D2CECD004DB811 /* PBXTargetDependency */,
+			);
+			name = SwiftUIGTFSTests;
+			productName = SwiftUIGTFSTests;
+			productReference = F48CD12824D2CECD004DB811 /* SwiftUIGTFSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -280,6 +341,10 @@
 				TargetAttributes = {
 					F45E776F24BB2694007A2F2C = {
 						CreatedOnToolsVersion = 11.5;
+					};
+					F48CD12724D2CECD004DB811 = {
+						CreatedOnToolsVersion = 11.5;
+						TestTargetID = F45E776F24BB2694007A2F2C;
 					};
 				};
 			};
@@ -301,6 +366,7 @@
 			projectRoot = "";
 			targets = (
 				F45E776F24BB2694007A2F2C /* SwiftUIGTFS */,
+				F48CD12724D2CECD004DB811 /* SwiftUIGTFSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -312,7 +378,6 @@
 			files = (
 				F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */,
 				F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */,
-				F456F6F224C8947700B2218F /* bart.zip in Resources */,
 				F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */,
 				F456F6E724C83ED100B2218F /* bartStop_times.txt in Resources */,
 				F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */,
@@ -328,6 +393,13 @@
 				F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */,
 				F456F6E524C83ED100B2218F /* bartShapes.txt in Resources */,
 				F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F48CD12624D2CECD004DB811 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,8 +423,10 @@
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
+				F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
 				F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */,
+				F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */,
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
 				F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */,
@@ -360,7 +434,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F48CD12424D2CECD004DB811 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F48CD12E24D2CECD004DB811 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F45E776F24BB2694007A2F2C /* SwiftUIGTFS */;
+			targetProxy = F48CD12D24D2CECD004DB811 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		F45E777E24BB2696007A2F2C /* LaunchScreen.storyboard */ = {
@@ -528,6 +618,46 @@
 			};
 			name = Release;
 		};
+		F48CD12F24D2CECD004DB811 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 35M4K734ZJ;
+				INFOPLIST_FILE = SwiftUIGTFSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Simon-Goldring.SwiftUIGTFSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUIGTFS.app/SwiftUIGTFS";
+			};
+			name = Debug;
+		};
+		F48CD13024D2CECD004DB811 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 35M4K734ZJ;
+				INFOPLIST_FILE = SwiftUIGTFSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Simon-Goldring.SwiftUIGTFSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUIGTFS.app/SwiftUIGTFS";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -545,6 +675,15 @@
 			buildConfigurations = (
 				F45E778524BB2696007A2F2C /* Debug */,
 				F45E778624BB2696007A2F2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F48CD13124D2CECD004DB811 /* Build configuration list for PBXNativeTarget "SwiftUIGTFSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F48CD12F24D2CECD004DB811 /* Debug */,
+				F48CD13024D2CECD004DB811 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -10,12 +10,6 @@ import SwiftUI
 import Combine
 import Zip
 
-let mbtaGtfsPermalink = "https://cdn.mbta.com/MBTA_GTFS.zip"
-let bartGtfsPermalink = "https://www.bart.gov/dev/schedules/google_transit.zip"
-let ctaGtfsPermalink = "https://www.transitchicago.com/downloads/sch_data/google_transit.zip"
-let ratpGtfsPermalink = "http://dataratp.download.opendatasoft.com/RATP_GTFS_FULL.zip"
-let romeGtfsPermalink = "http://dati.muovi.roma.it/gtfs/rome_static_gtfs.zip"
-
 class GTFSManager: ObservableObject {
     @Published var routes: [GTFSRoute] = []
     @Published var trips: [GTFSTrip] = []
@@ -33,10 +27,11 @@ class GTFSManager: ObservableObject {
     @Published var isFinishedLoadingStops = false
     @Published var isFinishedProcessingRouteToShapeDictionary = false
     
-    // This array of arrays used to 4x e.g. @Published var displayedTrams: [GTFSRoute] = []
+    // This array of arrays used to be 4x e.g. @Published var displayedTrams: [GTFSRoute] = []
     // I'd like to also replace the the 4x @Published var displayTrams = false etc with an array of @Published booleans
     @Published var displayedRoutesByType: [[GTFSRoute]] = Array(repeating: [], count: GTFSRouteType.allCases.count)
     @Published var displayedRoutes: [GTFSRoute] = [] // Combine, um, combines the array of arrays into this for display by the main View
+    @Published var displayRoute: [Bool] = Array(repeating: false, count: GTFSRouteType.allCases.count)
     @Published var displayTrams = false
     @Published var displayMetro = false
     @Published var displayRail = false
@@ -192,16 +187,6 @@ class GTFSManager: ObservableObject {
     
     func getUniqueShapesIdsForRoute(for routeId: String) -> [String] {
         return routeToShapeDictionary[routeId] ?? []
-    }
-    
-    func loadRemoteMbtaZippedData() {
-        guard let url = URL(string: mbtaGtfsPermalink) else { return }
-        loadRemoteZippedData(from: url)
-    }
-    
-    func loadRemoteBartZippedData() {
-        guard let url = URL(string: bartGtfsPermalink) else { return }
-        loadRemoteZippedData(from: url)
     }
     
     func downloadDelegate(amountDownloaded: Double) {
