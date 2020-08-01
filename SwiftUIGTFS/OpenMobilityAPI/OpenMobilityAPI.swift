@@ -10,9 +10,9 @@ import Foundation
 import Combine
 
 protocol OpenMobilityAPIProtocol {
-    func getFeeds(for location: String?) -> AnyPublisher<[OpenMobilityAPI.Feed], GTFSError>
-    func getLocations() -> AnyPublisher<[OpenMobilityAPI.Location], GTFSError>
-    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, GTFSError>
+    func getFeeds(for location: String?) -> AnyPublisher<[OpenMobilityAPI.Feed], OpenMobilityAPI.OpenMobilityAPIError>
+    func getLocations() -> AnyPublisher<[OpenMobilityAPI.Location], OpenMobilityAPI.OpenMobilityAPIError>
+    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, OpenMobilityAPI.OpenMobilityAPIError>
 }
 
 class OpenMobilityAPI: OpenMobilityAPIProtocol {
@@ -22,24 +22,34 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
         case getLatestFeedVersion
     }
     
+    enum OpenMobilityAPIError: Error {
+        case invalidURL
+        case invalidResponse
+        case parseError
+        case decodingError(error: Error)
+        case unknownError(error: Error)
+    }
+    
+    static private let apiKey = "54f523ad-4cb1-4143-8168-cfae024ac0ec"
+    
     private func makeUrl(endpoint: Endpoint, queryItems: [URLQueryItem] = []) -> URL? {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "api.transitfeeds.com"
         urlComponents.path = "/v1/\(endpoint)"
-        urlComponents.queryItems = [URLQueryItem(name: "key", value: "54f523ad-4cb1-4143-8168-cfae024ac0ec")]
+        urlComponents.queryItems = [URLQueryItem(name: "key", value: OpenMobilityAPI.apiKey)]
         urlComponents.queryItems?.append(contentsOf: queryItems)
         return urlComponents.url
     }
     
-    func getFeeds(for location: String? = nil) -> AnyPublisher<[Feed], GTFSError> {
+    func getFeeds(for location: String? = nil) -> AnyPublisher<[Feed], OpenMobilityAPI.OpenMobilityAPIError> {
         var queryItems = [URLQueryItem(name: "type", value: "gtfs")]
         if let location = location {
             queryItems.append(URLQueryItem(name: "location", value: location))
         }
             
         guard let url = makeUrl(endpoint: .getFeeds, queryItems: queryItems) else {
-            return Fail(error: GTFSError.openMobilityApiError(issue: "Couldn't make URL in getFeeds"))
+            return Fail(error: .invalidURL)
                 .eraseToAnyPublisher()
         }
         
@@ -47,7 +57,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
             .tryMap { data, response in
                 guard let response = response as? HTTPURLResponse,
                     response.statusCode == 200 else {
-                        throw GTFSError.openMobilityApiError(issue: "Invalid response from OpenMobilityAPI")
+                        throw OpenMobilityAPIError.invalidResponse
                 }
                 return data
             }
@@ -61,19 +71,19 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
             .mapError({ error in
                 switch error {
                 case is Swift.DecodingError:
-                    return .openMobilityApiError(issue: "Decoding error: \(error)")
-                case let error as GTFSError:
+                    return OpenMobilityAPIError.decodingError(error: error)
+                case let error as OpenMobilityAPIError:
                     return error
                 default:
-                    return GTFSError.openMobilityApiError(issue: "Unknown error: \(error)")
+                    return .unknownError(error: error)
                 }
             })
             .eraseToAnyPublisher()
     }
     
-    func getLocations() -> AnyPublisher<[Location], GTFSError> {
+    func getLocations() -> AnyPublisher<[Location], OpenMobilityAPI.OpenMobilityAPIError> {
         guard let url = makeUrl(endpoint: .getLocations) else {
-            return Fail(error: GTFSError.openMobilityApiError(issue: "Couldn't make URL in getFeeds"))
+            return Fail(error: .invalidURL)
                 .eraseToAnyPublisher()
         }
         
@@ -81,7 +91,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
         .tryMap { data, response in
             guard let response = response as? HTTPURLResponse,
                 response.statusCode == 200 else {
-                    throw GTFSError.openMobilityApiError(issue: "Invalid response from OpenMobilityAPI")
+                    throw OpenMobilityAPIError.invalidResponse
             }
             return data
         }
@@ -95,19 +105,19 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
         .mapError({ error in
             switch error {
             case is Swift.DecodingError:
-                return .openMobilityApiError(issue: "Decoding error: \(error)")
-            case let error as GTFSError:
+                return .decodingError(error: error)
+            case let error as OpenMobilityAPIError:
                 return error
             default:
-                return GTFSError.openMobilityApiError(issue: "Unknown error: \(error)")
+                return .unknownError(error: error)
             }
         })
         .eraseToAnyPublisher()
     }
     
-    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, GTFSError> {
+    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, OpenMobilityAPI.OpenMobilityAPIError> {
         guard let url = makeUrl(endpoint: .getLatestFeedVersion, queryItems: [URLQueryItem(name: "feed", value: feedId)]) else {
-            return Fail(error: GTFSError.invalidFile(issue: "test"))
+            return Fail(error: .invalidURL)
                 .eraseToAnyPublisher()
         }
         
@@ -125,10 +135,10 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
             }
             .mapError({ error in
                 switch error {
-                case let error as GTFSError:
+                case let error as OpenMobilityAPIError:
                     return error
                 default:
-                    return GTFSError.openMobilityApiError(issue: "Unknown error: \(error)")
+                    return .unknownError(error: error)
                 }
             })
             .eraseToAnyPublisher()
