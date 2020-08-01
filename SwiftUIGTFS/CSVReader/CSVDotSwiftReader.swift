@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CSV
 
-class CSVDotSwiftReader: GTFSReader {
+class CSVDotSwiftReader: GtfsCSVReader {
     func routesPublisher(from csvString: String) -> Future<[GTFSRoute], GTFSError> {
         loadEntityPublisher(from: csvString)
     }

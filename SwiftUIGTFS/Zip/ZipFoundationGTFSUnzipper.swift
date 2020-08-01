@@ -35,9 +35,7 @@ class ZipFoundationGTFSUnzipper: GTFSUnzipper {
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
                     let fileManager = FileManager()
-                    print("isMainThread: \(Thread.isMainThread)")
                     try fileManager.unzipItem(at: gtfsZip, to: destination)
-                    print("destination: \(destination)")
                     let routesUrl = destination.appendingPathComponent("routes.txt")
                     let tripsUrl = destination.appendingPathComponent("trips.txt")
                     let shapesUrl = destination.appendingPathComponent("shapes.txt")

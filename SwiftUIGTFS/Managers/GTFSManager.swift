@@ -46,7 +46,7 @@ class GTFSManager: ObservableObject {
     
     @Published var selectedRoute: String? = nil
     
-    private var gtfsLoader: GTFSReader = CSVDotSwiftReader()
+    private var gtfsLoader: GtfsCSVReader = CSVDotSwiftReader()
     
     private var cancellables = Set<AnyCancellable>()
     

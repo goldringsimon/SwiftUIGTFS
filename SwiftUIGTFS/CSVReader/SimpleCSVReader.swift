@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-class SimpleCSVReader: GTFSReader {
+class SimpleCSVReader: GtfsCSVReader {
         
     private static let csvRegEx = """
 (?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))

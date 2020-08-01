@@ -21,7 +21,7 @@ class GTFSProcessorTests: XCTestCase {
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
-        let reader: GTFSReader = CSVDotSwiftReader()
+        let reader: GtfsCSVReader = CSVDotSwiftReader()
         guard let routeUrl = Bundle.main.url(forResource: "mbtaRoutes", withExtension: ".txt") else { return }
         reader.routesPublisher(from: routeUrl)
             .assertNoFailure()
@@ -82,8 +82,10 @@ class GTFSProcessorTests: XCTestCase {
     func testGTFSUnzipperProcessorIntegration() throws {
         let openMobility: OpenMobilityAPIProtocol = MockOpenMobilityAPI()
         let unzipper: GTFSUnzipper = MockGTFSUnzipper()
+        let csvReader: GtfsCSVReader = CSVDotSwiftReader()
         //let localZipUrl = Bundle.main.url(forResource: "mbta gtfs", withExtension: "zip")!
         
+        let expectation = XCTestExpectation(description: "testGTFSUnzipperProcessorIntegration")
         
         openMobility.getLatestFeedVersion(feedId: "")
             .assertNoFailure()
@@ -91,9 +93,12 @@ class GTFSProcessorTests: XCTestCase {
             .flatMap { (url) in
                 unzipper.unzip(gtfsZip: url)
             }
-            .map({ (unzippedGTFS) -> GTFSRawData in
-                
-                GTFSRawData(routes: [], trips: [], shapes: [], stops: [])
+            .assertNoFailure()
+            .mapError { _ in GTFSError.invalidFile(issue: "") }
+            .flatMap({ csvReader.gtfsPublisher(from: $0) })
+            .map({ (rawData) in
+                print(rawData.routes.first ?? "Couldn't find first trip")
+                return rawData
             })
             .assertNoFailure()
             .mapError { _ in GTFSError.invalidFile(issue: "") }
@@ -102,13 +107,18 @@ class GTFSProcessorTests: XCTestCase {
                 switch completion {
                     
                 case .finished:
-                    <#code#>
-                case .failure(_):
-                    <#code#>
+                    print("finished")
+                    break
+                case .failure(let error):
+                    print("error")
+                    break
                 }
             }) { (gtfsData) in
                 print(gtfsData.routeToShapeDictionary.first ?? "Couldn't find routeToShapeDictionary :(")
+                expectation.fulfill()
         }
         .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 30.0)
     }
 }

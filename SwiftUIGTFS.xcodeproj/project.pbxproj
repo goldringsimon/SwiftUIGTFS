@@ -10,7 +10,7 @@
 		F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */; };
 		F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */; };
 		F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44F115924BBB6EE008E85C6 /* GTFSManager.swift */; };
-		F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GTFSReader.swift */; };
+		F456F6CD24C782D800B2218F /* GtfsCSVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F456F6CC24C782D800B2218F /* GtfsCSVReader.swift */; };
 		F456F6E324C83ED100B2218F /* bartRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DD24C83ED100B2218F /* bartRoutes.txt */; };
 		F456F6E424C83ED100B2218F /* bartAgency.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DE24C83ED100B2218F /* bartAgency.txt */; };
 		F456F6E524C83ED100B2218F /* bartShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F456F6DF24C83ED100B2218F /* bartShapes.txt */; };
@@ -73,7 +73,7 @@
 		F408E9CA24C9EAC40040CE81 /* GTFSDownloadDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSDownloadDelegate.swift; sourceTree = "<group>"; };
 		F44F115624BBB2A0008E85C6 /* GTFSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSRoute.swift; sourceTree = "<group>"; };
 		F44F115924BBB6EE008E85C6 /* GTFSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSManager.swift; sourceTree = "<group>"; };
-		F456F6CC24C782D800B2218F /* GTFSReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSReader.swift; sourceTree = "<group>"; };
+		F456F6CC24C782D800B2218F /* GtfsCSVReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GtfsCSVReader.swift; sourceTree = "<group>"; };
 		F456F6DD24C83ED100B2218F /* bartRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartRoutes.txt; sourceTree = "<group>"; };
 		F456F6DE24C83ED100B2218F /* bartAgency.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartAgency.txt; sourceTree = "<group>"; };
 		F456F6DF24C83ED100B2218F /* bartShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bartShapes.txt; sourceTree = "<group>"; };
@@ -171,7 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				F49DE61324C08D940099A46A /* SimpleCSVReader.swift */,
-				F456F6CC24C782D800B2218F /* GTFSReader.swift */,
+				F456F6CC24C782D800B2218F /* GtfsCSVReader.swift */,
 				F456F6EC24C848A500B2218F /* CSVDotSwiftReader.swift */,
 			);
 			path = CSVReader;
@@ -471,7 +471,7 @@
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
 				F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
-				F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */,
+				F456F6CD24C782D800B2218F /* GtfsCSVReader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
