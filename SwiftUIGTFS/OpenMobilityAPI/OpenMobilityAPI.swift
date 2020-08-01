@@ -15,6 +15,22 @@ protocol OpenMobilityAPIProtocol {
     func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, OpenMobilityAPI.OpenMobilityAPIError>
 }
 
+class MockOpenMobilityAPI: OpenMobilityAPIProtocol {
+    func getFeeds(for location: String?) -> AnyPublisher<[OpenMobilityAPI.Feed], OpenMobilityAPI.OpenMobilityAPIError> {
+        fatalError("not implemented")
+    }
+    
+    func getLocations() -> AnyPublisher<[OpenMobilityAPI.Location], OpenMobilityAPI.OpenMobilityAPIError> {
+        fatalError("not implemented")
+    }
+    
+    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, OpenMobilityAPI.OpenMobilityAPIError> {
+        return Just(Bundle.main.url(forResource: "mbta gtfs", withExtension: "zip")!)
+            .mapError({ _ in OpenMobilityAPI.OpenMobilityAPIError.unknownError(nil) })
+        .eraseToAnyPublisher()
+    }
+}
+
 class OpenMobilityAPI: OpenMobilityAPIProtocol {
     enum Endpoint: String {
         case getLocations
@@ -27,7 +43,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
         case invalidResponse
         case parseError
         case decodingError(error: Error)
-        case unknownError(error: Error)
+        case unknownError(_ error: Error? = nil)
     }
     
     static private let apiKey = "54f523ad-4cb1-4143-8168-cfae024ac0ec"
@@ -75,7 +91,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
                 case let error as OpenMobilityAPIError:
                     return error
                 default:
-                    return .unknownError(error: error)
+                    return .unknownError(error)
                 }
             })
             .eraseToAnyPublisher()
@@ -109,7 +125,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
             case let error as OpenMobilityAPIError:
                 return error
             default:
-                return .unknownError(error: error)
+                return .unknownError(error)
             }
         })
         .eraseToAnyPublisher()
@@ -138,7 +154,7 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
                 case let error as OpenMobilityAPIError:
                     return error
                 default:
-                    return .unknownError(error: error)
+                    return .unknownError(error)
                 }
             })
             .eraseToAnyPublisher()

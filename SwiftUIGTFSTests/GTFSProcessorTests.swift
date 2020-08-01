@@ -78,5 +78,37 @@ class GTFSProcessorTests: XCTestCase {
             }
         }
     }
-
+    
+    func testGTFSUnzipperProcessorIntegration() throws {
+        let openMobility: OpenMobilityAPIProtocol = MockOpenMobilityAPI()
+        let unzipper: GTFSUnzipper = MockGTFSUnzipper()
+        //let localZipUrl = Bundle.main.url(forResource: "mbta gtfs", withExtension: "zip")!
+        
+        
+        openMobility.getLatestFeedVersion(feedId: "")
+            .assertNoFailure()
+            .mapError { _ in GTFSUnzipError.missingFile(file: "") }
+            .flatMap { (url) in
+                unzipper.unzip(gtfsZip: url)
+            }
+            .map({ (unzippedGTFS) -> GTFSRawData in
+                
+                GTFSRawData(routes: [], trips: [], shapes: [], stops: [])
+            })
+            .assertNoFailure()
+            .mapError { _ in GTFSError.invalidFile(issue: "") }
+            .flatMap({ GTFSProcessor.processGTFSData(rawData: $0) })
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                    
+                case .finished:
+                    <#code#>
+                case .failure(_):
+                    <#code#>
+                }
+            }) { (gtfsData) in
+                print(gtfsData.routeToShapeDictionary.first ?? "Couldn't find routeToShapeDictionary :(")
+        }
+        .store(in: &cancellables)
+    }
 }

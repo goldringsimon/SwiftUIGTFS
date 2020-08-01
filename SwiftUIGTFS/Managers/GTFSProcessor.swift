@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 struct GTFSRawData {
     let routes: [GTFSRoute]
@@ -22,6 +23,10 @@ struct GTFSData {
 }
 
 class GTFSProcessor {
+    static func processGTFSData(rawData: GTFSRawData) -> Future<GTFSData, GTFSError> {
+        Future { processGTFSData(rawData: rawData, completed: $0) }
+    }
+    
     static func processGTFSData(rawData: GTFSRawData, completed: @escaping (Result<GTFSData, GTFSError>) -> Void) {
         let tripDictionary = createTripDictionary(trips: rawData.trips)
         let shapeDictionary = createShapeDictionary(shapes: rawData.shapes)
