@@ -49,6 +49,8 @@
 		F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */; };
 		F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */; };
 		F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */; };
+		F4AA905824D56D8C006AA78B /* GTFSUnzipperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905724D56D8C006AA78B /* GTFSUnzipperTests.swift */; };
+		F4AA905A24D5738D006AA78B /* mbta gtfs.zip in Resources */ = {isa = PBXBuildFile; fileRef = F4AA905924D5738D006AA78B /* mbta gtfs.zip */; };
 		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
 		F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931D24CA2D6500766C39 /* Constants.swift */; };
 		F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */; };
@@ -111,6 +113,8 @@
 		F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGTFSUnzipper.swift; sourceTree = "<group>"; };
 		F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipGTFSUnzipper.swift; sourceTree = "<group>"; };
 		F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFoundationGTFSUnzipper.swift; sourceTree = "<group>"; };
+		F4AA905724D56D8C006AA78B /* GTFSUnzipperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSUnzipperTests.swift; sourceTree = "<group>"; };
+		F4AA905924D5738D006AA78B /* mbta gtfs.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "mbta gtfs.zip"; sourceTree = "<group>"; };
 		F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		F4C9931D24CA2D6500766C39 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMobilityAPI.swift; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 		F4062FDB24BE0D9B0076C78D /* MBTA */ = {
 			isa = PBXGroup;
 			children = (
+				F4AA905924D5738D006AA78B /* mbta gtfs.zip */,
 				F45E778924BB6001007A2F2C /* mbtaShapes.txt */,
 				F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */,
 				F4F1DCF124BCF4B100BE4D05 /* mbtaStops.txt */,
@@ -290,6 +295,7 @@
 				F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */,
 				F48CD12C24D2CECD004DB811 /* Info.plist */,
 				F48CD13424D45400004DB811 /* GTFSProcessorTests.swift */,
+				F4AA905724D56D8C006AA78B /* GTFSUnzipperTests.swift */,
 			);
 			path = SwiftUIGTFSTests;
 			sourceTree = "<group>";
@@ -414,6 +420,7 @@
 				F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */,
 				F45E778A24BB6001007A2F2C /* mbtaShapes.txt in Resources */,
 				F49DE61224BF11210099A46A /* ctaStops.txt in Resources */,
+				F4AA905A24D5738D006AA78B /* mbta gtfs.zip in Resources */,
 				F45E778024BB2696007A2F2C /* LaunchScreen.storyboard in Resources */,
 				F456F6E824C83ED100B2218F /* bartStops.txt in Resources */,
 				F456F6E624C83ED100B2218F /* bartTrips.txt in Resources */,
@@ -473,6 +480,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4AA905824D56D8C006AA78B /* GTFSUnzipperTests.swift in Sources */,
 				F48CD13524D45400004DB811 /* GTFSProcessorTests.swift in Sources */,
 				F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */,
 			);

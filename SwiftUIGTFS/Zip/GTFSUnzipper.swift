@@ -18,8 +18,10 @@ struct UnzippedGTFS {
 
 enum GTFSUnzipError: Error {
     case missingFile(file: String)
+    case zipExtractionError
 }
 
 protocol GTFSUnzipper {
-    func unzip(url: URL) -> Future<UnzippedGTFS, GTFSUnzipError>
+    func unzip(gtfsZip: URL) -> Future<UnzippedGTFS, GTFSUnzipError>
+    func unzip(gtfsZip: URL, destination: URL) -> Future<UnzippedGTFS, GTFSUnzipError>
 }

@@ -9,7 +9,11 @@
 import Foundation
 import Combine
 
-class OpenMobilityAPI {
+protocol OpenMobilityAPIProtocol {
+    
+}
+
+class OpenMobilityAPI: OpenMobilityAPIProtocol {
     
     enum Endpoint: String {
         case getLocations

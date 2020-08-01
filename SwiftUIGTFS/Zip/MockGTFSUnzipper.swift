@@ -10,8 +10,12 @@ import Foundation
 import Combine
 
 class MockGTFSUnzipper: GTFSUnzipper {
+    func unzip(gtfsZip: URL, destination: URL) -> Future<UnzippedGTFS, GTFSUnzipError> {
+        fatalError("Not yet implemented")
+    }
     
-    func unzip(url: URL) -> Future<UnzippedGTFS, GTFSUnzipError> {
+    
+    func unzip(gtfsZip: URL) -> Future<UnzippedGTFS, GTFSUnzipError> {
         Future { promise in
             guard let routesUrl = Bundle.main.url(forResource: "mbtaRoutes", withExtension: ".txt") else {
                 promise(.failure(GTFSUnzipError.missingFile(file: "routes.txt")))

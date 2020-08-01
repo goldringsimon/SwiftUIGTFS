@@ -41,26 +41,26 @@ route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_
 """
         let expectation = XCTestExpectation(description: "Test routes publisher")
         measure {
-        let csvReader = CSVDotSwiftReader()
-        csvReader.routesPublisher(from: testRoutesData).sink(receiveCompletion: { completion in
-            switch completion {
-                
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail(error.localizedDescription)
+            let csvReader = CSVDotSwiftReader()
+            csvReader.routesPublisher(from: testRoutesData).sink(receiveCompletion: { completion in
+                switch completion {
+                    
+                case .finished:
+                    break
+                case .failure(let error):
+                    XCTFail(error.localizedDescription)
+                }
+            }) { routes in
+                XCTAssertEqual(routes.count, 2)
+                XCTAssertEqual(routes[0].routeId, "1")
+                XCTAssertEqual(routes[0].routeShortName, "YL-S")
+                XCTAssertEqual(routes[0].routeLongName, "Antioch to SFIA/Millbrae")
+                XCTAssertEqual(routes[1].routeId, "2")
+                XCTAssertEqual(routes[1].routeShortName, "YL-N")
+                XCTAssertEqual(routes[1].routeLongName, "Millbrae/SFIA to Antioch")
+                expectation.fulfill()
             }
-        }) { routes in
-            XCTAssertEqual(routes.count, 2)
-            XCTAssertEqual(routes[0].routeId, "1")
-            XCTAssertEqual(routes[0].routeShortName, "YL-S")
-            XCTAssertEqual(routes[0].routeLongName, "Antioch to SFIA/Millbrae")
-            XCTAssertEqual(routes[1].routeId, "2")
-            XCTAssertEqual(routes[1].routeShortName, "YL-N")
-            XCTAssertEqual(routes[1].routeLongName, "Millbrae/SFIA to Antioch")
-            expectation.fulfill()
-        }
-        .store(in: &cancellables)
+            .store(in: &cancellables)
         }
         wait(for: [expectation], timeout: 10.0)
     }
