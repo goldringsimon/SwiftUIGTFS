@@ -10,11 +10,12 @@ import Foundation
 import Combine
 
 protocol OpenMobilityAPIProtocol {
-    
+    func getFeeds(for location: String?) -> AnyPublisher<[OpenMobilityAPI.Feed], GTFSError>
+    func getLocations() -> AnyPublisher<[OpenMobilityAPI.Location], GTFSError>
+    func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, GTFSError>
 }
 
 class OpenMobilityAPI: OpenMobilityAPIProtocol {
-    
     enum Endpoint: String {
         case getLocations
         case getFeeds
