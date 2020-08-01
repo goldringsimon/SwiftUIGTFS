@@ -46,7 +46,7 @@ class GTFSManager: ObservableObject {
     
     @Published var selectedRoute: String? = nil
     
-    private var gtfsLoader : GTFSReader = CSVDotSwiftReader()
+    private var gtfsLoader: GTFSReader = CSVDotSwiftReader()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -97,12 +97,6 @@ class GTFSManager: ObservableObject {
                 self.openedLocationSubList(location: selectedLocations.last)
             }
         .store(in: &cancellables)
-        
-        /*$selectedFeed
-            .sink { (feed) in
-                print(feed)
-        }
-        .store(in: &cancellables)*/
         
         openMobility.getLocations()
             .receive(on: DispatchQueue.main)
@@ -160,29 +154,6 @@ class GTFSManager: ObservableObject {
             self.loadRemoteZippedData(from: url)
         })
         .store(in: &cancellables)
-    }
-    
-    func getShapeId(for routeId: String) -> [GTFSShapePoint] {
-        guard let firstTrip = tripDictionary[routeId]?.first else { return [] }
-        guard let shapeId = firstTrip.shapeId else { return [] }
-        return shapeDictionary[shapeId] ?? []
-    }
-    
-    func getAllTrips(for routeId: String) -> [GTFSTrip] {
-        return tripDictionary[routeId] ?? []
-    }
-    
-    func getAllShapes(for tripId: String) -> [GTFSShapePoint] {
-        return shapeDictionary[tripId] ?? []
-    }
-    
-    func getAllShapesForRoute(for routeId: String) -> [GTFSShapePoint] {
-        var returnValue = [GTFSShapePoint]()
-        for trip in getAllTrips(for: routeId) {
-            guard let shapeId = trip.shapeId else { break }
-            returnValue += getAllShapes(for: shapeId)
-        }
-        return returnValue
     }
     
     func getUniqueShapesIdsForRoute(for routeId: String) -> [String] {

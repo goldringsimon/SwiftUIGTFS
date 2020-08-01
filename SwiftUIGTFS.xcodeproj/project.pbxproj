@@ -38,11 +38,17 @@
 		F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */; };
 		F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */; };
 		F48CD13324D36349004DB811 /* GTFSProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD13224D36349004DB811 /* GTFSProcessor.swift */; };
+		F48CD13524D45400004DB811 /* GTFSProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48CD13424D45400004DB811 /* GTFSProcessorTests.swift */; };
 		F49DE60F24BF11210099A46A /* ctaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60B24BF11210099A46A /* ctaTrips.txt */; };
 		F49DE61024BF11210099A46A /* ctaShapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60C24BF11210099A46A /* ctaShapes.txt */; };
 		F49DE61124BF11210099A46A /* ctaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60D24BF11210099A46A /* ctaRoutes.txt */; };
 		F49DE61224BF11210099A46A /* ctaStops.txt in Resources */ = {isa = PBXBuildFile; fileRef = F49DE60E24BF11210099A46A /* ctaStops.txt */; };
 		F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleCSVReader.swift */; };
+		F4AA904E24D56818006AA78B /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F4AA904D24D56818006AA78B /* ZIPFoundation */; };
+		F4AA905024D5689D006AA78B /* GTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA904F24D5689D006AA78B /* GTFSUnzipper.swift */; };
+		F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */; };
+		F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */; };
+		F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */; };
 		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
 		F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931D24CA2D6500766C39 /* Constants.swift */; };
 		F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */; };
@@ -95,11 +101,16 @@
 		F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGTFSTests.swift; sourceTree = "<group>"; };
 		F48CD12C24D2CECD004DB811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F48CD13224D36349004DB811 /* GTFSProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSProcessor.swift; sourceTree = "<group>"; };
+		F48CD13424D45400004DB811 /* GTFSProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSProcessorTests.swift; sourceTree = "<group>"; };
 		F49DE60B24BF11210099A46A /* ctaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaTrips.txt; sourceTree = "<group>"; };
 		F49DE60C24BF11210099A46A /* ctaShapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaShapes.txt; sourceTree = "<group>"; };
 		F49DE60D24BF11210099A46A /* ctaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaRoutes.txt; sourceTree = "<group>"; };
 		F49DE60E24BF11210099A46A /* ctaStops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctaStops.txt; sourceTree = "<group>"; };
 		F49DE61324C08D940099A46A /* SimpleCSVReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCSVReader.swift; sourceTree = "<group>"; };
+		F4AA904F24D5689D006AA78B /* GTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSUnzipper.swift; sourceTree = "<group>"; };
+		F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGTFSUnzipper.swift; sourceTree = "<group>"; };
+		F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipGTFSUnzipper.swift; sourceTree = "<group>"; };
+		F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFoundationGTFSUnzipper.swift; sourceTree = "<group>"; };
 		F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		F4C9931D24CA2D6500766C39 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMobilityAPI.swift; sourceTree = "<group>"; };
@@ -115,6 +126,7 @@
 			files = (
 				F456F6F024C893D700B2218F /* Zip in Frameworks */,
 				F456F6EB24C8487400B2218F /* CSV in Frameworks */,
+				F4AA904E24D56818006AA78B /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +217,7 @@
 		F45E777224BB2694007A2F2C /* SwiftUIGTFS */ = {
 			isa = PBXGroup;
 			children = (
+				F4AA904B24D567DC006AA78B /* Zip */,
 				F47CE91924CE216700E9EBBF /* OpenMobilityAPI */,
 				F408E9CC24CA286F0040CE81 /* CSVReader */,
 				F4BF575724C4F30C0070CC88 /* Utility */,
@@ -276,8 +289,20 @@
 			children = (
 				F48CD12A24D2CECD004DB811 /* SwiftUIGTFSTests.swift */,
 				F48CD12C24D2CECD004DB811 /* Info.plist */,
+				F48CD13424D45400004DB811 /* GTFSProcessorTests.swift */,
 			);
 			path = SwiftUIGTFSTests;
+			sourceTree = "<group>";
+		};
+		F4AA904B24D567DC006AA78B /* Zip */ = {
+			isa = PBXGroup;
+			children = (
+				F4AA904F24D5689D006AA78B /* GTFSUnzipper.swift */,
+				F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */,
+				F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */,
+				F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */,
+			);
+			path = Zip;
 			sourceTree = "<group>";
 		};
 		F4BF575724C4F30C0070CC88 /* Utility */ = {
@@ -309,6 +334,7 @@
 			packageProductDependencies = (
 				F456F6EA24C8487400B2218F /* CSV */,
 				F456F6EF24C893D700B2218F /* Zip */,
+				F4AA904D24D56818006AA78B /* ZIPFoundation */,
 			);
 			productName = SwiftUIGTFS;
 			productReference = F45E777024BB2694007A2F2C /* SwiftUIGTFS.app */;
@@ -363,6 +389,7 @@
 			packageReferences = (
 				F456F6E924C8487400B2218F /* XCRemoteSwiftPackageReference "CSV.swift" */,
 				F456F6EE24C893D700B2218F /* XCRemoteSwiftPackageReference "Zip" */,
+				F4AA904C24D56818006AA78B /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = F45E777124BB2694007A2F2C /* Products */;
 			projectDirPath = "";
@@ -422,16 +449,20 @@
 				F486FDB524C4E2C3004BEB51 /* GTFSShape.swift in Sources */,
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
+				F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */,
 				F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
 				F48CD13324D36349004DB811 /* GTFSProcessor.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
+				F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */,
 				F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */,
+				F4AA905024D5689D006AA78B /* GTFSUnzipper.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
 				F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */,
 				F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */,
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
+				F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
 				F456F6CD24C782D800B2218F /* GTFSReader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,
@@ -442,6 +473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F48CD13524D45400004DB811 /* GTFSProcessorTests.swift in Sources */,
 				F48CD12B24D2CECD004DB811 /* SwiftUIGTFSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -711,6 +743,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		F4AA904C24D56818006AA78B /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.11;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -723,6 +763,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F456F6EE24C893D700B2218F /* XCRemoteSwiftPackageReference "Zip" */;
 			productName = Zip;
+		};
+		F4AA904D24D56818006AA78B /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4AA904C24D56818006AA78B /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
