@@ -38,19 +38,15 @@ struct ContentView: View {
                  .transition(.opacity)
                  }*/
                 
-                ForEach(GTFSRouteType.allCases, id:\.rawValue) { routeType in
+                /*ForEach(GTFSRouteType.allCases, id:\.rawValue) { routeType in
                     Group {
                         if (self.gtfsManager.displayRoute[routeType.rawValue]) {
-                        
                             ForEach( self.gtfsManager.displayedRoutesByType[routeType.rawValue] ) { routes in
-                                
                                 Text("")
-                                
                             }
                         }
-                        
                     }
-                }
+                }*/
                 
                 ForEach(self.gtfsManager.displayedRoutes) { route in
                     ForEach(self.gtfsManager.getUniqueShapesIdsForRoute(for: route.routeId), id: \.self) { shapeId in
@@ -81,53 +77,21 @@ struct ContentView: View {
             .clipped()
             .edgesIgnoringSafeArea(.all)
             
-            VStack {
-                HStack {
-                    Button("Load New System", action: {
-                        
-                    })
-                    .padding()
-                    .modifier(UICard())
-                    Spacer()
-                }
+            UICardPosition(corner: .topLeft) {
+                Button("Load New System", action: {
+                    
+                })
+                .padding()
+                .modifier(UICard())
                 Spacer()
             }
             
-            VStack {
-                HStack {
-                    Spacer()
-                    VStack(alignment: .leading){
-                        Toggle(isOn: $isDisplayingRouteColors.animation()) {
-                            Text("Display route colours:")
-                        }
-                        Divider()
-                        Toggle(isOn: $gtfsManager.displayTrams) {
-                            Text("Display trams:")
-                        }
-                        Toggle(isOn: $gtfsManager.displayMetro) {
-                            Text("Display metro:")
-                        }
-                        Toggle(isOn: $gtfsManager.displayRail) {
-                            Text("Display rail:")
-                        }
-                        Toggle(isOn: $gtfsManager.displayBuses) {
-                            Text("Display buses:")
-                        }
-                        Text("# displayed routes: \(self.gtfsManager.displayedRoutes.count)")
-                    }
-                    .padding()
-                    .frame(width: 300)
-                    .modifier(UICard())
-                }
-                Spacer()
+            UICardPosition(corner: .topRight) {
+                RouteDisplayView(viewModel: gtfsManager.routeDisplayViewModel, isDisplayingRouteColors: $isDisplayingRouteColors)
             }
             
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    GTFSInfoView(viewModel: gtfsManager.infoViewModel)
-                }
+            UICardPosition(corner: .bottomRight) {
+                GTFSInfoView(viewModel: gtfsManager.infoViewModel)
             }
             
             if !gtfsManager.isFinishedLoading {

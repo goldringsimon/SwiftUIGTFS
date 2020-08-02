@@ -33,6 +33,9 @@
 		F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */; };
 		F46F6A7924D71DFC00D05C0B /* GTFSInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */; };
 		F46F6A7B24D71EAD00D05C0B /* GTFSInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */; };
+		F46F6A7D24D74A4300D05C0B /* RouteDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7C24D74A4300D05C0B /* RouteDisplayView.swift */; };
+		F46F6A7F24D74D5800D05C0B /* RouteDisplayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */; };
+		F46F6A8124D76CC800D05C0B /* UICardPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A8024D76CC800D05C0B /* UICardPosition.swift */; };
 		F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */; };
 		F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */; };
 		F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */; };
@@ -98,6 +101,9 @@
 		F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSTrip.swift; sourceTree = "<group>"; };
 		F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSInfoViewModel.swift; sourceTree = "<group>"; };
 		F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSInfoView.swift; sourceTree = "<group>"; };
+		F46F6A7C24D74A4300D05C0B /* RouteDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDisplayView.swift; sourceTree = "<group>"; };
+		F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDisplayViewModel.swift; sourceTree = "<group>"; };
+		F46F6A8024D76CC800D05C0B /* UICardPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICardPosition.swift; sourceTree = "<group>"; };
 		F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedsResponse.swift; sourceTree = "<group>"; };
 		F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLocationsResponse.swift; sourceTree = "<group>"; };
 		F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
@@ -281,6 +287,8 @@
 				F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */,
 				F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */,
 				F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */,
+				F46F6A7C24D74A4300D05C0B /* RouteDisplayView.swift */,
+				F46F6A8024D76CC800D05C0B /* UICardPosition.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -289,6 +297,7 @@
 			isa = PBXGroup;
 			children = (
 				F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */,
+				F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -466,6 +475,7 @@
 				F46F6A7924D71DFC00D05C0B /* GTFSInfoViewModel.swift in Sources */,
 				F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
+				F46F6A7D24D74A4300D05C0B /* RouteDisplayView.swift in Sources */,
 				F4C9932224CAE66700766C39 /* GTFSError.swift in Sources */,
 				F486FDB324C4E27C004BEB51 /* UICard.swift in Sources */,
 				F456F6ED24C848A500B2218F /* CSVDotSwiftReader.swift in Sources */,
@@ -473,10 +483,12 @@
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
 				F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */,
+				F46F6A7F24D74D5800D05C0B /* RouteDisplayViewModel.swift in Sources */,
 				F4AA905D24D6DDAC006AA78B /* MockGTFSUnzipper.swift in Sources */,
 				F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
+				F46F6A8124D76CC800D05C0B /* UICardPosition.swift in Sources */,
 				F48CD13324D36349004DB811 /* GTFSProcessor.swift in Sources */,
 				F45E777624BB2694007A2F2C /* SceneDelegate.swift in Sources */,
 				F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */,

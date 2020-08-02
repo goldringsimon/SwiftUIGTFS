@@ -63,6 +63,7 @@ class GTFSManager: ObservableObject {
     @Published var favourites = [OpenMobilityAPI.Feed]()
     
     var infoViewModel: GTFSInfoViewModel!
+    var routeDisplayViewModel: RouteDisplayViewModel!
     
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
@@ -83,6 +84,7 @@ class GTFSManager: ObservableObject {
     
     init() {
         infoViewModel = GTFSInfoViewModel(gtfsManager: self)
+        routeDisplayViewModel = RouteDisplayViewModel(gtfsManager: self)
         
         Publishers.CombineLatest($overviewViewport, $scale)
             .map { (overview, scale) -> CGRect in
