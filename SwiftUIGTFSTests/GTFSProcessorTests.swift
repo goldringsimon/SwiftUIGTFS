@@ -20,35 +20,6 @@ class GTFSProcessorTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        
-        let reader: GtfsCSVReader = CSVDotSwiftReader()
-        guard let routeUrl = Bundle.main.url(forResource: "mbtaRoutes", withExtension: ".txt") else { return }
-        reader.routesPublisher(from: routeUrl)
-            .assertNoFailure()
-            .sink(receiveValue: { self.routes = $0 })
-        .store(in: &cancellables)
-        
-        guard let tripsUrl = Bundle.main.url(forResource: "mbtaTrips", withExtension: ".txt") else { return }
-        reader.tripsPublisher(from: tripsUrl)
-            .assertNoFailure()
-            .sink(receiveValue: { self.trips = $0 })
-        .store(in: &cancellables)
-        
-        guard let shapesUrl = Bundle.main.url(forResource: "mbtaShapes", withExtension: ".txt") else { return }
-        reader.shapesPublisher(from: shapesUrl)
-            .assertNoFailure()
-            .sink(receiveValue: { self.shapes = $0 })
-        .store(in: &cancellables)
-        
-        guard let stopsUrl = Bundle.main.url(forResource: "mbtaStops", withExtension: ".txt") else { return }
-        reader.stopsPublisher(from: stopsUrl)
-            .assertNoFailure()
-            .sink(receiveValue: { self.stops = $0 })
-        .store(in: &cancellables)
-        
-        while routes.isEmpty || trips.isEmpty || shapes.isEmpty || stops.isEmpty {
-            
-        }
     }
     
     override func tearDownWithError() throws {
@@ -81,44 +52,37 @@ class GTFSProcessorTests: XCTestCase {
     
     func testGTFSUnzipperProcessorIntegration() throws {
         let openMobility: OpenMobilityAPIProtocol = MockOpenMobilityAPI()
-        let unzipper: GTFSUnzipper = MockGTFSUnzipper()
+        let unzipper: GTFSUnzipper = ZipGTFSUnzipper()
         let csvReader: GtfsCSVReader = CSVDotSwiftReader()
         //let localZipUrl = Bundle.main.url(forResource: "mbta gtfs", withExtension: "zip")!
         
-        let expectation = XCTestExpectation(description: "testGTFSUnzipperProcessorIntegration")
+        let signpostMetric = XCTOSSignpostMetric(subsystem: "com.gtfs.processor", category: "qos-measuring", name: "GTFSProcessor")
         
-        openMobility.getLatestFeedVersion(feedId: "")
-            .assertNoFailure()
-            .mapError { _ in GTFSUnzipError.missingFile(file: "") }
-            .flatMap { (url) in
-                unzipper.unzip(gtfsZip: url)
+        measure {
+            let expectation = XCTestExpectation(description: "testGTFSUnzipperProcessorIntegration")
+            
+            openMobility.getLatestFeedVersion(feedId: "")
+                .mapError { _ in GTFSUnzipError.missingFile(file: "") }
+                .flatMap { unzipper.unzip(gtfsZip: $0) }
+                .mapError { _ in GTFSError.invalidFile(issue: "") }
+                .flatMap({ csvReader.gtfsPublisher(from: $0) })
+                .mapError { _ in GTFSError.invalidFile(issue: "") }
+                .flatMap({ GTFSProcessor.processGTFSData(rawData: $0) })
+                .sink(receiveCompletion: { (completion) in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        print(error)
+                        break
+                    }
+                }) { (gtfsData) in
+                    //print(gtfsData.tripDictionary.first ?? "Couldn't find tripDictionary :(")
+                    expectation.fulfill()
             }
-            .assertNoFailure()
-            .mapError { _ in GTFSError.invalidFile(issue: "") }
-            .flatMap({ csvReader.gtfsPublisher(from: $0) })
-            .map({ (rawData) in
-                print(rawData.routes.first ?? "Couldn't find first trip")
-                return rawData
-            })
-            .assertNoFailure()
-            .mapError { _ in GTFSError.invalidFile(issue: "") }
-            .flatMap({ GTFSProcessor.processGTFSData(rawData: $0) })
-            .sink(receiveCompletion: { (completion) in
-                switch completion {
-                    
-                case .finished:
-                    print("finished")
-                    break
-                case .failure(let error):
-                    print("error")
-                    break
-                }
-            }) { (gtfsData) in
-                print(gtfsData.routeToShapeDictionary.first ?? "Couldn't find routeToShapeDictionary :(")
-                expectation.fulfill()
+            .store(in: &cancellables)
+            
+            wait(for: [expectation], timeout: 30.0)
         }
-        .store(in: &cancellables)
-        
-        wait(for: [expectation], timeout: 30.0)
     }
 }

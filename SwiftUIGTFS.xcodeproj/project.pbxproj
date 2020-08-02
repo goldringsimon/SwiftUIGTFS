@@ -31,6 +31,8 @@
 		F45E778D24BBA8D2007A2F2C /* mbtaRoutes.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */; };
 		F45E778E24BBA8D2007A2F2C /* mbtaTrips.txt in Resources */ = {isa = PBXBuildFile; fileRef = F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */; };
 		F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */; };
+		F46F6A7924D71DFC00D05C0B /* GTFSInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */; };
+		F46F6A7B24D71EAD00D05C0B /* GTFSInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */; };
 		F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */; };
 		F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */; };
 		F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */; };
@@ -46,11 +48,11 @@
 		F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DE61324C08D940099A46A /* SimpleCSVReader.swift */; };
 		F4AA904E24D56818006AA78B /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F4AA904D24D56818006AA78B /* ZIPFoundation */; };
 		F4AA905024D5689D006AA78B /* GTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA904F24D5689D006AA78B /* GTFSUnzipper.swift */; };
-		F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */; };
 		F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905324D56B34006AA78B /* ZipGTFSUnzipper.swift */; };
 		F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905524D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift */; };
 		F4AA905824D56D8C006AA78B /* GTFSUnzipperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905724D56D8C006AA78B /* GTFSUnzipperTests.swift */; };
 		F4AA905A24D5738D006AA78B /* mbta gtfs.zip in Resources */ = {isa = PBXBuildFile; fileRef = F4AA905924D5738D006AA78B /* mbta gtfs.zip */; };
+		F4AA905D24D6DDAC006AA78B /* MockGTFSUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AA905124D56B19006AA78B /* MockGTFSUnzipper.swift */; };
 		F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4BF575824C4F3280070CC88 /* UIColor+Ext.swift */; };
 		F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931D24CA2D6500766C39 /* Constants.swift */; };
 		F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C9931F24CA3A1A00766C39 /* OpenMobilityAPI.swift */; };
@@ -94,6 +96,8 @@
 		F45E778B24BBA8D2007A2F2C /* mbtaRoutes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaRoutes.txt; sourceTree = "<group>"; };
 		F45E778C24BBA8D2007A2F2C /* mbtaTrips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mbtaTrips.txt; sourceTree = "<group>"; };
 		F45E778F24BBA97D007A2F2C /* GTFSTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSTrip.swift; sourceTree = "<group>"; };
+		F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSInfoViewModel.swift; sourceTree = "<group>"; };
+		F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTFSInfoView.swift; sourceTree = "<group>"; };
 		F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedsResponse.swift; sourceTree = "<group>"; };
 		F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLocationsResponse.swift; sourceTree = "<group>"; };
 		F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
@@ -228,6 +232,7 @@
 				F4BF575724C4F30C0070CC88 /* Utility */,
 				F45E779224BBA98B007A2F2C /* Data */,
 				F44F115B24BBB816008E85C6 /* Model */,
+				F46F6A7724D71D7500D05C0B /* View Models */,
 				F45E779324BBA9A0007A2F2C /* Views */,
 				F45E779124BBA987007A2F2C /* Managers */,
 				F45E777324BB2694007A2F2C /* AppDelegate.swift */,
@@ -275,8 +280,17 @@
 				F486FDB224C4E27C004BEB51 /* UICard.swift */,
 				F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */,
 				F486FDB424C4E2C3004BEB51 /* GTFSShape.swift */,
+				F46F6A7A24D71EAD00D05C0B /* GTFSInfoView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		F46F6A7724D71D7500D05C0B /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */,
+			);
+			path = "View Models";
 			sourceTree = "<group>";
 		};
 		F47CE91924CE216700E9EBBF /* OpenMobilityAPI */ = {
@@ -447,7 +461,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F46F6A7B24D71EAD00D05C0B /* GTFSInfoView.swift in Sources */,
 				F49DE61424C08D940099A46A /* SimpleCSVReader.swift in Sources */,
+				F46F6A7924D71DFC00D05C0B /* GTFSInfoViewModel.swift in Sources */,
 				F4C9931E24CA2D6500766C39 /* Constants.swift in Sources */,
 				F45E777424BB2694007A2F2C /* AppDelegate.swift in Sources */,
 				F4C9932224CAE66700766C39 /* GTFSError.swift in Sources */,
@@ -457,6 +473,7 @@
 				F44F115A24BBB6EE008E85C6 /* GTFSManager.swift in Sources */,
 				F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */,
 				F4AA905424D56B34006AA78B /* ZipGTFSUnzipper.swift in Sources */,
+				F4AA905D24D6DDAC006AA78B /* MockGTFSUnzipper.swift in Sources */,
 				F4BF575924C4F3280070CC88 /* UIColor+Ext.swift in Sources */,
 				F45E778824BB5EE8007A2F2C /* GTFSShapePoint.swift in Sources */,
 				F4F1DCF024BCF49100BE4D05 /* GTFSStop.swift in Sources */,
@@ -469,7 +486,6 @@
 				F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */,
 				F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */,
 				F408E9CB24C9EAC40040CE81 /* GTFSDownloadDelegate.swift in Sources */,
-				F4AA905224D56B19006AA78B /* MockGTFSUnzipper.swift in Sources */,
 				F45E779024BBA97D007A2F2C /* GTFSTrip.swift in Sources */,
 				F456F6CD24C782D800B2218F /* GtfsCSVReader.swift in Sources */,
 				F45E777824BB2694007A2F2C /* ContentView.swift in Sources */,

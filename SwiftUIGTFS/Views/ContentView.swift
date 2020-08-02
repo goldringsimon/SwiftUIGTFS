@@ -126,19 +126,7 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    VStack(alignment: .leading) {
-                        Text("Selected route: \(gtfsManager.selectedRoute ?? "")")
-                        Text("Route count: \(gtfsManager.routes.count)")
-                        Text("Trip count: \(gtfsManager.trips.count)")
-                        Text("Shape point count: \(gtfsManager.shapes.count)")
-                        Text("Shape count: \(gtfsManager.shapeDictionary.count)")
-                        Text("Stop count: \(gtfsManager.stops.count)")
-                        Text("Scale: \(gtfsManager.scale)")
-                        Slider(value: $gtfsManager.scale, in: gtfsManager.minScale...gtfsManager.maxScale)
-                    }
-                    .padding()
-                    .frame(width: 300)
-                    .modifier(UICard())
+                    GTFSInfoView(viewModel: gtfsManager.infoViewModel)
                 }
             }
             

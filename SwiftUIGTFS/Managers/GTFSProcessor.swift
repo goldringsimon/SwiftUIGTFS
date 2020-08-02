@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import os.log
 
 struct GTFSRawData {
     let routes: [GTFSRoute]
@@ -28,9 +29,12 @@ class GTFSProcessor {
     }
     
     static func processGTFSData(rawData: GTFSRawData, completed: @escaping (Result<GTFSData, GTFSError>) -> Void) {
+        let logHandler = OSLog(subsystem: "com.gtfs.processor", category: "qos-measuring")
+        os_signpost(.begin, log: logHandler, name: "GTFSProcessor", "begin processing")
         let tripDictionary = createTripDictionary(trips: rawData.trips)
         let shapeDictionary = createShapeDictionary(shapes: rawData.shapes)
         let routeToShapeDictionary = createRouteToShapeDictionary(routes: rawData.routes, tripDictionary: tripDictionary)
+        os_signpost(.end, log: logHandler, name: "GTFSProcessor", "finished processing")
         completed(.success(GTFSData(tripDictionary: tripDictionary, shapeDictionary: shapeDictionary, routeToShapeDictionary: routeToShapeDictionary)))
     }
     

@@ -26,8 +26,8 @@ class MockOpenMobilityAPI: OpenMobilityAPIProtocol {
     
     func getLatestFeedVersion(feedId: String) -> AnyPublisher<URL, OpenMobilityAPI.OpenMobilityAPIError> {
         return Just(Bundle.main.url(forResource: "mbta gtfs", withExtension: "zip")!)
-            .mapError({ _ in OpenMobilityAPI.OpenMobilityAPIError.unknownError(nil) })
-        .eraseToAnyPublisher()
+            .setFailureType(to: OpenMobilityAPI.OpenMobilityAPIError.self)
+            .eraseToAnyPublisher()
     }
 }
 
@@ -86,10 +86,10 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
             })
             .mapError({ error in
                 switch error {
-                case is Swift.DecodingError:
-                    return OpenMobilityAPIError.decodingError(error: error)
                 case let error as OpenMobilityAPIError:
                     return error
+                case is Swift.DecodingError:
+                    return OpenMobilityAPIError.decodingError(error: error)
                 default:
                     return .unknownError(error)
                 }
@@ -120,10 +120,10 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
         })
         .mapError({ error in
             switch error {
-            case is Swift.DecodingError:
-                return .decodingError(error: error)
             case let error as OpenMobilityAPIError:
                 return error
+            case is Swift.DecodingError:
+                return .decodingError(error: error)
             default:
                 return .unknownError(error)
             }
@@ -153,6 +153,8 @@ class OpenMobilityAPI: OpenMobilityAPIProtocol {
                 switch error {
                 case let error as OpenMobilityAPIError:
                     return error
+                case is URLError:
+                    return OpenMobilityAPIError.invalidURL
                 default:
                     return .unknownError(error)
                 }

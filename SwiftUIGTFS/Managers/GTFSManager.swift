@@ -62,6 +62,8 @@ class GTFSManager: ObservableObject {
     @Published var selectedFeed: OpenMobilityAPI.Feed?
     @Published var favourites = [OpenMobilityAPI.Feed]()
     
+    var infoViewModel: GTFSInfoViewModel!
+    
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
         var routeToShapeDictionary: [String: [String]] = [:]
@@ -80,6 +82,8 @@ class GTFSManager: ObservableObject {
     }
     
     init() {
+        infoViewModel = GTFSInfoViewModel(gtfsManager: self)
+        
         Publishers.CombineLatest($overviewViewport, $scale)
             .map { (overview, scale) -> CGRect in
                 let transform = CGAffineTransform.init(translationX: overview.midX, y: overview.midY).scaledBy(x: 1/scale, y: 1/scale).translatedBy(x: -overview.midX, y: -overview.midY)

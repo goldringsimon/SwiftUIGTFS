@@ -15,8 +15,8 @@ class ZipGTFSUnzipper: GTFSUnzipper {
         let fileManager = FileManager()
         do {
             let unzipDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let destination = unzipDirectory.appendingPathComponent("gtfs")
-            //let destination = unzipDirectory
+            //let destination = unzipDirectory.appendingPathComponent("gtfs")
+            let destination = unzipDirectory
             if fileManager.fileExists(atPath: destination.path) {
                 try fileManager.removeItem(at: destination)
             }
@@ -36,6 +36,7 @@ class ZipGTFSUnzipper: GTFSUnzipper {
                 do {
                     let fileManager = FileManager()
                     try Zip.unzipFile(gtfsZip, destination: destination, overwrite: true, password: nil)
+                    let destination = destination.appendingPathComponent("gtfs")
                     let routesUrl = destination.appendingPathComponent("routes.txt")
                     let tripsUrl = destination.appendingPathComponent("trips.txt")
                     let shapesUrl = destination.appendingPathComponent("shapes.txt")
