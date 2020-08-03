@@ -197,37 +197,6 @@ class GTFSManager: ObservableObject {
         let session = URLSession(configuration: configuration, delegate: downloadDelegate, delegateQueue: operationQueue)
         let downloadTask = session.downloadTask(with: url)
         downloadTask.resume()
-        
-        /*let downloadTask = URLSession.shared.downloadTask(with: url) { [weak self]
-            urlOrNil, responseOrNil, errorOrNil in
-            // check for and handle errors:
-            // * errorOrNil should be nil
-            // * responseOrNil should be an HTTPURLResponse with statusCode in 200..<299
-            guard errorOrNil == nil else { return }
-            guard let response = responseOrNil as? HTTPURLResponse,
-                (200..<299).contains(response.statusCode) else { return }
-            
-            guard let fileUrl = urlOrNil else { return }
-            do {
-                let documentsURL = try
-                    FileManager.default.url(for: .documentDirectory,
-                                            in: .userDomainMask,
-                                            appropriateFor: nil,
-                                            create: false)
-                /*var savedURL = documentsURL.appendingPathComponent(fileUrl.lastPathComponent)
-                savedURL.deletePathExtension()
-                savedURL.appendPathExtension(".zip")*/
-                let savedURL = documentsURL.appendingPathComponent("gtfs.zip")
-                if FileManager.default.fileExists(atPath: savedURL.path) {
-                    try FileManager.default.removeItem(at: savedURL)
-                }
-                try FileManager.default.moveItem(at: fileUrl, to: savedURL)
-                self?.loadZippedData(from: savedURL)
-            } catch {
-                print ("file error: \(error)")
-            }
-        }
-        downloadTask.resume()*/
     }
     
     func loadLocalBartZippedData() {
@@ -244,50 +213,11 @@ class GTFSManager: ObservableObject {
             let shapesUrl = URL(fileURLWithPath: "shapes.txt", relativeTo: unzipDirectory)
             let stopsUrl = URL(fileURLWithPath: "stops.txt", relativeTo: unzipDirectory)
             loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
-            
-            /*let fileManager = FileManager.default
-            let unzipDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            
-            try Zip.unzipFile(filePath, destination: unzipDirectory, overwrite: true, password: nil, progress: { (progress) in
-                // update progress
-                print(progress)
-            }) { [weak self] (finishedUrl) in
-                finishedUrl.path
-                let routesUrl = URL(fileURLWithPath: "routes.txt", relativeTo: finishedUrl)
-                let tripsUrl = URL(fileURLWithPath: "trips.txt", relativeTo: finishedUrl)
-                let shapesUrl = URL(fileURLWithPath: "shapes.txt", relativeTo: finishedUrl)
-                let stopsUrl = URL(fileURLWithPath: "stops.txt", relativeTo: finishedUrl)
-                self?.loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
-            }*/
-            
         }
         catch {
             print("Something went wrong")
             print(error)
         }
-    }
-    
-    func loadMbtaData() {
-        loadLocalData(routes: "mbtaRoutes", trips: "mbtaTrips", shapes: "mbtaShapes", stops: "mbtaStops")
-    }
-    
-    func loadCtaData() {
-        loadLocalData(routes: "ctaRoutes", trips: "ctaTrips", shapes: "ctaShapes", stops: "ctaStops")
-    }
-    
-    func loadBartData() {
-        loadLocalData(routes: "bartRoutes", trips: "bartTrips", shapes: "bartShapes", stops: "bartStops")
-    }
-    
-    private func loadLocalData(routes: String, trips: String, shapes: String, stops: String) {
-        guard let routesUrl = Bundle.main.url(forResource: routes, withExtension: "txt"),
-            let tripsUrl = Bundle.main.url(forResource: trips, withExtension: "txt"),
-            let shapesUrl = Bundle.main.url(forResource: shapes, withExtension: "txt"),
-            let stopsUrl = Bundle.main.url(forResource: stops, withExtension: "txt") else {
-                print("couldn't create an Url for local data")
-                return
-        }
-        loadGTFSData(routesUrl: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
     }
     
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {

@@ -16,17 +16,20 @@ class GTFSInfoViewModel: ObservableObject {
     @Published var shapePointCount: Int = 0
     @Published var shapeCount: Int = 0
     @Published var stopCount: Int = 0
-    @Published var scale: CGFloat = 0
-    @Published var minScale: CGFloat = 0
-    @Published var maxScale: CGFloat = 0
+    @Published var scale: CGFloat = 1 {
+        didSet { gtfsManager.scale = scale }
+    }
+    let minScale: CGFloat
+    let maxScale: CGFloat
     
     private var cancellables = Set<AnyCancellable>()
+    private var gtfsManager: GTFSManager
     
     init(gtfsManager: GTFSManager) {
-        gtfsManager.$selectedRoute
-            .replaceNil(with: "")
-            .assign(to: \.selectedRoute, on: self)
-            .store(in: &cancellables)
+        self.gtfsManager = gtfsManager
+        
+        minScale = gtfsManager.minScale
+        maxScale = gtfsManager.maxScale
         
         gtfsManager.$routes
             .map { $0.count }
@@ -42,17 +45,15 @@ class GTFSInfoViewModel: ObservableObject {
             .map({ $0.count })
             .assign(to: \.shapePointCount, on: self)
             .store(in: &cancellables)
+            
+        gtfsManager.$shapeDictionary
+            .map({ $0.count })
+            .assign(to: \.shapeCount, on: self)
+            .store(in: &cancellables)
         
         gtfsManager.$stops
             .map({ $0.count })
             .assign(to: \.stopCount, on: self)
             .store(in: &cancellables)
-        
-        gtfsManager.$scale
-            .assign(to: \.scale, on: self)
-            .store(in: &cancellables)
-        
-        minScale = gtfsManager.minScale
-        maxScale = gtfsManager.maxScale
     }
 }
