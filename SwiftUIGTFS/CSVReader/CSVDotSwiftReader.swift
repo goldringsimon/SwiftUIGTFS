@@ -10,40 +10,40 @@ import Foundation
 import Combine
 import CSV
 
-class CSVDotSwiftReader: GtfsCSVReader {
-    func routesPublisher(from csvString: String) -> Future<[GTFSRoute], GTFSError> {
+struct CSVDotSwiftReader: GtfsCSVReader {
+    static func routesPublisher(from csvString: String) -> Future<[GTFSRoute], GTFSError> {
         loadEntityPublisher(from: csvString)
     }
     
-    func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
+    static func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
         loadEntityPublisher(from: fileUrl)
     }
     
-    func tripsPublisher(from csvString: String) -> Future<[GTFSTrip], GTFSError> {
+    static func tripsPublisher(from csvString: String) -> Future<[GTFSTrip], GTFSError> {
         loadEntityPublisher(from: csvString)
     }
     
-    func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
+    static func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
         loadEntityPublisher(from: fileUrl)
     }
     
-    func shapesPublisher(from csvString: String) -> Future<[GTFSShapePoint], GTFSError> {
+    static func shapesPublisher(from csvString: String) -> Future<[GTFSShapePoint], GTFSError> {
         loadEntityPublisher(from: csvString)
     }
     
-    func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
+    static func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
         loadEntityPublisher(from: fileUrl)
     }
     
-    func stopsPublisher(from csvString: String) -> Future<[GTFSStop], GTFSError> {
+    static func stopsPublisher(from csvString: String) -> Future<[GTFSStop], GTFSError> {
         loadEntityPublisher(from: csvString)
     }
     
-    func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
+    static func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
         loadEntityPublisher(from: fileUrl)
     }
     
-    private func loadEntityPublisher<T: Decodable>(from fileUrl: URL) -> Future<[T], GTFSError> {
+    static private func loadEntityPublisher<T: Decodable>(from fileUrl: URL) -> Future<[T], GTFSError> {
         guard let fileString = try? String(contentsOf: fileUrl) else {
             return Future { (promise) in
                 promise(.failure(.invalidFile(issue: "CSV loader couldn't open URL \(fileUrl)")))
@@ -53,7 +53,7 @@ class CSVDotSwiftReader: GtfsCSVReader {
         return loadEntityPublisher(from: fileString)
     }
     
-    private func loadEntityPublisher<T: Decodable>(from csvString: String) -> Future<[T], GTFSError> {
+    static private func loadEntityPublisher<T: Decodable>(from csvString: String) -> Future<[T], GTFSError> {
         return Future<[T], GTFSError> { promise in
             DispatchQueue.global(qos: .userInitiated).async {
                 var records = [T]()

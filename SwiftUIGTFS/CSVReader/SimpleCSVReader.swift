@@ -15,7 +15,7 @@ class SimpleCSVReader: GtfsCSVReader {
 (?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))
 """
     
-    func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
+    static func routesPublisher(from fileUrl: URL) -> Future<[GTFSRoute], GTFSError> {
         return Future<[GTFSRoute], GTFSError> { promise in
             return self.loadRoutes(from: fileUrl) { (result) in
                 promise(result)
@@ -23,7 +23,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
+    static func tripsPublisher(from fileUrl: URL) -> Future<[GTFSTrip], GTFSError> {
         return Future<[GTFSTrip], GTFSError> { promise in
             return self.loadTrips(from: fileUrl) { (result) in
                 promise(result)
@@ -31,7 +31,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
+    static func shapesPublisher(from fileUrl: URL) -> Future<[GTFSShapePoint], GTFSError> {
         return Future<[GTFSShapePoint], GTFSError> { promise in
             return self.loadShapes(from: fileUrl) { (result) in
                 promise(result)
@@ -39,7 +39,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
+    static func stopsPublisher(from fileUrl: URL) -> Future<[GTFSStop], GTFSError> {
         return Future<[GTFSStop], GTFSError> { promise in
             return self.loadStops(from: fileUrl) { (result) in
                 promise(result)
@@ -47,7 +47,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    private func loadRoutes(from fileUrl: URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
+    static private func loadRoutes(from fileUrl: URL, completed: @escaping (Result<[GTFSRoute], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
                 completed(.failure(.invalidFile(issue: "Couldn't read routes.txt as string")))
@@ -171,7 +171,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    private func loadTrips(from fileUrl: URL, completed: @escaping (Result<[GTFSTrip], GTFSError>) -> Void) {
+    static private func loadTrips(from fileUrl: URL, completed: @escaping (Result<[GTFSTrip], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
                 completed(.failure(.invalidFile(issue: "Couldn't read trips.txt as string")))
@@ -268,7 +268,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    private func loadShapes(from fileUrl: URL, completed: @escaping (Result<[GTFSShapePoint], GTFSError>) -> Void) {
+    static private func loadShapes(from fileUrl: URL, completed: @escaping (Result<[GTFSShapePoint], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             var shapePoints: [GTFSShapePoint] = []
             
@@ -358,7 +358,7 @@ class SimpleCSVReader: GtfsCSVReader {
         }
     }
     
-    private func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {
+    static private func loadStops(from fileUrl: URL, completed: @escaping (Result<[GTFSStop], GTFSError>) -> Void) {
         DispatchQueue.global().async {
             guard let fileString = try? String(contentsOf: fileUrl) else {
                 completed(.failure(.invalidFile(issue: "Couldn't read stops.txt as string")))

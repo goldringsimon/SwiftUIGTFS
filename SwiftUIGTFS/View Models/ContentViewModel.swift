@@ -38,7 +38,7 @@ class ContentViewModel: ObservableObject {
         gtfsManager.shapeDictionary[shapeId] ?? []
     }
     
-    func selectRoute(routeId: String) {
+    func selectRoute(routeId: String?) {
         gtfsManager.selectedRoute = routeId
         //self.gtfsManager.overviewViewport = GTFSShapePoint.getOverviewViewport(for: self.gtfsManager.shapeDictionary[shapeId] ?? [])
     }

@@ -36,7 +36,44 @@ class GTFSInfoViewModel: ObservableObject {
             .assign(to: \.selectedRoute, on: self)
             .store(in: &cancellables)
         
-        gtfsManager.$routes
+        gtfsManager.$gtfsRawData
+            .map { gtfsRawData in
+                gtfsRawData?.routes.count
+            }
+            .replaceNil(with: 0)
+            .assign(to: \.routeCount, on: self)
+            .store(in: &cancellables)
+        
+        gtfsManager.$gtfsRawData
+        .map { gtfsRawData in
+            gtfsRawData?.trips.count
+        }
+        .replaceNil(with: 0)
+        .assign(to: \.tripCount, on: self)
+        .store(in: &cancellables)
+        
+        gtfsManager.$gtfsRawData
+        .map { gtfsRawData in
+            gtfsRawData?.shapes.count
+        }
+        .replaceNil(with: 0)
+        .assign(to: \.shapePointCount, on: self)
+        .store(in: &cancellables)
+        
+        gtfsManager.$shapeDictionary
+        .map({ $0.count })
+        .assign(to: \.shapeCount, on: self)
+        .store(in: &cancellables)
+        
+        gtfsManager.$gtfsRawData
+        .map { gtfsRawData in
+            gtfsRawData?.stops.count
+        }
+        .replaceNil(with: 0)
+        .assign(to: \.stopCount, on: self)
+        .store(in: &cancellables)
+        
+        /*gtfsManager.$routes
             .map { $0.count }
             .assign(to: \.routeCount, on: self)
             .store(in: &cancellables)
@@ -59,6 +96,6 @@ class GTFSInfoViewModel: ObservableObject {
         gtfsManager.$stops
             .map({ $0.count })
             .assign(to: \.stopCount, on: self)
-            .store(in: &cancellables)
+            .store(in: &cancellables)*/
     }
 }

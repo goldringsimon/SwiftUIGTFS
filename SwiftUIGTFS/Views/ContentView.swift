@@ -67,7 +67,7 @@ struct ContentView: View {
                             .stroke(Color(.systemPink), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
                             .onTapGesture {
                                 withAnimation {
-                                    self.gtfsManager.selectedRoute = nil
+                                    self.viewModel.selectRoute(routeId: nil)
                                 }
                         }
                     }

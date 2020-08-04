@@ -11,10 +11,10 @@ import Combine
 import Zip
 
 class GTFSManager: ObservableObject {
-    @Published var routes: [GTFSRoute] = []
-    @Published var trips: [GTFSTrip] = []
-    @Published var shapes: [GTFSShapePoint] = []
-    @Published var stops: [GTFSStop] = []
+    
+    private typealias gtfsCSVReader = CSVDotSwiftReader
+    
+    @Published var gtfsRawData: GTFSRawData?
     
     @Published var tripDictionary: [String: [GTFSTrip]] = [:] // key is routeId, value is all trips for that route
     @Published var shapeDictionary: [String: [GTFSShapePoint]] = [:] // key is shape Id, value is ShapePoints that make up that shape
@@ -46,8 +46,6 @@ class GTFSManager: ObservableObject {
     
     @Published var selectedRoute: String? = nil
     
-    private var gtfsLoader: GtfsCSVReader = CSVDotSwiftReader()
-    
     private var cancellables = Set<AnyCancellable>()
     
     var downloadDelegate: GTFSDownloadDelegate?
@@ -65,23 +63,6 @@ class GTFSManager: ObservableObject {
     var infoViewModel: GTFSInfoViewModel!
     var routeDisplayViewModel: RouteDisplayViewModel!
     var contentViewModel: ContentViewModel!
-    
-    private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
-        (routes, tripDictionary) in
-        var routeToShapeDictionary: [String: [String]] = [:]
-        
-        for route in routes {
-            var shapeIds = Set<String>()
-            if let routeTrips = tripDictionary[route.routeId] {
-                for trip in routeTrips {
-                    guard let shapeId = trip.shapeId else { continue }
-                    shapeIds.insert(shapeId)
-                }
-            }
-            routeToShapeDictionary[route.routeId] = Array(shapeIds)
-        }
-        return routeToShapeDictionary
-    }
     
     init() {
         infoViewModel = GTFSInfoViewModel(gtfsManager: self)
@@ -219,14 +200,12 @@ class GTFSManager: ObservableObject {
     }
     
     private func loadGTFSData(routesUrl: URL, tripsUrl: URL, shapesUrl: URL, stopsUrl: URL) {
-        let loadRoutesPublisher = gtfsLoader.routesPublisher(from: routesUrl)
-        
         // This is not ideal. I wish I could replace these four variables with an array of Published<Bool>
         for (i, publisher) in [$displayTrams, $displayMetro, $displayRail, $displayBuses].enumerated() {
             publisher
             .map({ (display) -> [GTFSRoute] in
                     if display {
-                        return self.routes.filter { $0.routeType == i }
+                        return self.gtfsRawData?.routes.filter { $0.routeType == i } ?? []
                     }
                     return []
                 })
@@ -244,6 +223,35 @@ class GTFSManager: ObservableObject {
         .assign(to: \.displayedRoutes, on: self)
         .store(in: &cancellables)
         
+        gtfsCSVReader.gtfsPublisher(from: routesUrl, tripsUrl: tripsUrl, shapesUrl: shapesUrl, stopsUrl: stopsUrl)
+            .receive(on: DispatchQueue.main)
+            .map({ rawData in
+                self.gtfsRawData = rawData
+                self.overviewViewport = GTFSShapePoint.getOverviewViewport(for: rawData.shapes)
+                return rawData
+            })
+            .mapError { _ in GTFSError.invalidFile(issue: "") }
+            .receive(on: DispatchQueue.global())
+            .flatMap({ GTFSProcessor.processGTFSData(rawData: $0) })
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { (completion) in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                    break
+                }
+            }) { gtfsData in
+                self.tripDictionary = gtfsData.tripDictionary
+                self.routeToShapeDictionary = gtfsData.routeToShapeDictionary
+                self.shapeDictionary = gtfsData.shapeDictionary
+                self.isFinishedLoading = true
+            }
+            .store(in: &cancellables)
+        
+        /*let loadRoutesPublisher = gtfsCSVReader.routesPublisher(from: routesUrl)
+        
         loadRoutesPublisher
         .receive(on: DispatchQueue.main)
         .sink(receiveCompletion: { (completion) in
@@ -259,7 +267,7 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadTripsPublisher = gtfsLoader.tripsPublisher(from: tripsUrl)
+        let loadTripsPublisher = gtfsCSVReader.tripsPublisher(from: tripsUrl)
             .map { (trips) -> ([GTFSTrip], [String: [GTFSTrip]]) in
                 let dictionary = Dictionary(grouping: trips, by: { $0.routeId })
                 return (trips, dictionary)
@@ -281,7 +289,7 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadShapesPublisher = gtfsLoader.shapesPublisher(from: shapesUrl)
+        let loadShapesPublisher = gtfsCSVReader.shapesPublisher(from: shapesUrl)
             .map { (shapes) -> ([GTFSShapePoint], [String: [GTFSShapePoint]], CGRect) in
                 let dictionary = Dictionary(grouping: shapes, by: { $0.shapeId })
                 let viewport = GTFSShapePoint.getOverviewViewport(for: shapes)
@@ -305,7 +313,7 @@ class GTFSManager: ObservableObject {
         }
         .store(in: &cancellables)
         
-        let loadStopsPublisher = gtfsLoader.stopsPublisher(from: stopsUrl)
+        let loadStopsPublisher = gtfsCSVReader.stopsPublisher(from: stopsUrl)
         
         loadStopsPublisher
         .receive(on: DispatchQueue.main)
@@ -327,7 +335,7 @@ class GTFSManager: ObservableObject {
                 let (_, tripDictionary) = tripsArg
                 return (routes, tripDictionary)
             })
-            .map(GTFSManager.createRouteToShapeDictionary)
+            .map(GTFSProcessor.createRouteToShapeDictionary)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
@@ -352,6 +360,6 @@ class GTFSManager: ObservableObject {
             })
             .receive(on: DispatchQueue.main)
             .assign(to: \.isFinishedLoading, on: self)
-            .store(in: &cancellables)
+            .store(in: &cancellables)*/
     }
 }
