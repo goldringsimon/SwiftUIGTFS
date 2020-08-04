@@ -31,6 +31,11 @@ class GTFSInfoViewModel: ObservableObject {
         minScale = gtfsManager.minScale
         maxScale = gtfsManager.maxScale
         
+        gtfsManager.$selectedRoute
+            .replaceNil(with: "")
+            .assign(to: \.selectedRoute, on: self)
+            .store(in: &cancellables)
+        
         gtfsManager.$routes
             .map { $0.count }
             .assign(to: \.routeCount, on: self)

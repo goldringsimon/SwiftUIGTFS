@@ -64,6 +64,7 @@ class GTFSManager: ObservableObject {
     
     var infoViewModel: GTFSInfoViewModel!
     var routeDisplayViewModel: RouteDisplayViewModel!
+    var contentViewModel: ContentViewModel!
     
     private static var createRouteToShapeDictionary: ([GTFSRoute], [String: [GTFSTrip]]) -> [String: [String]] = {
         (routes, tripDictionary) in
@@ -85,6 +86,7 @@ class GTFSManager: ObservableObject {
     init() {
         infoViewModel = GTFSInfoViewModel(gtfsManager: self)
         routeDisplayViewModel = RouteDisplayViewModel(gtfsManager: self)
+        contentViewModel = ContentViewModel(gtfsManager: self)
         
         Publishers.CombineLatest($overviewViewport, $scale)
             .map { (overview, scale) -> CGRect in
@@ -160,10 +162,6 @@ class GTFSManager: ObservableObject {
             self.loadRemoteZippedData(from: url)
         })
         .store(in: &cancellables)
-    }
-    
-    func getUniqueShapesIdsForRoute(for routeId: String) -> [String] {
-        return routeToShapeDictionary[routeId] ?? []
     }
     
     func downloadDelegate(amountDownloaded: Double) {

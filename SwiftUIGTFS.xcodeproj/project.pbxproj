@@ -36,6 +36,7 @@
 		F46F6A7D24D74A4300D05C0B /* RouteDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7C24D74A4300D05C0B /* RouteDisplayView.swift */; };
 		F46F6A7F24D74D5800D05C0B /* RouteDisplayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */; };
 		F46F6A8124D76CC800D05C0B /* UICardPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A8024D76CC800D05C0B /* UICardPosition.swift */; };
+		F46F6A8324D84DCF00D05C0B /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46F6A8224D84DCF00D05C0B /* ContentViewModel.swift */; };
 		F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */; };
 		F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */; };
 		F486FDB124C4DEC3004BEB51 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */; };
@@ -104,6 +105,7 @@
 		F46F6A7C24D74A4300D05C0B /* RouteDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDisplayView.swift; sourceTree = "<group>"; };
 		F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDisplayViewModel.swift; sourceTree = "<group>"; };
 		F46F6A8024D76CC800D05C0B /* UICardPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICardPosition.swift; sourceTree = "<group>"; };
+		F46F6A8224D84DCF00D05C0B /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		F47CE91A24CE218B00E9EBBF /* GetFeedsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedsResponse.swift; sourceTree = "<group>"; };
 		F47CE91C24CE21BF00E9EBBF /* GetLocationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLocationsResponse.swift; sourceTree = "<group>"; };
 		F486FDB024C4DEC3004BEB51 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 			children = (
 				F46F6A7824D71DFC00D05C0B /* GTFSInfoViewModel.swift */,
 				F46F6A7E24D74D5800D05C0B /* RouteDisplayViewModel.swift */,
+				F46F6A8224D84DCF00D05C0B /* ContentViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -494,6 +497,7 @@
 				F4AA905624D56B43006AA78B /* ZipFoundationGTFSUnzipper.swift in Sources */,
 				F47CE91D24CE21BF00E9EBBF /* GetLocationsResponse.swift in Sources */,
 				F4AA905024D5689D006AA78B /* GTFSUnzipper.swift in Sources */,
+				F46F6A8324D84DCF00D05C0B /* ContentViewModel.swift in Sources */,
 				F44F115724BBB2A0008E85C6 /* GTFSRoute.swift in Sources */,
 				F4C9932024CA3A1A00766C39 /* OpenMobilityAPI.swift in Sources */,
 				F47CE91B24CE218B00E9EBBF /* GetFeedsResponse.swift in Sources */,

@@ -31,7 +31,6 @@ class RouteDisplayViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
-    
     private var gtfsManager: GTFSManager
     
     init(gtfsManager: GTFSManager) {

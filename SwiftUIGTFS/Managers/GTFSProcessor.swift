@@ -23,7 +23,7 @@ struct GTFSData {
     let routeToShapeDictionary: [String: [String]] // key is routeId, value is all unique shapeIds for that route
 }
 
-class GTFSProcessor {
+struct GTFSProcessor {
     static func processGTFSData(rawData: GTFSRawData) -> Future<GTFSData, GTFSError> {
         Future { processGTFSData(rawData: rawData, completed: $0) }
     }
